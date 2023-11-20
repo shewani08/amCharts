@@ -118,7 +118,7 @@ export class SvgListComponent {
     clipPathRectY : 93.82896236022239,
     clipPathRectHeight : 20,
   
-    textX : 373.8125,
+    textX : 373,
     textY : 50.82896236022239,
     queryValue :'3.8%',
   
@@ -127,8 +127,8 @@ export class SvgListComponent {
     clipPathRectWidth : 191.5,},
     {
       rectStrokeColor : 'white',
-      rectX :461,
-      rectY : 72.69550340501212,
+      rectX :600,
+      rectY : 92.69550340501212,
       rectFillColor : 'rgb(51, 50, 50)',
       outerRectStrokeColor : '#D3D3D3',
       outerRectX : 361.1625,
@@ -147,14 +147,44 @@ export class SvgListComponent {
       clipPathRectY : 93.82896236022239,
       clipPathRectHeight : 10.5,
     
-      textX : 910.8125,
-      textY : 50.82896236022239,
+      textX : 620,
+      textY : 93,
       queryValue :'2.8%',
     
       clipPathRectX :313,
     
       clipPathRectWidth : 191.5,
     },
+    {
+      rectStrokeColor : 'white',
+      rectX :90,
+      rectY : 42,
+      rectFillColor : 'rgb(51, 50, 50)',
+      outerRectStrokeColor : '#D3D3D3',
+      outerRectX : 361.1625,
+      outerRectY : 62.69550340501212,
+      outerRectWidth : 25.299999999999955,
+      outerRectHeight : 43,
+    
+      innerRectStrokeColor :'white',
+      innerRectX : 361.1625,
+      innerRectY : 104.32896236022239,
+      innerRectFillColor : 'rgb(79, 121, 167)',
+      innerRectWidth : 25.299999999999955,
+      innerRectHeight : 1.3665410447897273,
+    
+      clipPathId :'1',
+      clipPathRectY : 93.82896236022239,
+      clipPathRectHeight : 10.5,
+    
+      textX : 150,
+      textY : 50.82896236022239,
+      queryValue :'9.8%',
+    
+      clipPathRectX :313,
+    
+      clipPathRectWidth : 191.5,
+    }
     // Add more elements as needed
   ];
 }

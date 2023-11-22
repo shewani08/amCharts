@@ -53,7 +53,7 @@
                                     [attr.width]="ele.clipPathWidth" [attr.height]="ele.clipPathHeight"></rect>
                             </clipPath>
                         </defs>
-                        <svg:text opacity="1" [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 40"
+                        <svg:text opacity="1" [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 80 - ele.prt"
                             fill="white" dominant-baseline="hanging" font-size="8.5px" font-weight="normal"
                             text-anchor="middle" clip-path="url('clipPath' + idx)">{{ele.percentage}}</svg:text>
                     </g>

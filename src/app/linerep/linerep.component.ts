@@ -203,7 +203,7 @@ export class SvgListComponent {
       rectInnerFillColor: 'rgb(50, 30, 30)',
       rectStrokeColor : 'white',
       rectX :690,
-      rectY : 542,
+      rectY : 342,
       rectFillColor : 'rgb(51, 50, 50)',
       outerRectStrokeColor : '#D3D3D3',
       outerRectX : 361.1625,
@@ -223,7 +223,7 @@ export class SvgListComponent {
       clipPathRectHeight : 10.5,
     
       textX : 750,
-      textY : 550.82896236022239,
+      textY : 350.82896236022239,
       queryValue :'9.8%',
     
       clipPathRectX :313,

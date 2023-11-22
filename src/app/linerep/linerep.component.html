@@ -1,4 +1,10 @@
 <svg width="100%" height="100%">
+    <defs>
+        <!-- Define an arrowhead marker -->
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+        </marker>
+      </defs>
     <g *ngFor="let element of svgElements;let i = index">
         <rect class="prevent-touch-start" style="touch-action: none;" [attr.stroke]="element.rectStrokeColor"
             stroke-width="0.4" cursor="default" [attr.x]="element.rectX" [attr.y]="element.rectY"
@@ -17,143 +23,60 @@
                 {{element.nodeName}}
             </text>
         </g>
-        
+
         <svg width="100%" height="100%">
-            
-        
+
+
             <g *ngFor="let ele of svgGraph; let idx = index">
-              <!-- Your existing elements go here with bindings updated -->
-              <g style="touch-action: none;" data-test-id="'EvidenceNodeVisualAction-VentTube-Low' + id">
-            
-                <title>State</title>
-                <svg:text
-                  opacity="1"
-                  [attr.x]="element.textX + idx * 40"
-                  fill="white"
-                  dominant-baseline="hanging"
-                  [attr.y]="element.textY + 90"
-                  font-size="11px"
-                  font-weight="300"
-                  text-anchor="start"
-                  [attr.clip-path]="'url(#' + idx + ')'"
-                >
-                {{ ele.value }}
-                </svg:text>
-                <rect
-                  class="prevent-touch-start"
-                  class="prevent-touch-start" style="touch-action: none;" stroke="#D3D3D3" stroke-width="0.3"
-                   cursor="default"  
-                  fill="transparent" width="25.299999999999955" height="50" fill-opacity="1.0"
-                  style="touch-action: none;"
-                  [attr.x]="element.textX + idx * 40" 
-                  [attr.y]="element.textY + 40"
-                 
-                 
-                ></rect>
-               
-                <rect class="prevent-touch-start" style="touch-action: none;" stroke="white" stroke-width="0.5"
-                 cursor="default"  [attr.x]="element.textX + idx * 40"
-                 [attr.y]="element.textY + 90 - ele.prt " width="23.423213092292727" [style.height.px]="ele.prt"
-                  fill-opacity="1.0" fill="rgb(79, 121, 167)" ></rect>
-                <g>
-                  <defs>
-                    <clipPath [attr.id]="'clipPath' + idx">
-                      <rect [attr.x]="element.textX + idx * 40"  [attr.y]="element.textY + 40" [attr.width]="ele.clipPathWidth" [attr.height]="ele.clipPathHeight"></rect> 
-                    </clipPath>
-                  </defs>
-                  <svg:text opacity="1" [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 40"  fill="white" dominant-baseline="hanging" 
-                
-                  font-size="8.5px" font-weight="normal" text-anchor="middle" 
-                  clip-path="url('clipPath' + idx)">{{ele.percentage}}</svg:text>
+                <!-- Your existing elements go here with bindings updated -->
+                <g style="touch-action: none;" data-test-id="'EvidenceNodeVisualAction-VentTube-Low' + id">
+
+                    <title>State</title>
+                    <svg:text opacity="1" [attr.x]="element.textX + idx * 40" fill="white" dominant-baseline="hanging"
+                        [attr.y]="element.textY + 90" font-size="11px" font-weight="300" text-anchor="start"
+                        [attr.clip-path]="'url(#' + idx + ')'">
+                        {{ ele.value }}
+                    </svg:text>
+                    <rect class="prevent-touch-start" class="prevent-touch-start" style="touch-action: none;"
+                        stroke="#D3D3D3" stroke-width="0.3" cursor="default" fill="transparent"
+                        width="25.299999999999955" height="50" fill-opacity="1.0" style="touch-action: none;"
+                        [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 40"></rect>
+
+                    <rect class="prevent-touch-start" style="touch-action: none;" stroke="white" stroke-width="0.5"
+                        cursor="default" [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 90 - ele.prt "
+                        width="23.423213092292727" [style.height.px]="ele.prt" fill-opacity="1.0"
+                        fill="rgb(79, 121, 167)"></rect>
+                    <g>
+                        <defs>
+                            <clipPath [attr.id]="'clipPath' + idx">
+                                <rect [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 40"
+                                    [attr.width]="ele.clipPathWidth" [attr.height]="ele.clipPathHeight"></rect>
+                            </clipPath>
+                        </defs>
+                        <svg:text opacity="1" [attr.x]="element.textX + idx * 40" [attr.y]="element.textY + 40"
+                            fill="white" dominant-baseline="hanging" font-size="8.5px" font-weight="normal"
+                            text-anchor="middle" clip-path="url('clipPath' + idx)">{{ele.percentage}}</svg:text>
+                    </g>
+                    <!-- Line connecting rectangles -->
+                    
+
                 </g>
-                 <!-- Line connecting rectangles -->
-    
-              </g>
+               
             </g>
-            <line
-            [attr.x1]="element.textX +  40" 
-                        [attr.y1]="element.textY + 40"
-                        [attr.x2]="393" 
-                        [attr.y2]="50"
-            stroke="red"
-            stroke-width="2"
-          />
-          </svg>
-        <!-- <g  >
+          
+        </svg>
        
-        
-        <title>State</title>
-            <svg:text opacity="1"[attr.x]="element.textX" fill="white" dominant-baseline="hanging" [attr.y]="62"
-            font-size="11px" font-weight="300" text-anchor="start" [attr.clip-path]="'url(i)'">
-           Low
-        </svg:text>
-            <rect class="prevent-touch-start" style="touch-action: none;" stroke="#D3D3D3" stroke-width="0.3"
-                cursor="default" [attr.x]="element.textX" y="62.69550340501212" fill="transparent" width="25.299999999999955"
-                height="43" fill-opacity="1.0"></rect>
-            <rect class="prevent-touch-start" style="touch-action: none;" stroke="white" stroke-width="0.5"
-                cursor="default" [attr.x]="element.textX" y="104.32896236022239" fill="rgb(79, 121, 167)" width="25.299999999999955"
-                height="1.3665410447897273" fill-opacity="1.0">
-            </rect>
-            <g>
-
-                <defs>
-                    <clipPath id="8e1165eb-f65f-4ed9-af62-eb7c07212345">
-                        <rect x="361.1625" y="93.82896236022239" width="25.299999999999955" height="10.5"></rect>
-                    </clipPath>
-                </defs>
-
-
-                <svg:text opacity="1" x="373.8125" fill="white" dominant-baseline="hanging" y="93.82896236022239"
-                    font-size="8.5px" font-weight="normal" text-anchor="middle"
-                    clip-path="url(#8e1165eb-f65f-4ed9-af62-eb7c07212345)">2.8%</svg:text>
-            </g>
-        </g>
-     -->
-    <!-- <g style="touch-action: none;" data-test-id="EvidenceNodeVisualAction-VentTube-Zero">
-        <title>State: Zero
-            Query value: 6.7%</title>
-        
-        <rect class="prevent-touch-start" style="touch-action: none;" stroke="#D3D3D3" stroke-width="0.3"
-            cursor="default" x="392.7875" y="62.69550340501212" fill="transparent" width="25.299999999999955"
-            height="43" fill-opacity="1.0"></rect>
-        <rect class="prevent-touch-start" style="touch-action: none;" stroke="white" stroke-width="0.5" cursor="default"
-            x="392.7875" y="102.40504324952312" fill="rgb(79, 121, 167)" width="25.299999999999955"
-            height="3.2904601554890007" fill-opacity="1.0"></rect>
-        <g>
-            <defs>
-                <clipPath id="605841f5-c3b5-4616-bfa5-9f0bc189d161">
-                    <rect x="392.7875" y="91.90504324952312" width="25.299999999999955" height="10.5"></rect>
-                </clipPath>
-            </defs>
-
-            <svg:text opacity="1" x="405.4375" fill="white" dominant-baseline="hanging" y="91.90504324952312"
-                font-size="8.5px" font-weight="normal" text-anchor="middle"
-                clip-path="url(#605841f5-c3b5-4616-bfa5-9f0bc189d161)">6.7%</svg:text>
-        </g>
-    </g> -->
-    <!-- <g style="touch-action: none;" data-test-id="EvidenceNodeVisualAction-VentTube-Normal">
-        <title>State: Normal
-            Query value: 87.7%</title>
-        
-        <rect class="prevent-touch-start" style="touch-action: none;" stroke="#D3D3D3" stroke-width="0.3"
-            cursor="default" x="424.4125" y="62.69550340501212" fill="transparent" width="25.299999999999955"
-            height="43" fill-opacity="1.0"></rect>
-        <rect class="prevent-touch-start" style="touch-action: none;" stroke="white" stroke-width="0.5" cursor="default"
-            x="424.4125" y="62.69550340501212" fill="rgb(79, 121, 167)" width="25.299999999999955" height="43"
-            fill-opacity="1.0"></rect>
-        <g>
-            <defs>
-                <clipPath id="b0dd9f55-6a99-4036-9dfb-04d0161cea6c">
-                    <rect x="424.4125" y="52.19550340501212" width="25.299999999999955" height="10.5"></rect>
-                </clipPath>
-            </defs>
-
-            <svg:text opacity="1" x="437.0625" fill="white" dominant-baseline="hanging" y="52.19550340501212"
-                font-size="8.5px" font-weight="normal" text-anchor="middle"
-                clip-path="url(#b0dd9f55-6a99-4036-9dfb-04d0161cea6c)">87.7%</svg:text>
-        </g>
-    </g> -->
+    </g>
+<g>
+    <line
+    [attr.x1]="361" 
+    [attr.y1]="62"
+    [attr.x2]="690"
+    [attr.y2]="80"
+    stroke="black"
+    stroke-width="2"
+    marker-end="url(#arrowhead)"
+  />
 </g>
 
-       
 </svg>

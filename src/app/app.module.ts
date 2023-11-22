@@ -22,6 +22,7 @@ import { AfricamapComponent } from './africamap/africamap.component';
 import { GraphComponent } from './graph/graph.component';
 import { HeatmapComponent } from './heatmap/heatmap.component';
 import { SvgListComponent } from './linerep/linerep.component';
+
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
   declarations: [

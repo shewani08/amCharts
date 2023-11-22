@@ -13,6 +13,7 @@ export class DashboardComponent {
   dashAppUrl: string = 'http://127.0.0.1:1118/';
   // Safe URL to prevent security errors
   safeDashAppUrl!: SafeResourceUrl;
+  chartData: Array<any> =[];
    // Graph data
    graph = {
     data: [
@@ -53,6 +54,18 @@ isHandset: any;
   ngOnInit() {
     // Sanitize the URL
     this.safeDashAppUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.dashAppUrl);
+    
+  }
+
+  generateData() {
+    this.chartData = [];
+    for (let i = 0; i < (8 + Math.floor(Math.random() * 10)); i++) {
+      this.chartData.push([
+        `Index ${i}`,
+        Math.floor(Math.random() * 100)
+      ]);
+    }
+    console.log('this.charData is',this.chartData);
   }
   getSafeUrl(): SafeResourceUrl {
     return this.safeDashAppUrl;

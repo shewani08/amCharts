@@ -22,6 +22,7 @@ import { AfricamapComponent } from './africamap/africamap.component';
 import { GraphComponent } from './graph/graph.component';
 import { HeatmapComponent } from './heatmap/heatmap.component';
 import { SvgListComponent } from './linerep/linerep.component';
+import { NodeLinkComponent } from './node-link/node-link.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
@@ -33,6 +34,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     GraphComponent,
     HeatmapComponent,
     SvgListComponent,
+    NodeLinkComponent,
    
    
   ],

@@ -305,7 +305,11 @@ export class NodeLinkComponent implements OnInit {
         .attr('y', 70 - svgGraph[i].prt) // Set the y-coordinate of the bar
         .attr('width', barWidth) // Set the width of the bar
         .attr('height', svgGraph[i].prt) // Set the height of the bar
-        .attr('fill', 'steelblue'); // Set the fill color of the bar
+        .attr('fill', 'steelblue')
+        .on('click', (event: any, d: Node) => {
+
+          alert('Here we show detail about graph')
+        }); // Set the fill color of the bar
 
       //  Append text to the bar
       nodeGroup.append('text')

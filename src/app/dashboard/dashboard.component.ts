@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -8,11 +8,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
+  @Output() hideDemo = new EventEmitter<boolean>();
   private breakpointObserver = inject(BreakpointObserver);
   // Replace this URL with the actual URL where your Flask server is running
   dashAppUrl: string = 'http://127.0.0.1:1118/';
   // Safe URL to prevent security errors
   safeDashAppUrl!: SafeResourceUrl;
+  showDashboard = true;
   chartData: Array<any> =[];
    // Graph data
    graph = {
@@ -54,6 +56,7 @@ isHandset: any;
   ngOnInit() {
     // Sanitize the URL
     this.safeDashAppUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.dashAppUrl);
+    this.showDashboard = !window.opener;
     
   }
 
@@ -69,6 +72,11 @@ isHandset: any;
   }
   getSafeUrl(): SafeResourceUrl {
     return this.safeDashAppUrl;
+  }
+  showGraph(e:boolean){
+    this.showDashboard= false;
+    this.hideDemo.emit(false);
+
   }
 }
 

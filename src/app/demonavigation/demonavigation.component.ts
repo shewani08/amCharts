@@ -16,4 +16,12 @@ export class DemonavigationComponent {
       map(result => result.matches),
       shareReplay()
     );
+  showDashboard: boolean = true;
+    ngOnInit(){
+      this.showDashboard = !window.opener;
+    }
+    hideDemo(e:boolean){
+      this.showDashboard= false;
+
+    }
 }

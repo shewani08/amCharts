@@ -2,6 +2,8 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import jsonData from '../data/graph';
+import { Router } from '@angular/router';
+import { Output, EventEmitter } from '@angular/core';
 
 interface Node {
   id: string;
@@ -30,7 +32,8 @@ interface GraphData {
 export class GraphComponent implements OnInit {
   @ViewChild('graphContainer', { static: true })
   graphContainer!: ElementRef;
-  
+  @Output() newItemEvent = new EventEmitter<boolean>();
+constructor(private router: Router) {} 
 
   ngOnInit(): void {
     this.createGraph();
@@ -208,15 +211,30 @@ export class GraphComponent implements OnInit {
       .enter().append('g')  // Create a group for each node
       .attr('class', 'node')
       .call(d3.drag<SVGGElement, Node, SVGElement>()
+     
         .on('start', dragstarted)
         .on('drag', dragged)
         .on('end', dragended)
-      );
+       );
+
+       
 
     // Append a circle to the group for each node
     node.append('circle')
       .attr('r', 15) // Increase the radius to 15 (or any desired value)
-      .attr('fill', (d: Node) => d.color || 'black');
+      .attr('fill', (d: Node) => d.color || 'black')
+      .on('click', (event: any, d: Node) => {
+
+        this.newItemEvent.emit(false);
+    window.open('link', '_blank');
+    
+     // window.open(this.router.serializeUrl(this.router.createUrlTree(['link'])), '_blank');
+     // alert('hello');
+        //this.nodeClicked();
+      
+       } )
+      ;
+
 
     // Append a text element for the tooltip to each group
     const tooltip = node.append('text')
@@ -264,5 +282,9 @@ export class GraphComponent implements OnInit {
       d.fx = null;
       d.fy = null;
     }
+
+    function nodeClicked(){
+     alert('HI');
+     }
   }
 }

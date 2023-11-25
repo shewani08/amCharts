@@ -20,7 +20,8 @@
         <mat-card-content class="dashboard-card-content" style="height:100% !important">        
           <ng-container *ngIf="card.showGraph">
             <h1>Screen 1</h1>
-            <app-africamap *ngIf="card.title === 'Card 1'"></app-africamap>
+            <app-countrymap *ngIf="card.title === 'Card 1'"></app-countrymap>
+            <!-- <app-africamap *ngIf="card.title === 'Card 1'"></app-africamap> -->
             <!-- <app-svg-list *ngIf="card.title === 'Card 2'" ></app-svg-list> -->
              <app-graph *ngIf="card.title === 'Card 2'"></app-graph> 
             <!-- <app-heatmap *ngIf="card.title === 'Card 3'"></app-heatmap> -->

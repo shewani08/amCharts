@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,6 +23,7 @@ import { GraphComponent } from './graph/graph.component';
 import { HeatmapComponent } from './heatmap/heatmap.component';
 import { SvgListComponent } from './linerep/linerep.component';
 import { NodeLinkComponent } from './node-link/node-link.component';
+import { CountrymapComponent } from './countrymap/countrymap.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
@@ -35,6 +36,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     HeatmapComponent,
     SvgListComponent,
     NodeLinkComponent,
+    CountrymapComponent,
    
    
   ],
@@ -52,7 +54,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatMenuModule,
     MapsModule,
     CommonModule,
-    PlotlyModule
+    PlotlyModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

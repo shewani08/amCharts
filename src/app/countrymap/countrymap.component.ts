@@ -18,10 +18,8 @@ import am5geodata from '../data/map';
 export class CountrymapComponent {
   
   countrySeriesData:any;
-  continents={}
   data: unknown;
-  constructor(private http: HttpClient){
-  this.continents = {
+  continents = {
     "AF": 0,
     "AN": 1,
     "AS": 2,
@@ -30,8 +28,11 @@ export class CountrymapComponent {
     "OC": 5,
     "SA": 6
   }
+  constructor(private http: HttpClient){
+  
 }
 ngOnInit(){
+  let circleTemplate = am5.Template.new({});
   this.countrySeriesData=am5geodata;
   var root = am5.Root.new("chartdiv");
     var colors = am5.ColorSet.new(root, {});
@@ -49,7 +50,7 @@ ngOnInit(){
     }));
     console.log('value of am5',am5geodata_worldLow);
     worldSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}",
+      tooltipText: `{name}: [bold]{value}[/]`,
       interactive: true,
       fill: am5.color(0xaaaaaa),
       templateField: "polygonSettings"
@@ -92,15 +93,16 @@ ngOnInit(){
       visible: false
     }));
     
-    countrySeries.mapPolygons.template.setAll({
-      tooltipText: "{name}",
-      interactive: true,
-      fill: am5.color(0xaaaaaa)
-    });
+    // countrySeries.mapPolygons.template.setAll({
+    //   tooltipText: "{name}",
+    //   interactive: true,
+    //   fill: am5.color(0xaaaaaa)
+    // });
     
-    countrySeries.mapPolygons.template.states.create("hover", {
-      fill: colors.getIndex(9)
-    });
+    // countrySeries.mapPolygons.template.states.create("hover", {
+    //   fill: colors.getIndex(9),
+    //   tooltipText: 'Hello',
+    // });
     
     
     // Set up data for countries
@@ -109,10 +111,12 @@ ngOnInit(){
       if (this.countrySeriesData.hasOwnProperty(id)) {
         var country = this.countrySeriesData[id];
         if (country.maps.length) {
+          console.log()
           data.push({
             id: id,
             map: country.maps[0],
             polygonSettings: {
+             // fill: colors.getIndex(country.concontinent_code),
               fill: colors.getIndex(9),
             }
           });

@@ -56,7 +56,7 @@ isHandset: any;
   ngOnInit() {
     // Sanitize the URL
     this.safeDashAppUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.dashAppUrl);
-    this.showDashboard = !window.opener;
+   // this.showDashboard = !window.opener;
     
   }
 
@@ -73,10 +73,13 @@ isHandset: any;
   getSafeUrl(): SafeResourceUrl {
     return this.safeDashAppUrl;
   }
-  showGraph(e:boolean){
-    this.showDashboard= false;
+  showCards(e:boolean){
+    this.showDashboard= e;
     this.hideDemo.emit(false);
 
+  }
+  returnPage(e:boolean){
+    this.showDashboard= e;
   }
 }
 

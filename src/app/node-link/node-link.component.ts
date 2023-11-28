@@ -4,7 +4,7 @@
 
 
 // Import necessary modules
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import jsonData from '../data/graph';
 
@@ -28,19 +28,23 @@ interface GraphData {
 
 @Component({
   selector: 'app-node-link',
-  template: '<div #graphContainer1></div>',
+  template: '<div #graphContainer1><i class="fa fa-arrow-left back-icon" (click)="navigateBack()" aria-hidden="true"></i></div>',
   styleUrls: ['./node-link.component.css']
 })
 
 export class NodeLinkComponent implements OnInit {
   @ViewChild('graphContainer1', { static: true })
   graphContainer!: ElementRef;
+  @Output() goBack = new EventEmitter<boolean>();
 
 
   ngOnInit(): void {
     this.createGraph();
   }
-
+  navigateBack(){
+    this.goBack.emit(true);
+  //window.history.back(0);
+ }
   private createGraph(): void {
     // Your provided node_list and edge_list
     // Create node_list and edge_list
@@ -158,7 +162,7 @@ export class NodeLinkComponent implements OnInit {
     const simulation = d3.forceSimulation<Node, Link>(data.nodes)
       .force('link', d3.forceLink<Node, Link>(data.links).id((d) => (d as Node).id).distance(400))
       .force('charge', d3.forceManyBody())
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('center', d3.forceCenter(width/3, height/3 ))
       .force('collide', d3.forceCollide(100)); // Adjust the radius as needed
 
 

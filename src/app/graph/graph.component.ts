@@ -226,12 +226,7 @@ constructor(private router: Router) {}
       .on('click', (event: any, d: Node) => {
 
         this.newItemEvent.emit(false);
-    window.open('link', '_blank');
-    
-     // window.open(this.router.serializeUrl(this.router.createUrlTree(['link'])), '_blank');
-     // alert('hello');
-        //this.nodeClicked();
-      
+   
        } )
       ;
 
@@ -283,8 +278,6 @@ constructor(private router: Router) {}
       d.fy = null;
     }
 
-    function nodeClicked(){
-     alert('HI');
-     }
+   
   }
 }

@@ -1,7 +1,11 @@
 .grid-container {
   margin: 20px;
 }
-
+.char-container{
+  display: flex;
+  height:100% !important;
+  width:100% !important;
+}
 
 .dashboard-card {
   position: absolute;

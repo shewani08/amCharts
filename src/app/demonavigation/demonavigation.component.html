@@ -1,5 +1,5 @@
 
-<mat-sidenav-container class="sidenav-container" *ngIf="showDashboard">
+<mat-sidenav-container class="sidenav-container" >
   <mat-sidenav #drawer class="sidenav" fixedInViewport
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -25,7 +25,8 @@
       
       <span>Assessment Tool</span>
     </mat-toolbar>
-    <app-dashboard (hideDemo)="hideDemo($event)"></app-dashboard>
+    <!-- <app-dashboard (hideDemo)="hideDemo($event)" *ngIf="showDashboard"></app-dashboard> -->
+    <app-dashboard ></app-dashboard> 
     
   </mat-sidenav-content>
 </mat-sidenav-container>

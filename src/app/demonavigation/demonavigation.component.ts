@@ -18,10 +18,10 @@ export class DemonavigationComponent {
     );
   showDashboard: boolean = true;
     ngOnInit(){
-      this.showDashboard = !window.opener;
+     // this.showDashboard = !window.opener;
     }
-    hideDemo(e:boolean){
-      this.showDashboard= false;
+    // hideDemo(e:boolean){
+    //   this.showDashboard= false;
 
-    }
+    // }
 }

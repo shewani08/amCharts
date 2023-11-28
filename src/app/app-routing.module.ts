@@ -5,9 +5,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   // Your existing routes
-  { path: 'link', component: NodeLinkComponent },
-  { path: '', component: DashboardComponent, pathMatch: 'full' }, // Redirect to home if no path specified
-  { path: '**',  component: DashboardComponent }
+  // { path: 'link', component: NodeLinkComponent },
+  // { path: '', component: DashboardComponent, pathMatch: 'full' }, // Redirect to home if no path specified
+  // { path: '**',  component: DashboardComponent }
 ];
 
 @NgModule({

@@ -4,5 +4,10 @@
   }
   
   .node {
+    display: relative;
     fill: #1f77b4;
+  }
+  .back-icon{
+    margin:10px;
+    font-size: 24px;
   }

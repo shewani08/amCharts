@@ -7,9 +7,16 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5map from "@amcharts/amcharts5/map";
 // Import the world map geodata
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldLow';
+import { CsvService } from '../service/CsvService';
 
 import { HttpClient } from '@angular/common/http';
 import am5geodata from '../data/map';
+interface CsvData {
+  id: string;
+  Continent: string;
+  Country: string;
+  value: string;
+}
 @Component({
   selector: 'app-countrymap',
   templateUrl: './countrymap.component.html',
@@ -28,8 +35,13 @@ export class CountrymapComponent {
     "OC": 5,
     "SA": 6
   }
-  constructor(private http: HttpClient){
-  
+  constructor(private http: HttpClient,private dataService: CsvService){
+    this.dataService.getCsvData().subscribe((csvData) => {
+      // Process the CSV data as needed
+     // console.log(csvData);
+      const jsonData = this.csvToJson<CsvData>(csvData);
+      console.log('jsonData',jsonData);
+    });
 }
 ngOnInit(){
   let circleTemplate = am5.Template.new({});
@@ -167,6 +179,30 @@ ngOnInit(){
     
     }
 
+    csvToJson<T>(csvData: string): T[] {
+      const lines = csvData.split('\n');
+      const headers = lines[0].split(',');
+    
+      const result: T[] = [];
+    
+      for (let i = 1; i < lines.length; i++) {
+        const currentLine = lines[i].split(',');
+        const obj: any = {};
+    
+        for (let j = 0; j < headers.length; j++) {
+          const key = headers[j].trim() as keyof CsvData;
+          const value = currentLine[j] ? currentLine[j].trim() : '';
+    
+          obj[key] = value;
+        }
+    
+        result.push(obj as T);
+      }
+     console.log('result is',result);
+      return result;
+    }
+    
+  
 }
 
 

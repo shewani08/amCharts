@@ -1,116 +1,173 @@
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { select, selectAll } from 'd3-selection';
-import { zoom } from 'd3-zoom';
-import * as d3 from 'd3';
+
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import * as am5 from '@amcharts/amcharts5';
+import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
+import * as am5map from '@amcharts/amcharts5/map';
+import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldLow';
+import { HttpClient } from '@angular/common/http';
+import { CsvService } from '../service/CsvService';
+
+
+interface CsvData {
+  id: string;
+  Continent: string;
+  Country: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-africamap',
-  template: `
-    <div #mapContainer class="map-container"></div>
-    <div *ngIf="showTestMessage" class="test-message">Network graph</div>
-  `,
-  styles: [`
-    .map-container { width: 100%; height: 500px; overflow: hidden; }
-    .test-message { margin-top: 10px; font-weight: bold; }
-  `]
+  templateUrl: './africamap.component.html',
+  styleUrls: ['./africamap.component.css']
 })
-export class AfricamapComponent implements OnInit, AfterViewInit {
-  @ViewChild('mapContainer') mapContainer!: ElementRef;
-  showTestMessage = false;
-  zoomBehavior: any; // Define zoomBehavior variable
 
+
+export class AfricamapComponent implements OnInit {
+
+  private chart: am5map.MapChart | undefined;
+  private bubbleSeries: am5map.MapPointSeries | undefined;
+  private jsonData: any;
+  
+  constructor(private http: HttpClient, private dataService: CsvService) {}
+ 
   ngOnInit(): void {
-    // ngOnInit might be called before the view is initialized
-    // Avoid heavy DOM manipulations here
+    this.loadData();
   }
 
-  ngAfterViewInit(): void {
-    // ngAfterViewInit is called after the view is initialized
-    // Perform heavy DOM manipulations here
-    this.createAfricamap();
-  }
 
-  private createAfricamap(): void {
-    if (!this.mapContainer || !this.mapContainer.nativeElement) {
-      console.error('Map container not found');
-      return;
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.dispose();
     }
-
-    const width = 960;
-    const height = 600;
-
-    const svg = select(this.mapContainer.nativeElement)
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    // Set up a projection
-    const projection = d3.geoMercator().scale(150).translate([width / 2, height / 1.5]);
-
-    // Create a path generator
-    const path = d3.geoPath().projection(projection);
-
-    // Create a zoom behavior
-    this.zoomBehavior = zoom()
-      .scaleExtent([1, 8])
-      .on('zoom', (event) => this.zoomed(event));
-
-    svg.call(this.zoomBehavior);
-
-    // Load GeoJSON data
-    d3.json('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson').then((world: any) => {
-      // Handle different GeoJSON structures
-      const geojsonFeatures = world.features || world.geometries || [world];
-
-      // Draw the map
-      const countries = svg.selectAll('path')
-        .data(geojsonFeatures)
-        .enter().append('path')
-        .attr('d', (datum: any) => path(datum) as string)
-       .style('fill', '#69b3a2') // Set the initial fill color
-        .text(function(d) {
-          return 'hello'
-        })
-        .on('click', (event: any, datum: any) => this.handleCountryClick(event, datum))
-        .on('mouseover', (event: any, datum: any) => this.handleCountryHover(event, datum, true))
-        .on('mouseout', (event: any, datum: any) => this.handleCountryHover(event, datum, false));
-
-      // Add tooltip
-      countries.append('title')
-        .text((datum: any) => datum.properties.ADMIN);
+  }
+  private loadData(): void {
+    this.dataService.getCsvData().subscribe((csvData) => {
+      this.jsonData = this.csvToJson<CsvData>(csvData);
+      console.log('jsonData', this.jsonData);
+      this.initChart();
+      setInterval(() => this.updateData(), 2000);
     });
   }
+  private initChart(): void {
+    const chartdiv = document.getElementById('chartdiv');
 
-  private handleCountryClick(event: any, datum: any): void {
-    console.log('datum',datum);
-    // Implement your logic to show a popup or perform an action when a country is clicked
-    alert(`Clicked on ${datum.properties.ADMIN}`);
+    if (!chartdiv) {
+      console.error('Chart container element not found!');
+      return;
+    }
+    // Dispose of the previous chart
+    if (this.chart) {
+      this.chart.dispose();
+    }
+    const root = am5.Root.new(chartdiv);
+    root.setThemes([am5themes_Animated.new(root)]);
+    this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
 
-    // Set the variable to show the test message
-    this.showTestMessage = true;
+    const polygonSeries = this.chart.series.push(
+      am5map.MapPolygonSeries.new(root, {
+        geoJSON: am5geodata_worldLow,
+        exclude: ['AQ']
+      })
+    );
 
-    // You can set a timeout to hide the message after a certain period
-    setTimeout(() => {
-      this.showTestMessage = false;
-    }, 3000); // Set the timeout duration in milliseconds (e.g., 3000 ms = 3 seconds)
+    this.bubbleSeries = this.chart.series.push(
+      am5map.MapPointSeries.new(root, {
+        valueField: 'value',
+        calculateAggregates: true,
+        polygonIdField: 'id'
+      })
+    );
+
+    const circleTemplate = am5.Template.new({});
+
+    this.bubbleSeries.bullets.push((root, series, dataItem) => {
+      const container = am5.Container.new(root, {});
+
+      const circle = container.children.push(
+        am5.Circle.new(root, {
+          radius: 20,
+          fillOpacity: 0.7,
+          fill: am5.color(0xff0000),
+          cursorOverStyle: 'pointer',
+          tooltipText: `{name}: [bold]{value}[/]`
+        }, circleTemplate as any)
+      );
+
+      const countryLabel = container.children.push(
+        am5.Label.new(root, {
+          text: '{name}',
+          paddingLeft: 5,
+          populateText: true,
+          fontWeight: 'bold',
+          fontSize: 13,
+          centerY: am5.p50
+        })
+      );
+
+      circle.on('radius', (radius: any) => {
+        countryLabel.set('x', radius);
+      });
+
+      return am5.Bullet.new(root, {
+        sprite: container,
+        dynamic: true
+      });
+    });
+
+    this.bubbleSeries.bullets.push((root, series, dataItem) => {
+      return am5.Bullet.new(root, {
+        sprite: am5.Label.new(root, {
+          text: '{value.formatNumber(\'#\')}',
+          fill: am5.color(0xffffff),
+          populateText: true,
+          centerX: am5.p50,
+          centerY: am5.p50,
+          textAlign: 'center'
+        }),
+        dynamic: true
+      });
+    });
+
+    this.bubbleSeries.set('heatRules', [
+      {
+        target: circleTemplate,
+        dataField: 'value',
+        min: 10,
+        max: 30,
+        minValue: 0,
+        maxValue: 100,
+        key: 'radius'
+      }
+    ]);
+    //this.bubbleSeries.data.setAll(this.getData());
+    this.bubbleSeries.data.setAll(this.jsonData);
   }
 
-  private handleCountryHover(event: any, datum: any, isHovered: boolean): void {
-   // alert(`Hover on ${datum.properties.ADMIN}`);
-   d3.select('#tooltip')
-   .transition()
-   .duration(200)
-   .style('opacity', 0.9)
-   //.text(datum.properties.ADMIN);
-    const hoveredColor = '#ffcc00'; // Change this to your desired hover color
-    select(event.target).style('fill', isHovered ? datum.geometry.coordinates[0][0][0][0]>=0 ?
-     datum.geometry.coordinates[0][0][0][0]>=17? 'blue':'red':'green':'#69b3a2');
-       
-  } 
-  private zoomed(event: any): void {
-    const { transform } = event;
-    select(this.mapContainer.nativeElement)
-      .select('svg')
-      .attr('transform', transform);
+  private csvToJson<T>(csvData: string): T[] {
+    const lines = csvData.split('\n');
+    const headers = lines[0].split(',');
+    const result: T[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const currentLine = lines[i].split(',');
+      const obj: any = {};
+      for (let j = 0; j < headers.length; j++) {
+        const key = headers[j].trim() as keyof CsvData;
+        const value = currentLine[j] ? currentLine[j].trim() : '';
+        obj[key] = value;
+      }
+      result.push(obj as T);
+    }
+    return result;
   }
+
+  private updateData(): void {
+    if (this.bubbleSeries && this.jsonData) {
+      const data = this.jsonData;
+      for (let i = 0; i < this.bubbleSeries.dataItems.length; i++) {
+        this.bubbleSeries.data.setIndex(i, { value: data[i].value, id: data[i].id, name: data[i].Country });
+      }
+    }
+  }
+
+
 }

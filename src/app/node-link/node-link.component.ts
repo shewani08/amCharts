@@ -1,12 +1,10 @@
-
-
-
-
-
 // Import necessary modules
 import { Component, OnInit, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import jsonData from '../data/graph';
+import svgGraph from '../data/bar';
+import { CsvService } from '../service/CsvService';
+
 
 interface Node {
   id: string;
@@ -26,6 +24,14 @@ interface GraphData {
   links: Link[];
 }
 
+
+//let percentage = 12.5;
+
+// Convert percentage to two-digit rounded number
+// let roundedNumber = Math.round(percentage * 100);
+
+// // Convert percentage to two-digit truncated number
+// let truncatedNumber = (percentage * 100) % 100;
 @Component({
   selector: 'app-node-link',
   template: '<div #graphContainer1><i class="fa fa-arrow-left back-icon" (click)="navigateBack()" aria-hidden="true"></i></div>',
@@ -36,43 +42,88 @@ export class NodeLinkComponent implements OnInit {
   @ViewChild('graphContainer1', { static: true })
   graphContainer!: ElementRef;
   @Output() goBack = new EventEmitter<boolean>();
+  private node_list = jsonData;
+  private svgGraph = [{
+    prt: 5,
+    textX: 373,
+    value: 'low',
+    textY: 50.82896236022239,
+    percentage: '2.3%',
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  },
+  {
+    textX: 393,
+    prt: 10,
+    value: 'med',
+    percentage: '7.3%',
+    textY: 50.82896236022239,
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  },
+  {
+    textX: 393,
+    prt: 40,
+    value: 'high',
+    percentage: '10.3%',
+    textY: 50.82896236022239,
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  }]
 
 
+  private svgGraph1 = [{
+    prt: 10,
+    textX: 373,
+    value: 'low',
+    textY: 50.82896236022239,
+    percentage: '5.3%',
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  },
+  {
+    textX: 393,
+    prt: 15,
+    value: 'med',
+    percentage: '6.3%',
+    textY: 50.82896236022239,
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  },
+  {
+    textX: 393,
+    prt: 48,
+    value: 'high',
+    percentage: '12.3%',
+    textY: 50.82896236022239,
+    clipPathX: 373,
+    clipPathY: 51,
+    clipPathWidth: 25,
+    clipPathHeight: 25
+  }]
+  constructor(private csvService: CsvService) {}
   ngOnInit(): void {
-    this.createGraph();
+  
+    this.createGraph('all');
   }
   navigateBack(){
     this.goBack.emit(true);
-  //window.history.back(0);
  }
-  private createGraph(): void {
+  private createGraph(d:string): void {
     // Your provided node_list and edge_list
     // Create node_list and edge_list
-    let node_list = jsonData;
-    const test: [string, { pos: number[]; color: string; tooltip: string }][] = [
-      ["climatePressure", { pos: [1, 3], color: "brown", tooltip: "Climate Pressure" }],
-      ["conflictMortality", { pos: [1.5, 3.4], color: "green", tooltip: "Conflict Mortality" }],
-      ["deathDueToClimatePressure", { pos: [1.5, 3.2], color: "blue", tooltip: "deathDueToClimatePressure" }],
-      ["socialStability", { pos: [1.5, 2.8], color: "orange", tooltip: "Social Stability" }],
-      ["populationLoss", { pos: [1.5, 2.8], color: "green", tooltip: "Population Loss" }],
-      ["socialVulnerability", { pos: [1.5, 2.5], color: "brown", tooltip: "socialVulnerability" }],
-      ["economicStability", { pos: [1.5, 2.5], color: "brown", tooltip: "Economic Stability" }],
-      ["institutionalStability", { pos: [1.5, 2.5], color: "brown", tooltip: "Institutional Stability" }],
-      ["prevalenceOfSOC", { pos: [1.5, 2.5], color: "red", tooltip: "prevalenceOfSOC" }],
-      ["mineOwnership", { pos: [1.5, 2.5], color: "brown", tooltip: "Mine Ownership" }],
-      ["politicalStability", { pos: [1.5, 2.5], color: "brown", tooltip: "politicalStability" }],
-      ["typeOfMining", { pos: [1.5, 2.5], color: "brown", tooltip: "Type Of Mining" }],
-      ["limitedWorkOpprtunities", { pos: [1.5, 2.5], color: "brown", tooltip: "Limited Work Opportunities" }],
-      ["abideByInternationalStandards", { pos: [1.5, 2.5], color: "green", tooltip: "abideByInternationalStandards" }],
-      ["ruleOfLaw", { pos: [1.5, 2.5], color: "brown", tooltip: "Rule Of Law" }],
-      ["controlOfCorruption", { pos: [1.5, 2.5], color: "brown", tooltip: "Control Of Corruption" }],
-      ["socActors", { pos: [3.3, 2.8], color: "red", tooltip: "Social Actors" }],
-      ["regulatoryQuality", { pos: [3.5, 3.0], color: "brown", tooltip: "Regulatory Quality" }],
-      ["mineralProduction", { pos: [3.5, 3.0], color: "brown", tooltip: "MineralProduction" }],
-      ["marketCost", { pos: [3.5, 3.0], color: "brown", tooltip: "MarketCost" }],
-      // Add more nodes as needed
-
-    ];
+   
+    
 
     const edge_list: [string, string, {}][] = [
       ["climatePressure", "deathDueToClimatePressure", {}],
@@ -103,39 +154,8 @@ export class NodeLinkComponent implements OnInit {
     ];
 
 
-    const svgGraph = [{
-      prt: 5,
-      textX: 373,
-      value: 'low',
-      textY: 50.82896236022239,
-      percentage: '2.3%',
-      clipPathX: 373,
-      clipPathY: 51,
-      clipPathWidth: 25,
-      clipPathHeight: 25
-    },
-    {
-      textX: 393,
-      prt: 10,
-      value: 'med',
-      percentage: '10.3%',
-      textY: 50.82896236022239,
-      clipPathX: 373,
-      clipPathY: 51,
-      clipPathWidth: 25,
-      clipPathHeight: 25
-    },
-    {
-      textX: 393,
-      prt: 40,
-      value: 'high',
-      percentage: '7.3%',
-      textY: 50.82896236022239,
-      clipPathX: 373,
-      clipPathY: 51,
-      clipPathWidth: 25,
-      clipPathHeight: 25
-    }]
+    
+
     type NodeType = {
       id: string;
       pos: number[];
@@ -144,7 +164,7 @@ export class NodeLinkComponent implements OnInit {
     }
     // Transform node_list and edge_list to the format expected by D3.js
     const data: GraphData = {
-      nodes: node_list.map(([id, properties]) => ({ id, ...properties })),
+      nodes: this.node_list.map(([id, properties]) => ({ id, ...properties })),
       links: edge_list.map(([source, target, properties]) => ({ source, target, ...properties })),
     };
     const margin = 10;
@@ -276,7 +296,7 @@ export class NodeLinkComponent implements OnInit {
       node.append('text').text((d: Node) => d.tooltip || '').attr('font-weight','bold').attr('font-size','11px').
       attr('text-anchor', 'right') 
        // Initially hide the tooltip
-    console.log('node',node);
+    //console.log('node',node);
     // .attr('transform', (d: Node, i: number) => {
     //   const col = i % columns;
     //   const row = Math.floor(i / columns);
@@ -290,49 +310,11 @@ export class NodeLinkComponent implements OnInit {
       .attr('height', 100); // Set the height of the SVG element
 
     // Append a rect element for the bar inside each SVG element
-    const numBars = 3; // Set the number of bars you want
-    const barWidth = 20; // Set the width of each bar
-    const barHeight = 20; // Set the height of each bar
-    const barSpacing = 5; // Set the spacing between bars
-    const nodeGroup = barGraph.append('g');
-    for (let i = 0; i < svgGraph.length; i++) {
-     
-      nodeGroup.append('rect')
-        .attr('x', 10 + i * (barWidth + barSpacing)) // Calculate the x-coordinate based on index
-        .attr('y', 70) // Set the y-coordinate of the bar
-        .attr('width', barWidth) // Set the width of the bar
-        .attr('height', 70) // Set the height of the bar
-        .attr('fill', 'transparent'); // Set the fill color of the bar
-      nodeGroup.append('rect')
-        .text(svgGraph[i].value)
-        .attr('x', 10 + i * (barWidth + barSpacing)) // Calculate the x-coordinate based on index
-        .attr('y', 70 - svgGraph[i].prt) // Set the y-coordinate of the bar
-        .attr('width', barWidth) // Set the width of the bar
-        .attr('height', svgGraph[i].prt) // Set the height of the bar
-        .attr('fill', 'steelblue')
-        .on('click', (event: any, d: Node) => {
-
-          alert('Here we show detail about graph')
-        }); // Set the fill color of the bar
-
-      //  Append text to the bar
-      nodeGroup.append('text')
-        .text(svgGraph[i].percentage) // Set the text content
-        .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally
-        .attr('y', 70 - svgGraph[i].prt - 5)
-        .attr('font-size', '8px') // Adjust the vertical position of the text
-        .attr('text-anchor', 'middle') // Center the text horizontally
-        .attr('fill', 'white'); // Set the text color
-
-      nodeGroup.append('text')
-        .text(svgGraph[i].value) // Set the text content
-        .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally
-        .attr('y', 70 + 10)
-        .attr('font-size', '8px') // Adjust the vertical position of the text
-        .attr('text-anchor', 'middle') // Center the text horizontally
-        .attr('fill', 'white');
-    }
-
+    
+    let nodeGroup = barGraph.append('g');
+    this.createBars(nodeGroup,d);
+    
+    //console.log('Here we show detail about graph',d.id);
 
     // Append a text element for the tooltip to each group
     const tooltip = node.append('text')
@@ -343,14 +325,6 @@ export class NodeLinkComponent implements OnInit {
 
     // Add tooltip text using title attribute
     node.append('title').text((d: Node) => d.tooltip || '');
-
-    // // Add mouseover and mouseout events for showing and hiding tooltips
-    // node.on('mouseover', function (event, d) {
-    //   tooltip.style('visibility', 'visible');
-    // })
-    //   .on('mouseout', function (event, d) {
-    //     tooltip.style('visibility', 'hidden');
-    //   });
 
 
     // Add tick function for simulation
@@ -364,6 +338,8 @@ export class NodeLinkComponent implements OnInit {
       node
         .attr('transform', (d: Node) => `translate(${d.x || 0 - 50},${d.y || 0 - 50})`);
     });
+
+   
 
     function dragstarted(event: any, d: any) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -380,6 +356,65 @@ export class NodeLinkComponent implements OnInit {
       if (!event.active) simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
+    }
+  }
+  recreateGraph(id: string,_nodeGroup: any) {
+    _nodeGroup.selectAll('rect').remove();
+    _nodeGroup.selectAll('text').remove();
+    this.createBars(_nodeGroup,id);
+   // throw new Error('Method not implemented.');
+  }
+ createBars (nodeGroup:any,d:string){
+  const numBars = 3; // Set the number of bars you want
+    const barWidth = 20; // Set the width of each bar
+    const barHeight = 20; // Set the height of each bar
+    const barSpacing = 5; // Set the spacing between bars
+    const t = d == 'all' ? this.svgGraph : this.svgGraph1
+    console.log('value of t is',t);
+    for (let i = 0; i < t.length; i++) {
+     
+    nodeGroup.append('rect')
+        .attr('x', 10 + i * (barWidth + barSpacing)) // Calculate the x-coordinate based on index
+        .attr('y', 70) // Set the y-coordinate of the bar
+        .attr('width', barWidth) // Set the width of the bar
+        .attr('height', 70) // Set the height of the bar
+        .attr('fill', 'transparent'); // Set the fill color of the bar
+        nodeGroup.append('text')
+        .text(t[i].percentage) // Set the text content
+        .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally
+        .attr('y', 70 - t[i].prt - 5)
+        .attr('font-size', '8px') // Adjust the vertical position of the text
+        .attr('text-anchor', 'middle') // Center the text horizontally
+        .attr('fill', 'white'); // Set the text color
+        nodeGroup.append('rect')
+        .text(t[i].value)
+        .attr('x', 10 + i * (barWidth + barSpacing)) // Calculate the x-coordinate based on index
+        .attr('y', 70 - t[i].prt) // Set the y-coordinate of the bar
+        .attr('width', barWidth) // Set the width of the bar
+        .attr('height', t[i].prt) // Set the height of the bar
+        .attr('fill', 'steelblue')
+        .on('click', (event: any, d: Node) => {
+         // this.createGraph(d.id);
+         this.recreateGraph(d.id,nodeGroup);
+
+          console.log('Here we show detail about graph',d.id);
+        }); // Set the fill color of the bar
+      //  Append text to the bar
+      nodeGroup.append('text')
+        .text(t[i].percentage) // Set the text content
+        .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally
+        .attr('y', 70 - t[i].prt - 5)
+        .attr('font-size', '8px') // Adjust the vertical position of the text
+        .attr('text-anchor', 'middle') // Center the text horizontally
+        .attr('fill', 'white'); // Set the text color
+
+      nodeGroup.append('text')
+        .text(t[i].value) // Set the text content
+        .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally
+        .attr('y', 70 + 10)
+        .attr('font-size', '8px') // Adjust the vertical position of the text
+        .attr('text-anchor', 'middle') // Center the text horizontally
+        .attr('fill', 'white');
     }
   }
 }

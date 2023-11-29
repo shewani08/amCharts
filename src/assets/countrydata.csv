@@ -1,0 +1,55 @@
+﻿id,Continent,Country ,value 
+AG,Africa,Algeria,200
+AN,Africa,Angola,1000
+BN,Africa,Benin,1500
+BO,Africa,Botswana,1800
+BU,Africa,Burkina,1005
+BR,Africa,Burundi,1006
+CM,Africa,Cameroon,1007
+CP,Africa,Cape Verde,1008
+CAR,Africa,Central African Republic,100
+CH,Africa,Chad,100
+CO,Africa,Comoros,100
+CN,Africa,Congo,100
+CDR,Africa,"Congo, Democratic Republic of",100
+DB,Africa,Djibouti,100
+ET,Africa,Egypt,100
+EG,Africa,Equatorial Guinea,100
+ER,Africa,Eritrea,100
+EH,Africa,Ethiopia,100
+GA,Africa,Gabon,100
+GM,Africa,Gambia,100
+GH,Africa,Ghana,100
+GU,Africa,Guinea,100
+GB,Africa,Guinea-Bissau,100
+IC,Africa,Ivory Coast,100
+KY,Africa,Kenya,100
+LH,Africa,Lesotho,100
+LB,Africa,Liberia,100
+LY,Africa,Libya,100
+MG,Africa,Madagascar,100
+MW,Africa,Malawi,100
+ML,Africa,Mali,100
+MT,Africa,Mauritania,100
+MR,Africa,Mauritius,100
+MC,Africa,Morocco,100
+MZ,Africa,Mozambique,100
+NB,Africa,Namibia,100
+NG,Africa,Niger,100
+NR,Africa,Nigeria,100
+RW,Africa,Rwanda,100
+TP,Africa,Sao Tome and Principe,100
+SG,Africa,Senegal,100
+SY,Africa,Seychelles,100
+SL,Africa,Sierra Leone,100
+SM,Africa,Somalia,100
+SA,Africa,South Africa,100
+SS,Africa,South Sudan,100
+SD,Africa,Sudan,100
+SW,Africa,Swaziland,100
+TZ,Africa,Tanzania,100
+TO,Africa,Togo,100
+TU,Africa,Tunisia,100
+UG,Africa,Uganda,100
+ZB,Africa,Zambia,100
+ZM,Africa,Zimbabwe,100

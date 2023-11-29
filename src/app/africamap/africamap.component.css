@@ -1,7 +1,3 @@
-.mylabel{
-    background:yellow;
-    color:red;
-    position: absolute;
-    display: block;
-    visibility: visible;
+#chartdiv{
+    height:100%;
 }

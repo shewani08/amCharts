@@ -24,6 +24,9 @@ import { HeatmapComponent } from './heatmap/heatmap.component';
 import { SvgListComponent } from './linerep/linerep.component';
 import { NodeLinkComponent } from './node-link/node-link.component';
 import { CountrymapComponent } from './countrymap/countrymap.component';
+import { LoginComponent } from './login/login.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
@@ -37,10 +40,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
     SvgListComponent,
     NodeLinkComponent,
     CountrymapComponent,
+    LoginComponent,
    
    
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

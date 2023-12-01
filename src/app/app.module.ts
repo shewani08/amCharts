@@ -26,6 +26,7 @@ import { NodeLinkComponent } from './node-link/node-link.component';
 import { CountrymapComponent } from './countrymap/countrymap.component';
 import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AnimateMapComponent } from './animate-map/animate-map.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -41,6 +42,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     NodeLinkComponent,
     CountrymapComponent,
     LoginComponent,
+    AnimateMapComponent,
    
    
   ],

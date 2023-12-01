@@ -195,7 +195,7 @@ export class NodeLinkComponent implements OnInit {
     svg.append('defs').append('marker')
       .attr('id', 'arrowhead')
       .attr('viewBox', '-0 -5 10 10')
-      .attr('refX', 25) // Arrowhead position
+      .attr('refX',5) // Arrowhead position
       .attr('refY', 0)
       .attr('orient', 'auto')
       .attr('markerWidth', 8)
@@ -288,13 +288,13 @@ export class NodeLinkComponent implements OnInit {
 
   
     node.append('rect')
-      .attr('width', 100) // Set the width of the rectangle
-      .attr('height', 100) // Set the height of the rectangle
+      .attr('width', 120) // Set the width of the rectangle
+      .attr('height', 120) // Set the height of the rectangle
       //.attr('fill', (d: Node) => d.color || 'black')
       .attr('fill', 'black')
 
-      node.append('text').text((d: Node) => d.tooltip || '').attr('font-weight','bold').attr('font-size','11px').
-      attr('text-anchor', 'right') 
+      // node.append('text').text((d: Node) => d.tooltip || '').attr('font-weight','bold').attr('font-size','11px').
+      // attr('text-anchor', 'right') 
        // Initially hide the tooltip
     //console.log('node',node);
     // .attr('transform', (d: Node, i: number) => {
@@ -375,10 +375,23 @@ export class NodeLinkComponent implements OnInit {
      
     nodeGroup.append('rect')
         .attr('x', 10 + i * (barWidth + barSpacing)) // Calculate the x-coordinate based on index
-        .attr('y', 70) // Set the y-coordinate of the bar
+        .attr('y', 20) // Set the y-coordinate of the bar
         .attr('width', barWidth) // Set the width of the bar
         .attr('height', 70) // Set the height of the bar
         .attr('fill', 'transparent'); // Set the fill color of the bar
+
+      nodeGroup.append('text')
+      .attr('x',1)
+       //.attr('x', (_d: any, i: number) => 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center text horizontally
+        .attr('y', 10) // Adjust this value to position text vertically
+       // .attr('text-anchor', 'middle') // Center text horizontally
+        .attr('fill', 'white') // Set the text color
+        .text((d: Node, i: string) => d.tooltip)
+        .attr('font-family','Arial')
+        // .attr('font-weight','bold')
+        .attr('font-size','11px');
+
+
         nodeGroup.append('text')
         .text(t[i].percentage) // Set the text content
         .attr('x', 10 + i * (barWidth + barSpacing) + barWidth / 2) // Center the text horizontally

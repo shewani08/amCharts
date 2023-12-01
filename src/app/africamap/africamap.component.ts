@@ -59,14 +59,15 @@ export class AfricamapComponent implements OnInit {
     if (this.chart) {
       this.chart.dispose();
     }
+    
     const root = am5.Root.new(chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-
+    let excludedCountries =['IN',"CN", "IN"];
     const polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow,
-        exclude: ['AQ']
+        exclude: excludedCountries
       })
     );
 

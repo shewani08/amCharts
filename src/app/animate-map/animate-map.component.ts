@@ -56,7 +56,7 @@ export class AnimateMapComponent {
     this.loadData();
   }
   initChart() {
-    let root = am5.Root.new("chartdiv");
+    let root = am5.Root.new("animatedchartdiv");
     root.setThemes([
       am5themes_Animated.new(root)
     ]);
@@ -705,7 +705,7 @@ export class AnimateMapComponent {
 
     //Configure bubble series ends
 
-    //chart.set("zoomLevel", 2);
+    //chart.set("zoomLevel",0.5);
 
     pointSeries.bullets.push(function () {
       let circle = am5.Circle.new(root, {

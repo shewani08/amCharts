@@ -32,16 +32,16 @@ export class DashboardComponent {
   
       if (matches) {
         return [
-          { title: 'Card 1', cols: 2, rows: 2, showGraph: true, graph: this.graphCard1 },
-          { title: 'Card 2', cols: 2, rows: 2, showGraph: true, graph: this.graphCard2 },
+          { title: 'Card 1', cols: 1, rows: 2, showGraph: true, graph: this.graphCard1 },
+          { title: 'Card 2', cols: 1, rows: 2, showGraph: true, graph: this.graphCard2 },
           { title: 'Card 3', cols: 2, rows: 2 ,showGraph: false, graph: this.graphCard3 },
           { title: 'Card 4', cols: 2, rows: 2, showGraph: false, graph: this.graphCard4 }
         ];
       }
   
       return [
-          { title: 'Card 1', cols: 2, rows: 2, showGraph: true, graph: this.graphCard1 },
-          { title: 'Card 2', cols: 2, rows: 2, showGraph: true, graph: this.graphCard2 },
+          { title: 'Card 1', cols: 1, rows: 2, showGraph: true, graph: this.graphCard1 },
+          { title: 'Card 2', cols: 1, rows: 2, showGraph: true, graph: this.graphCard2 },
           { title: 'Card 3', cols: 2, rows: 2 ,showGraph: true, graph: this.graphCard3 },
           { title: 'Card 4', cols: 2, rows: 2, showGraph: true, graph: this.graphCard4 }
       ];

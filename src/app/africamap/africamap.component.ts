@@ -60,17 +60,19 @@ export class AfricamapComponent implements OnInit {
       this.chart.dispose();
     }
     
+  
+
     const root = am5.Root.new(chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-    let excludedCountries =['IN',"CN", "IN"];
+    let excludedCountries =['AQ',"CN", "IN"];
     const polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow,
         exclude: excludedCountries
       })
     );
-
+   // this.chart.set("zoomLevel",0.9);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',

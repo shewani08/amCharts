@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { DemonavigationComponent } from './demonavigation/demonavigation.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MapsModule } from '@syncfusion/ej2-angular-maps';
 import * as PlotlyJS from 'plotly.js-dist-min';
-import { PlotlyModule } from 'angular-plotly.js';
+
 import { CommonModule } from '@angular/common';
 import { AfricamapComponent } from './africamap/africamap.component';
 import { GraphComponent } from './graph/graph.component';
@@ -25,11 +25,13 @@ import { SvgListComponent } from './linerep/linerep.component';
 import { NodeLinkComponent } from './node-link/node-link.component';
 import { CountrymapComponent } from './countrymap/countrymap.component';
 import { LoginComponent } from './login/login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+
 import { AnimateMapComponent } from './animate-map/animate-map.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
-PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +44,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     NodeLinkComponent,
     CountrymapComponent,
     LoginComponent,
-    AnimateMapComponent,
+    AnimateMapComponent
    
    
   ],
@@ -61,7 +63,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatMenuModule,
     MapsModule,
     CommonModule,
-    PlotlyModule,
+  
     HttpClientModule
   ],
   providers: [],

@@ -104,27 +104,35 @@ private updateBubbleColor(color: string): void {
 
     const polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
-        include: ["DZ", 'AO',  'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CD', 'DJ', 'GQ',
-        'ER','ET','GA','GM','GH','GN','GW','CI','KE','LS','LR','LY','MG','MW','ML','MR','MU','YT',
-        'MA','MZ', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI','FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV',
-        'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE','AL', 'AD',  'BY', ' BA ',
-        'FO','GE','IG',' IS','IM','XK','LI','MK','MD','MC','ME','NO','RU','SM ','RS','CH',' TR ',' UA ',' GB ',
-        ' VA','AF','AX','AL','DZ','AS','AD','AO','AM','AU','AT','BY','BE','BJ','BA','BW','BV','BG','BF','BI','CV',
-         'CM','CF','TD','CX','KM','CD','CG','CK','CI','HR','CY','CZ','DK','DJ','EG','GQ','ER','EE','SZ','ET',
-        'FO','FJ','FI','FR','PF','TF','GA','GM','DE','GH','GI','GR', 'GU','GG','GN','GW','HM','VA','HU','IS',
-        'IE', 'IM', 'IT', 'JE','KE','KI','LV','LS','LR','LY','LI','LT','LU','MG','MW','ML','MT','MH','MR',
-        'MU','YT','FM','MD','MC','ME','MA','MZ','NA','NR','NL','NC','NZ','NE','NG','NU','NF','MK','MP','NO',
-        'PW','PG','PN','PL','PT','RE','RO','RU','RW','SH','WS','SM','ST','SN','RS','SC','SL','SK','SI','SB','SO',
-        'ZA','GS','SS','ES','SD','SJ','SE','CH','TZ','TL','TG','TK','TO','TN','TV','UG','UA','GB','UM','VU','WF','EH','ZM','ZW',],
+
+        include:[
+          'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU', 
+          'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 
+          'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'
+        ],
+        
+        // include: ["DZ", 'AO',  'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CD', 'DJ', 'GQ',
+        // 'ER','ET','GA','GM','GH','GN','GW','CI','KE','LS','LR','LY','MG','MW','ML','MR','MU','YT',
+        // 'MA','MZ', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI','FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV',
+        // 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE','AL', 'AD',  'BY', ' BA ',
+        // 'FO','GE','IG',' IS','IM','XK','LI','MK','MD','MC','ME','NO','RU','SM ','RS','CH',' TR ',' UA ',' GB ',
+        // ' VA','AF','AX','AL','DZ','AS','AD','AO','AM','AU','AT','BY','BE','BJ','BA','BW','BV','BG','BF','BI','CV',
+        //  'CM','CF','TD','CX','KM','CD','CG','CK','CI','HR','CY','CZ','DK','DJ','EG','GQ','ER','EE','SZ','ET',
+        // 'FO','FJ','FI','FR','PF','TF','GA','GM','DE','GH','GI','GR', 'GU','GG','GN','GW','HM','VA','HU','IS',
+        // 'IE', 'IM', 'IT', 'JE','KE','KI','LV','LS','LR','LY','LI','LT','LU','MG','MW','ML','MT','MH','MR',
+        // 'MU','YT','FM','MD','MC','ME','MA','MZ','NA','NR','NL','NC','NZ','NE','NG','NU','NF','MK','MP','NO',
+        // 'PW','PG','PN','PL','PT','RE','RO','RU','RW','SH','WS','SM','ST','SN','RS','SC','SL','SK','SI','SB','SO',
+        // 'ZA','GS','SS','ES','SD','SJ','SE','CH','TZ','TL','TG','TK','TO','TN','TV','UG','UA','GB','UM','VU','WF','EH','ZM','ZW',],
        geoJSON: am5geodata_worldLow,
        //geoJSON:am5geodata_region_world_africaLow,
-        dx:-250,
-        dy:-50
+        // dx:-250,
+        // dy:-50
       
       //  exclude: ['AQ', 'SA', 'OC', 'NA', 'AS', 'AN']
       })
     );
-    this.chart.set("zoomLevel",1.8);
+    this.chart.set("zoomLevel",1);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',
@@ -138,8 +146,8 @@ private updateBubbleColor(color: string): void {
       const container = am5.Container.new(root, {});
       const circle = container.children.push(
         am5.Circle.new(root, {
-          dx:-250,
-        dy:-50,
+        //   dx:-250,
+        // dy:-50,
        // tooltipY: 0,
           radius: 3,
           strokeOpacity: 0,
@@ -152,12 +160,12 @@ private updateBubbleColor(color: string): void {
       );
       const countryLabel = container.children.push(
         am5.Label.new(root, {
-          dx:-280,
-        dy:-50,
+        //   dx:-280,
+        // dy:-50,
           text: '{name}',
           paddingLeft: 5,
           populateText: true,
-         tooltipY: 0,
+        // tooltipY: 0,
           // fontWeight: 'bold',
           fontSize: 10,
           centerY: am5.p50
@@ -197,8 +205,8 @@ private updateBubbleColor(color: string): void {
           centerX: am5.p50,
           centerY: am5.p50,
           textAlign: 'center',
-          dx:-290,
-        dy:-10
+        //   dx:-290,
+        // dy:-10
         }),
         dynamic: true
       });

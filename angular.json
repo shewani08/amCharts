@@ -95,11 +95,16 @@
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+             
               "./node_modules/@syncfusion/ej2-material-theme/styles/material.css",
               "node_modules/leaflet/dist/leaflet.css"
               
             ],
-            "scripts": [ "node_modules/leaflet/dist/leaflet.js"]
+            "scripts": [ "node_modules/leaflet/dist/leaflet.js",
+            "node_modules/jquery/dist/jquery.min.js",
+            "node_modules/popper.js/dist/umd/popper.min.js",
+            "node_modules/bootstrap/dist/js/bootstrap.min.js"]
           }
         }
       }

@@ -1,0 +1,27 @@
+<div class="map-dropdown d-flex justify-content-end">
+    <div class="dropdown mr-auto">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        {{ selectedRcpValue || 'RCP Seanrio' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(low)')">RCP 2.6(low)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.4(medium)')">RCP 2.4(medium)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.8(high)')">RCP 2.8(high)</a>
+      </div>
+    </div>
+  
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="indicatorDropdown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        {{ selectedIndicatorValue || 'Indicator' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="indicatorDropdown">
+        <a class="dropdown-item" href="#" (click)="selectIndicator('Indicator 1')">Indicator 1</a>
+        <a class="dropdown-item" href="#" (click)="selectIndicator('Indicator 2')">Indicator 2</a>
+      </div>
+    </div>
+  </div>
+<div id="chartdiv">
+
+</div>

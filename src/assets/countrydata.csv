@@ -1,7 +1,54 @@
-﻿id,Continent,Country ,value 
-DZ,Africa,Algeria,2.2
-EG,Africa,Egypt,100
-LY,Africa,Libya,100
-MA,Africa,Morocco,100
-SD,Africa,Sudan,100
-TN,Africa,Tunisia,100
+﻿id,Continent,Country,value,Number_of_immigrants,Proportion 
+DZ, Africa, Algeria,100,133,2.1
+AO, Africa, Angola,100,1,0
+BJ, Africa, Benin,100,11,0.2
+BW, Africa, Botswana,100,2,0
+BF, Africa, Burkina Faso,100,9,0.1
+BI, Africa, Burundi,100,1,0
+CM, Africa, Cameroon,100,95,1.5
+CF, Africa, Central African Republic,100,1233,19.3
+TD, Africa, Chad,100,2020,31.7
+KM, Africa, Comoros,100,530,8.3
+CG, Africa, Congo,100,19,0.3
+CD, Africa, Democratic Republic of the Congo,100,5,0.1
+DJ, Africa, Djibouti,100,27,0.4
+EG, Africa, Egypt,100,1,0
+GQ, Africa, Equatorial Guinea,100,5,0.1
+ER, Africa, Eritrea,100,1,0
+ET, Africa, Ethiopia,100,2,0
+GA, Africa, Gabon,100,133,2.1
+GM, Africa, Gambia,100,10,0.2
+GH, Africa, Ghana,100,3,0
+GN, Africa, Guinea,100,32,0.5
+GW, Africa, Guinea-Bissau,100,50,0.8
+CI, Africa, Ivory Coast,100,6,0.1
+KE, Africa, Kenya,100,11,0.2
+LS, Africa, Lesotho,100,86,1.3
+LR, Africa, Liberia,100,129,2
+LY, Africa, Libya,100,1762,27.6
+MG, Africa, Madagascar,100,12,0.2
+MW, Africa, Malawi,100,50,0.8
+ML, Africa, Mali,100,1,0
+MR, Africa, Mauritania,100,1,0
+MU, Africa, Mauritius,100,0,0
+MA, Africa, Morocco,100,0,0
+MZ, Africa, Mozambique,100,0,0
+DJ, Africa, Djibouti,100,0,0
+GQ, Africa, Equatorial Guinea,100,0,0
+GA, Africa, Gabon,100,0,0
+GH, Africa, Ghana,100,0,0
+LS, Africa, Lesotho,100,0,0
+MG, Africa, Madagascar,100,0,0
+MW, Africa, Malawi,100,0,0
+MU, Africa, Mauritius,100,0,0
+MZ, Africa, Mozambique,100,0,0
+NA, Africa, Namibia,100,0,0
+NE, Africa, Niger,100,0,0
+RW, Africa, Rwanda,100,0,0
+ST, Africa, Sao Tome and Principe,100,0,0
+SC, Africa, Seychelles,100,0,0
+ZA, Africa, South Africa,100,0,0
+SD, Africa, Sudan,100,0,0
+SZ, Africa, Swaziland,100,0,0
+TG, Africa, Togo,100,0,0
+ZM, Africa, Zambia,100,0,0

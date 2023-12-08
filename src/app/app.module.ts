@@ -30,6 +30,7 @@ import { AnimateMapComponent } from './animate-map/animate-map.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MapComponent } from './map/map.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NodeLinkComponent,
     CountrymapComponent,
     LoginComponent,
-    AnimateMapComponent
+    AnimateMapComponent,
+    MapComponent
    
    
   ],

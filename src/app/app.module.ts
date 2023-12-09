@@ -31,6 +31,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapComponent } from './map/map.component';
+import { BubbleComponent } from './bubble/bubble.component';
+import { SankeyGraphComponent } from './sankey-graph/sankey-graph.component';
 
 
 @NgModule({
@@ -46,7 +48,9 @@ import { MapComponent } from './map/map.component';
     CountrymapComponent,
     LoginComponent,
     AnimateMapComponent,
-    MapComponent
+    MapComponent,
+    BubbleComponent,
+    SankeyGraphComponent
    
    
   ],

@@ -7,6 +7,9 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5map from '@amcharts/amcharts5/map';
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldChinaHigh';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../shared/dialog/dialog.component';
+import { IComponentDataItem } from '@amcharts/amcharts5/.internal/core/render/Component';
 
 interface CsvData {
   id: string;
@@ -32,7 +35,9 @@ export class MapComponent  implements OnInit, OnDestroy {
   public selectedContinent: string = 'Factor 1'; // Default selection
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
 
-  constructor(private http: HttpClient, private dataService: CsvService) { }
+  constructor(private http: HttpClient, private dataService: CsvService,public dialog: MatDialog) { }
+
+ 
 
   ngOnInit(): void {
     this.loadData();
@@ -140,6 +145,7 @@ private updateBubbleColor(color: string): void {
         polygonIdField: 'id'
       })
     );
+   
     const circleTemplate = am5.Template.new({});
     let colorset = am5.ColorSet.new(root, {});
     this.bubbleSeries.bullets.push((root, series, dataItem) => {
@@ -158,6 +164,7 @@ private updateBubbleColor(color: string): void {
           tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
         }, circleTemplate as any)
       );
+    
       const countryLabel = container.children.push(
         am5.Label.new(root, {
         //   dx:-280,
@@ -190,6 +197,12 @@ private updateBubbleColor(color: string): void {
         easing: am5.ease.out(am5.ease.cubic),
         loops: Infinity
       });
+      circle.events.on("click", (event) => {
+        this.openDialog(event.target.dataItem);
+        //  const countryId = event.target.get("dataItem.dataContext.id");
+        console.log("Bubble clicked for country with ID:",event.target.dataItem);
+          // Add your custom logic here based on the clicked country
+        });
       return am5.Bullet.new(root, {
         sprite: container,
         dynamic: true
@@ -267,4 +280,17 @@ private updateBubbleColor(color: string): void {
   selectIndicator(value: string): void {
     this.selectedIndicatorValue = value;
   }
+
+
+  openDialog(_dataItem: am5.DataItem<IComponentDataItem> | undefined): void {
+    console.log('dataItem',_dataItem);
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        //width: '250px', 
+        panelClass: 'full-size-dialog',
+        title: 'Dialog Title',
+        data:_dataItem?.dataContext,
+      },
+    });
+}
 }

@@ -33,6 +33,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapComponent } from './map/map.component';
 import { BubbleComponent } from './bubble/bubble.component';
 import { SankeyGraphComponent } from './sankey-graph/sankey-graph.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DialogComponent } from './shared/dialog/dialog.component';
+import {MatTableModule} from '@angular/material/table';
+
 
 
 @NgModule({
@@ -50,7 +54,8 @@ import { SankeyGraphComponent } from './sankey-graph/sankey-graph.component';
     AnimateMapComponent,
     MapComponent,
     BubbleComponent,
-    SankeyGraphComponent
+    SankeyGraphComponent,
+    DialogComponent
    
    
   ],
@@ -69,7 +74,8 @@ import { SankeyGraphComponent } from './sankey-graph/sankey-graph.component';
     MatMenuModule,
     MapsModule,
     CommonModule,
-  
+    MatTableModule,
+    MatDialogModule,
     HttpClientModule
   ],
   providers: [],

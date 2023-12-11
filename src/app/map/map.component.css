@@ -9,6 +9,25 @@
 .rcp{
     margin-right: 0.25rem;
 }
+.dropdown-menu {
+    max-height: 200px; /* Adjust the max height as needed */
+    overflow-y: auto;
+  }
+  .summary{
+    /* float:right; */
+  }
+  .table-container {
+    position: absolute;
+    top: 104px;
+    right: 360px;
+    width: 2%;
+    margin-top: 20px
+  }
+  
+  .mat-elevation-z8 {
+    /* Add any additional styles for the table */
+    margin-bottom: 0; /* Adjust as needed */
+  }
 /* .dropdown-menu li {
     position: relative;
     }

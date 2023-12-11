@@ -21,6 +21,7 @@ interface CsvData {
 
 }
 
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -28,12 +29,77 @@ interface CsvData {
 })
 export class MapComponent  implements OnInit, OnDestroy {
 
+
   private chart: am5map.MapChart | undefined;
   private bubbleSeries: am5map.MapPointSeries | undefined;
   private jsonData: any;
 
   public selectedContinent: string = 'Factor 1'; // Default selection
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
+   countryNames = [
+    'Algeria',
+    'Angola',
+    'Benin',
+    'Botswana',
+    'Burkina Faso',
+    'Burundi',
+    'Cabo Verde',
+    'Cameroon',
+    'Central African Republic',
+    'Chad',
+    'Comoros',
+    'Congo',
+    'Côte d\'Ivoire',
+    'Djibouti',
+    'DR Congo',
+    'Egypt',
+    'Equatorial Guinea',
+    'Eritrea',
+    'Eswatini',
+    'Ethiopia',
+    'Gabon',
+    'Gambia',
+    'Ghana',
+    'Guinea',
+    'Guinea-Bissau',
+    'Kenya',
+    'Lesotho',
+    'Liberia',
+    'Libya',
+    'Madagascar',
+    'Malawi',
+    'Mali',
+    'Mauritania',
+    'Mauritius',
+    'Morocco',
+    'Mozambique',
+    'Namibia',
+    'Niger',
+    'Nigeria',
+    'Rwanda',
+    'Sao Tome & Principe',
+    'Senegal',
+    'Seychelles',
+    'Sierra Leone',
+    'Somalia',
+    'South Africa',
+    'South Sudan',
+    'Sudan',
+    'Tanzania',
+    'Togo',
+    'Tunisia',
+    'Uganda',
+    'Zambia',
+    'Zimbabwe'
+  ];
+  dataSource:CsvData[] =[];
+  displayedColumns: string[] = [
+  
+  'Country',
+   'value',
+  'Number_of_immigrants',
+   'Proportion'];
+  clicked: boolean= false;
 
   constructor(private http: HttpClient, private dataService: CsvService,public dialog: MatDialog) { }
 
@@ -272,6 +338,8 @@ private updateBubbleColor(color: string): void {
   }
   selectedRcpValue: string | null = null;
   selectedIndicatorValue: string | null = null;
+  selectedNameValue: string | null = null;
+  selectedCountryValue: string | null = null;
 
   selectRcp(value: string): void {
     this.selectedRcpValue = value;
@@ -280,17 +348,34 @@ private updateBubbleColor(color: string): void {
   selectIndicator(value: string): void {
     this.selectedIndicatorValue = value;
   }
+  selectCountry(country:string):void{
+    this.selectedCountryValue=country;
+
+  }
+  selectName(value: string): void {
+    this.selectedNameValue = value;
+  }
 
 
-  openDialog(_dataItem: am5.DataItem<IComponentDataItem> | undefined): void {
-    console.log('dataItem',_dataItem);
-    const dialogRef = this.dialog.open(DialogComponent, {
-      data: {
-        //width: '250px', 
-        panelClass: 'full-size-dialog',
-        title: 'Dialog Title',
-        data:_dataItem?.dataContext,
-      },
-    });
+  openDialog(_dataItem:any): void {
+    // console.log('dataItem',_dataItem);
+    // const dialogRef = this.dialog.open(DialogComponent, {
+    //   data: {
+    //     //width: '250px', 
+    //     panelClass: 'full-size-dialog',
+    //     title: 'Dialog Title',
+    //     data:_dataItem?.dataContext,
+    //   },
+    //});
+     const t = _dataItem?.dataContext['Continent']
+     console.log('dataItem is',t);
+this.clicked=true;
+    this.dataSource = 
+      [{id:_dataItem?.dataContext?.id,
+        Continent:_dataItem?.dataContext.Continent,
+        Country:_dataItem?.dataContext.name,
+        value:_dataItem?.dataContext.value,Number_of_immigrants:_dataItem?.dataContext.Number_of_immigrants,
+        Proportion:_dataItem?.dataContext.Proportion }];
+      
 }
 }

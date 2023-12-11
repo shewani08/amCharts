@@ -183,7 +183,7 @@ export class NodeLinkComponent implements OnInit {
       .force('link', d3.forceLink<Node, Link>(data.links).id((d) => (d as Node).id).distance(400))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(width/3, height/3 ))
-      .force('collide', d3.forceCollide(100)); // Adjust the radius as needed
+      .force('collide', d3.forceCollide(100)).alphaDecay(0.02);// Adjust the radius as needed
 
 
     const svg = d3.select(this.graphContainer.nativeElement)
@@ -342,7 +342,7 @@ export class NodeLinkComponent implements OnInit {
    
 
     function dragstarted(event: any, d: any) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
+      if (!event.active) simulation.alphaTarget(0.05).restart();
       d.fx = d.x;
       d.fy = d.y;
     }

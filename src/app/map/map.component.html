@@ -12,16 +12,89 @@
     </div>
   
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="indicatorDropdown" data-toggle="dropdown"
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="indicatorDropdown" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
-        {{ selectedIndicatorValue || 'Indicator' }}
+        {{ selectedIndicatorValue || 'Indicator category' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="indicatorDropdown">
-        <a class="dropdown-item" href="#" (click)="selectIndicator('Indicator 1')">Indicator 1</a>
-        <a class="dropdown-item" href="#" (click)="selectIndicator('Indicator 2')">Indicator 2</a>
+        <a class="dropdown-item" href="#" (click)="selectIndicator('Energy')">Energy</a>
+        <a class="dropdown-item" href="#" (click)="selectIndicator('land')">Land</a>
+        <a class="dropdown-item" href="#" (click)="selectIndicator('Water')">Water</a>
+      </div>
+    </div>
+
+    <div class="dropdown mr-auto">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        {{ selectedNameValue || 'Indicator name' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" (click)="selectName('Drought Intensity Change')">Drought Intensity Change</a>
+        <a class="dropdown-item" href="#" (click)="selectName('Flood')">RCP 2.4(medium)</a>
+        <a class="dropdown-item" href="#" (click)="selectName('Rain')">RCP 2.8(high)</a>
+      </div>
+    </div>
+
+    <div class="dropdown mr-auto">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        {{ selectedCountryValue || 'Country' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" *ngFor="let country of countryNames" (click)="selectCountry(country)">
+          {{ country }}
+        </a>
       </div>
     </div>
   </div>
-<div id="chartdiv">
 
+ 
+<div id="chartdiv">
+  <div class="summary d-flex" *ngIf="clicked">
+   
+    <div class="table-container">
+      <h1> Summary </h1>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+   
+    
+      <!-- Name Column -->
+      <!-- <ng-container matColumnDef="Continent">
+        <th mat-header-cell *matHeaderCellDef>Continent</th>
+        <td mat-cell *matCellDef="let element">{{element.Continent}}</td>
+      </ng-container> -->
+    
+      <!-- Weight Column -->
+      <ng-container matColumnDef="Country">
+        <th mat-header-cell *matHeaderCellDef>Country</th>
+        <td mat-cell *matCellDef="let element">{{element.Country}}</td>
+      </ng-container>
+  
+          <!-- Weight Column -->
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let element">{{element.value}}</td>
+          </ng-container>
+           <!-- Weight Column -->
+           <ng-container matColumnDef="Number_of_immigrants">
+            <th mat-header-cell *matHeaderCellDef>Immigrants</th>
+            <td mat-cell *matCellDef="let element">{{element.Number_of_immigrants}}</td>
+          </ng-container>
+           <!-- Weight Column -->
+           <ng-container matColumnDef="Proportion">
+            <th mat-header-cell *matHeaderCellDef>Proportion</th>
+            <td mat-cell *matCellDef="let element">{{element.Proportion}}</td>
+          </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    
+     
+    </table>
+    </div>
+  </div>
+  
 </div>
+
+
+
+

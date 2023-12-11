@@ -29,9 +29,10 @@
         {{ selectedNameValue || 'Indicator name' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" (click)="selectName('Drought Intensity Change')">Drought Intensity Change</a>
-        <a class="dropdown-item" href="#" (click)="selectName('Flood')">RCP 2.4(medium)</a>
-        <a class="dropdown-item" href="#" (click)="selectName('Rain')">RCP 2.8(high)</a>
+       
+        <a class="dropdown-item" href="#" *ngFor="let name of indicatorName" (click)="selectName(name)">
+          {{ name }}
+        </a>
       </div>
     </div>
 

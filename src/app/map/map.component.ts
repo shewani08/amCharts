@@ -27,7 +27,7 @@ interface CsvData {
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent  implements OnInit, OnDestroy {
+export class MapComponent implements OnInit, OnDestroy {
 
 
   private chart: am5map.MapChart | undefined;
@@ -36,7 +36,7 @@ export class MapComponent  implements OnInit, OnDestroy {
 
   public selectedContinent: string = 'Factor 1'; // Default selection
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
-   countryNames = [
+  countryNames = [
     'Algeria',
     'Angola',
     'Benin',
@@ -92,18 +92,34 @@ export class MapComponent  implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  dataSource:CsvData[] =[];
+  dataSource: CsvData[] = [];
   displayedColumns: string[] = [
-  
-  'Country',
-   'value',
-  'Number_of_immigrants',
-   'Proportion'];
-  clicked: boolean= false;
 
-  constructor(private http: HttpClient, private dataService: CsvService,public dialog: MatDialog) { }
+    'Country',
+    'value',
+    'Number_of_immigrants',
+    'Proportion'];
+  clicked: boolean = false;
+  indicatorName = [
+    'drought intensity change',
+    'non renewable groundwater stress',
+    'water stress index',
 
- 
+    'agricultural water stress index',
+    'crop yield change',
+    'habitat degradation',
+
+    'Consecutive dry days',
+    'Heavy precipitation days (Precipitation > 10mm)',
+    'Very heavy precipitation days (Precipitation > 20mm)',
+    'Wet days (Annual total precipitation when PR > historical 95th percentile)',
+    'Very wet days (Annual total precipitation when PR > historical 99th percentile)',
+    'Precipitation intensity index (Annual total precipitation / no. of wet days)'
+  ]
+
+  constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
+
+
 
   ngOnInit(): void {
     this.loadData();
@@ -135,18 +151,18 @@ export class MapComponent  implements OnInit, OnDestroy {
     console.log('Selected Continent:', this.selectedContinent);
   }
 
-private updateBubbleColor(color: string): void {
-  if (this.bubbleSeries) {
-    const heatRules = this.bubbleSeries.get('heatRules');
-    if (heatRules && heatRules[0] && heatRules[0]['target']) {
-      const circleTemplate = heatRules[0]['target'];
-      if (circleTemplate) {
-        circleTemplate.set('fill', am5.color(color));
+  private updateBubbleColor(color: string): void {
+    if (this.bubbleSeries) {
+      const heatRules = this.bubbleSeries.get('heatRules');
+      if (heatRules && heatRules[0] && heatRules[0]['target']) {
+        const circleTemplate = heatRules[0]['target'];
+        if (circleTemplate) {
+          circleTemplate.set('fill', am5.color(color));
         }
       }
     }
   }
-  
+
 
   private loadData(): void {
     this.dataService.getCsvData().subscribe((csvData) => {
@@ -171,18 +187,18 @@ private updateBubbleColor(color: string): void {
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
     // this.chart.geoPoint().latitude=500;
     // this.chart.geoPoint().longitude=500;
-    
+
 
     const polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
 
-        include:[
+        include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
-          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU', 
-          'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 
+          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+          'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
           'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'
         ],
-        
+
         // include: ["DZ", 'AO',  'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CD', 'DJ', 'GQ',
         // 'ER','ET','GA','GM','GH','GN','GW','CI','KE','LS','LR','LY','MG','MW','ML','MR','MU','YT',
         // 'MA','MZ', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI','FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV',
@@ -195,15 +211,15 @@ private updateBubbleColor(color: string): void {
         // 'MU','YT','FM','MD','MC','ME','MA','MZ','NA','NR','NL','NC','NZ','NE','NG','NU','NF','MK','MP','NO',
         // 'PW','PG','PN','PL','PT','RE','RO','RU','RW','SH','WS','SM','ST','SN','RS','SC','SL','SK','SI','SB','SO',
         // 'ZA','GS','SS','ES','SD','SJ','SE','CH','TZ','TL','TG','TK','TO','TN','TV','UG','UA','GB','UM','VU','WF','EH','ZM','ZW',],
-       geoJSON: am5geodata_worldLow,
-       //geoJSON:am5geodata_region_world_africaLow,
+        geoJSON: am5geodata_worldLow,
+        //geoJSON:am5geodata_region_world_africaLow,
         // dx:-250,
         // dy:-50
-      
-      //  exclude: ['AQ', 'SA', 'OC', 'NA', 'AS', 'AN']
+
+        //  exclude: ['AQ', 'SA', 'OC', 'NA', 'AS', 'AN']
       })
     );
-    this.chart.set("zoomLevel",1);
+    this.chart.set("zoomLevel", 1);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',
@@ -211,34 +227,34 @@ private updateBubbleColor(color: string): void {
         polygonIdField: 'id'
       })
     );
-   
+
     const circleTemplate = am5.Template.new({});
     let colorset = am5.ColorSet.new(root, {});
     this.bubbleSeries.bullets.push((root, series, dataItem) => {
       const container = am5.Container.new(root, {});
       const circle = container.children.push(
         am5.Circle.new(root, {
-        //   dx:-250,
-        // dy:-50,
-       // tooltipY: 0,
+          //   dx:-250,
+          // dy:-50,
+          // tooltipY: 0,
           radius: 3,
           strokeOpacity: 0,
           fillOpacity: 0.7,
-          fill:colorset.next(),
-         // fill: am5.color(0xffa500),
+          fill: colorset.next(),
+          // fill: am5.color(0xffa500),
           cursorOverStyle: 'pointer',
           tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
         }, circleTemplate as any)
       );
-    
+
       const countryLabel = container.children.push(
         am5.Label.new(root, {
-        //   dx:-280,
-        // dy:-50,
+          //   dx:-280,
+          // dy:-50,
           text: '{name}',
           paddingLeft: 5,
           populateText: true,
-        // tooltipY: 0,
+          // tooltipY: 0,
           // fontWeight: 'bold',
           fontSize: 10,
           centerY: am5.p50
@@ -266,15 +282,15 @@ private updateBubbleColor(color: string): void {
       circle.events.on("click", (event) => {
         this.openDialog(event.target.dataItem);
         //  const countryId = event.target.get("dataItem.dataContext.id");
-        console.log("Bubble clicked for country with ID:",event.target.dataItem);
-          // Add your custom logic here based on the clicked country
-        });
+        console.log("Bubble clicked for country with ID:", event.target.dataItem);
+        // Add your custom logic here based on the clicked country
+      });
       return am5.Bullet.new(root, {
         sprite: container,
         dynamic: true
       });
     });
-    
+
     this.bubbleSeries.bullets.push((root, series, dataItem) => {
       return am5.Bullet.new(root, {
         sprite: am5.Label.new(root, {
@@ -284,8 +300,8 @@ private updateBubbleColor(color: string): void {
           centerX: am5.p50,
           centerY: am5.p50,
           textAlign: 'center',
-        //   dx:-290,
-        // dy:-10
+          //   dx:-290,
+          // dy:-10
         }),
         dynamic: true
       });
@@ -348,8 +364,8 @@ private updateBubbleColor(color: string): void {
   selectIndicator(value: string): void {
     this.selectedIndicatorValue = value;
   }
-  selectCountry(country:string):void{
-    this.selectedCountryValue=country;
+  selectCountry(country: string): void {
+    this.selectedCountryValue = country;
 
   }
   selectName(value: string): void {
@@ -357,7 +373,7 @@ private updateBubbleColor(color: string): void {
   }
 
 
-  openDialog(_dataItem:any): void {
+  openDialog(_dataItem: any): void {
     // console.log('dataItem',_dataItem);
     // const dialogRef = this.dialog.open(DialogComponent, {
     //   data: {
@@ -367,15 +383,17 @@ private updateBubbleColor(color: string): void {
     //     data:_dataItem?.dataContext,
     //   },
     //});
-     const t = _dataItem?.dataContext['Continent']
-     console.log('dataItem is',t);
-this.clicked=true;
-    this.dataSource = 
-      [{id:_dataItem?.dataContext?.id,
-        Continent:_dataItem?.dataContext.Continent,
-        Country:_dataItem?.dataContext.name,
-        value:_dataItem?.dataContext.value,Number_of_immigrants:_dataItem?.dataContext.Number_of_immigrants,
-        Proportion:_dataItem?.dataContext.Proportion }];
-      
-}
+    const t = _dataItem?.dataContext['Continent']
+    console.log('dataItem is', t);
+    this.clicked = true;
+    this.dataSource =
+      [{
+        id: _dataItem?.dataContext?.id,
+        Continent: _dataItem?.dataContext.Continent,
+        Country: _dataItem?.dataContext.name,
+        value: _dataItem?.dataContext.value, Number_of_immigrants: _dataItem?.dataContext.Number_of_immigrants,
+        Proportion: _dataItem?.dataContext.Proportion
+      }];
+
+  }
 }

@@ -7,9 +7,9 @@ import { DemonavigationComponent } from './demonavigation/demonavigation.compone
 
 const routes: Routes = [
   // Your existing routes
-  { path: 'demo', component: DemonavigationComponent},
-  { path: '', component: LoginComponent, pathMatch: 'full' }, // Redirect to home if no path specified
-  { path: '**',  component: LoginComponent }
+  // { path: 'demo', component: DemonavigationComponent},
+  // { path: '', component: LoginComponent, pathMatch: 'full' }, // Redirect to home if no path specified
+  // { path: '**',  component: LoginComponent }
 ];
 
 @NgModule({

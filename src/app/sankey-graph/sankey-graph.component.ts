@@ -32,17 +32,17 @@ series.nodes.get('colors')?.set('step',2);
    
     // Set data
     series.data.setAll([
-      { from: "A", to: "D", value: 10 },
-      { from: "B", to: "D", value: 8 },
-      { from: "B", to: "E", value: 4 },
-      { from: "C", to: "E", value: 3 },
-      { from: "D", to: "G", value: 5 },
-      { from: "D", to: "I", value: 2 },
-      { from: "D", to: "H", value: 3 },
-      { from: "E", to: "H", value: 6 },
-      { from: "G", to: "J", value: 5 },
-      { from: "I", to: "J", value: 1 },
-      { from: "H", to: "J", value: 9 }
+      { from: "Country Of Origin 1", to: "Port of Transit", value: 10 },
+      { from: "Country Of Origin 2", to: "Port of Transit", value: 8 },
+      { from: "Country Of Origin 3", to: "Port of Transit ", value: 3 },
+      { from: "Country Of Origin 4", to: "Port of Transit", value: 6 },
+      { from: "Port of Transit", to: "No. of Migrants in Europe ", value: 5 },
+      { from: "Port of Transit", to: "Number of Migrants in Europe", value: 2 },
+      { from: "Port of Transit", to: "Number of Migrants in Europe", value: 3 },
+      // { from: "Port of Transit", to: "Number of Migrants in Europe", value: 4 },
+      // // { from: "Port of Transit", to: "Number of Migrants in Europe", value: 5 },
+      { from: "Number of Migrants in Europe", to: "No. of Migrants in UK", value: 1 },
+      // { from: "Number of Migrants in Europe", to: "No. of Migrants in UK", value: 9 }
     ]);
 
     // Make stuff animate on load

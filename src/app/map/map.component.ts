@@ -36,6 +36,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public selectedContinent: string = 'Factor 1'; // Default selection
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
+  
+  clicked: boolean = false;
+  //dataSource: { id: any; Continent: any; Country: any; value: any; Number_of_immigrants: any; Proportion: any; }[];
   countryNames = [
     'Algeria',
     'Angola',
@@ -92,14 +95,6 @@ export class MapComponent implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  dataSource: CsvData[] = [];
-  displayedColumns: string[] = [
-
-    'Country',
-    'value',
-    'Number_of_immigrants',
-    'Proportion'];
-  clicked: boolean = false;
   indicatorName = [
     'drought intensity change',
     'non renewable groundwater stress',
@@ -116,7 +111,7 @@ export class MapComponent implements OnInit, OnDestroy {
     'Very wet days (Annual total precipitation when PR > historical 99th percentile)',
     'Precipitation intensity index (Annual total precipitation / no. of wet days)'
   ]
-
+  summaryData: any;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
 
 
@@ -219,7 +214,7 @@ export class MapComponent implements OnInit, OnDestroy {
         //  exclude: ['AQ', 'SA', 'OC', 'NA', 'AS', 'AN']
       })
     );
-    this.chart.set("zoomLevel", 1);
+    this.chart.set("zoomLevel", 0.9);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',
@@ -374,6 +369,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
 
   openDialog(_dataItem: any): void {
+    this.summaryData=_dataItem;
     // console.log('dataItem',_dataItem);
     // const dialogRef = this.dialog.open(DialogComponent, {
     //   data: {
@@ -382,18 +378,18 @@ export class MapComponent implements OnInit, OnDestroy {
     //     title: 'Dialog Title',
     //     data:_dataItem?.dataContext,
     //   },
-    //});
-    const t = _dataItem?.dataContext['Continent']
-    console.log('dataItem is', t);
-    this.clicked = true;
-    this.dataSource =
-      [{
-        id: _dataItem?.dataContext?.id,
-        Continent: _dataItem?.dataContext.Continent,
-        Country: _dataItem?.dataContext.name,
-        value: _dataItem?.dataContext.value, Number_of_immigrants: _dataItem?.dataContext.Number_of_immigrants,
-        Proportion: _dataItem?.dataContext.Proportion
-      }];
+    // });
+    // const t = _dataItem?.dataContext['Continent']
+    // console.log('dataItem is', t);
+     this.clicked = true;
+    // this.dataSource =
+    //   [{
+    //     id: _dataItem?.dataContext?.id,
+    //     Continent: _dataItem?.dataContext.Continent,
+    //     Country: _dataItem?.dataContext.name,
+    //     value: _dataItem?.dataContext.value, Number_of_immigrants: _dataItem?.dataContext.Number_of_immigrants,
+    //     Proportion: _dataItem?.dataContext.Proportion
+    //   }];
 
   }
 }

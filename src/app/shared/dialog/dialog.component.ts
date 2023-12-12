@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, Input, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, OnChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import * as am5 from '@amcharts/amcharts5';
@@ -7,13 +7,22 @@ import * as am5map from '@amcharts/amcharts5/map';
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldChinaHigh';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { any } from '@amcharts/amcharts5/.internal/core/util/Array';
 export interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
 }
+interface CsvData {
+  id: string;
+  Continent: string;
+  Country: string;
+  value: string;
+  Number_of_immigrants: string;
+  Proportion: string;
 
+}
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
@@ -26,42 +35,121 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
+
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.css']
+  styleUrls: ['./dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DialogComponent {
+export class DialogComponent implements OnChanges {
   chart: any;
-  displayedColumns: string[] = ['name', 'value', 'id'];
-  dataSource = [
-    {name: this.data.data.name, value: this.data.data.value, id: this.data.data.id}];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+  @Input() dataItem:any;
+  dataSource: CsvData[] = [];
+  displayedColumns: string[] = [
+
+    'Country',
+    'value',
+    'Number_of_immigrants',
+    'Proportion'];
+  
+   
+  
+  constructor(private cdr: ChangeDetectorRef) {
+   // this.refreshChangeDetection();
     
   }
-  ngOnInit(){
-    const chartdiv = document.getElementById('dialog');
-    if (!chartdiv) {
-      console.error('Chart container element not found!');
-      return;
+  refreshChangeDetection() {
+    this.cdr.detectChanges();
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    // Check if the input property has changed
+    if (changes['dataItem']) {
+     // this.ngOndestroy();
+      this.reloadData();
+      this.cdr.detectChanges();
     }
-    
-  const root = am5.Root.new(chartdiv);
-  root.setThemes([am5themes_Animated.new(root)]);
-  this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-  // this.chart.geoPoint().latitude=500;
-  // this.chart.geoPoint().longitude=500;
-  //this.chart.set("zoomLevel",0.8);
-  console.log('this.data',this.data.data.id);
-  const polygonSeries = this.chart.series.push(
-    am5map.MapPolygonSeries.new(root, {
-    
-
-      include:[
-        this.data.data.id
-      ],
-      geoJSON: am5geodata_worldLow,
-    }))
   }
 
+  ngOnInit() {
+    this.initializeChart();
+    this.chart.set("zoomLevel", 0.8);
+
+  }
+   initializeChart() {
+
+const chartdiv = document.getElementById('dialog');
+    // Remove all child nodes from chartdiv
+    if (chartdiv) {
+      // Rest of your chart initialization code
+      const root = am5.Root.new(chartdiv);
+      root.setThemes([am5themes_Animated.new(root)]);
+      this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
+    
+      const polygonSeries = this.chart.series.push(
+        am5map.MapPolygonSeries.new(this.chart.root, {
+          include: this.getMap(),
+          geoJSON: am5geodata_worldLow,
+          dx:50,
+          dy:-50
+        })
+      );
+      this.reloadData();
+    } else {
+      console.error('Chart container element not found!');
+    }
+  }
+  
+  getMap(){
+    return [this.dataItem?.dataContext?.id];
+  }
+ 
+ 
+  reloadData() {
+    const include= [this.dataItem?.dataContext?.id];
+    const newGeoJSONData = am5geodata_worldLow;/* Your updated GeoJSON data */;
+    this.chart.series.each((series: { set: (arg0: string, arg1: any) => void; }) => {
+      if (series instanceof am5map.MapPolygonSeries) {
+        series.set("include",include);
+        series.set("geoJSON", newGeoJSONData);
+        series.set("dx", 70);
+        series.set("dy", -70);
+        
+      }
+    });
+    this.dataSource = [
+      {
+        id: this.dataItem?.dataContext?.id,
+        Continent: this.dataItem?.dataContext.Continent,
+        Country: this.dataItem?.dataContext.name,
+        value: this.dataItem?.dataContext.value,
+        Number_of_immigrants: this.dataItem?.dataContext.Number_of_immigrants,
+        Proportion: this.dataItem?.dataContext.Proportion
+      }
+    ];
+
+    //this.refreshChangeDetection();
+  }
+ngOndestroy(){
+  this.chart.dispose();
+}
+  
+  // selectedRcpValue: string | null = null;
+  // selectedIndicatorValue: string | null = null;
+  // selectedNameValue: string | null = null;
+  // selectedCountryValue: string | null = null;
+  // selectRcp(value: string): void {
+  //   this.selectedRcpValue = value;
+  // }
+
+  // selectIndicator(value: string): void {
+  //   this.selectedIndicatorValue = value;
+  // }
+  // selectCountry(country: string): void {
+  //   this.selectedCountryValue = country;
+
+  // }
+  // selectName(value: string): void {
+  //   this.selectedNameValue = value;
+  // }
 }

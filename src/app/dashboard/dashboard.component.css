@@ -1,10 +1,11 @@
 .grid-container {
   margin: 10px;
 }
-.char-container{
+
+.char-container {
   display: flex;
-  height:100% !important;
-  width:100% !important;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .dashboard-card {
@@ -24,6 +25,7 @@
 .dashboard-card-content {
   text-align: center;
 }
+
 .custom td {
   height: 10vh;
   width: 10vh;
@@ -35,7 +37,19 @@
   width: 10vh;
   border: solid 1px black;
 }
-.sidebar-nav .nav-item a:hover{
+
+.sidebar-nav .nav-item a:hover {
   background-color: #e68301;
   color: white !important;
+}
+
+.btn-data {
+
+  position: relative;
+  left: 19%;
+
+}
+
+.btn-mr {
+  margin: 0 20px;
 }

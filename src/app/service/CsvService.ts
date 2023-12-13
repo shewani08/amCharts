@@ -12,6 +12,6 @@ export class CsvService {
   constructor(private http: HttpClient) {}
 
   getCsvData(): Observable<any> {
-    return this.http.get('assets/countrydata.csv', { responseType: 'text' });
+    return this.http.get('assets/ctydata.csv', { responseType: 'text' });
   }
 }

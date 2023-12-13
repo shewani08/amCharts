@@ -16,6 +16,7 @@ export class DashboardComponent {
   safeDashAppUrl!: SafeResourceUrl;
   showDashboard = true;
   chartData: Array<any> =[];
+  showMap=false;
    // Graph data
    graph = {
     data: [
@@ -80,6 +81,13 @@ isHandset: any;
   }
   returnPage(e:boolean){
     this.showDashboard= e;
+  }
+  showMapDetail(_map:string){
+    if(_map === 'explorer'){
+      this.showMap= true;
+    }else
+    this.showMap= false;
+    
   }
 }
 

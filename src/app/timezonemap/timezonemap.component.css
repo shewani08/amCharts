@@ -1,0 +1,11 @@
+#timemap{
+    width:100%;
+    height:100%;
+}
+.map-dropdown{
+    display: inline-flex;
+    margin:2px;
+}
+.rcp{
+    margin-right: 0.25rem;
+}

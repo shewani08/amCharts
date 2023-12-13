@@ -2,8 +2,12 @@
   <div style="display:flex; ">
   <h1 class="mat-h1">Dashboard:</h1>
   <div class="btn-data">
-  <button type="button" class=" btn btn-info btn-mr" (click)="showMapDetail('migrants')"> Irregular migrants</button>
-  <button type="button" class="btn btn-info" (click)="showMapDetail('explorer')">Africa Hotspot explorer</button>
+    <mat-tab-group (selectedTabChange)="onTabChange($event)" disableRipple>
+      <mat-tab label="Irregular migrants" ></mat-tab>
+      <mat-tab label="Africa Hotspot explorer"></mat-tab>
+    </mat-tab-group>
+  <!-- <button type="button" class=" btn btn-info btn-mr" (click)="showMapDetail('migrants')"> Irregular migrants</button>
+  <button type="button" class="btn btn-info" (click)="showMapDetail('explorer')">Africa Hotspot explorer</button> -->
   </div>
   </div>
   <mat-grid-list cols="2" rowHeight="350px">
@@ -27,7 +31,7 @@
           <ng-container *ngIf="card.showGraph">
               <!-- <app-bubble *ngIf="card.title === 'Card 1'"></app-bubble> -->
             <app-map *ngIf="card.title === 'Card 1' && !showMap"></app-map>
-            <app-countrymap *ngIf="card.title === 'Card 1' && showMap"></app-countrymap>
+            <app-timezonemap *ngIf="card.title === 'Card 1' && showMap"></app-timezonemap>
             <!-- <app-africamap *ngIf="card.title === 'Card 1'"></app-africamap> -->
             <!-- <app-svg-list *ngIf="card.title === 'Card 3'" ></app-svg-list> -->
             <!-- <app-animate-map *ngIf="card.title === 'Card 2'"></app-animate-map> -->

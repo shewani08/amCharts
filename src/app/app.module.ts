@@ -36,6 +36,8 @@ import { SankeyGraphComponent } from './sankey-graph/sankey-graph.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DialogComponent } from './shared/dialog/dialog.component';
 import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import { TimezonemapComponent } from './timezonemap/timezonemap.component';
 
 
 
@@ -55,7 +57,8 @@ import {MatTableModule} from '@angular/material/table';
     MapComponent,
     BubbleComponent,
     SankeyGraphComponent,
-    DialogComponent
+    DialogComponent,
+    TimezonemapComponent
    
    
   ],
@@ -76,7 +79,8 @@ import {MatTableModule} from '@angular/material/table';
     CommonModule,
     MatTableModule,
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

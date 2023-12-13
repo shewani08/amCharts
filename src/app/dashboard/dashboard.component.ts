@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -82,12 +83,13 @@ isHandset: any;
   returnPage(e:boolean){
     this.showDashboard= e;
   }
-  showMapDetail(_map:string){
-    if(_map === 'explorer'){
-      this.showMap= true;
-    }else
-    this.showMap= false;
-    
+  onTabChange(_e:MatTabChangeEvent){
+   console.log('vlue of e is',_e);
+   if(_e.index === 0){
+    this.showMap = false;
+   }else{
+    this.showMap= true;
+   }
   }
 }
 

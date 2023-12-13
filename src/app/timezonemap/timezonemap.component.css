@@ -9,3 +9,10 @@
 .rcp{
     margin-right: 0.25rem;
 }
+.table-container {
+    position: absolute;
+    top: 104px;
+    right: 360px;
+    width: 2%;
+    margin-top: 20px
+  }

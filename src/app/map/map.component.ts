@@ -41,7 +41,7 @@ const getColorForValue = (value: number): string => {
   if (value >= 0 && value < 1) {
     return "#FF0000"; // Red
   } else if (value >= 1 && value < 2) {
-    return "#FFFF00"; // Yellow
+    return "#aa5500"; // Yellow
   } else {
     return "#00FF00"; // Green
   }
@@ -338,7 +338,9 @@ export class MapComponent implements OnInit, OnDestroy {
       endColor: am5.color(0x00FF00),   // Green
       startText: "Lowest",
       endText: "Highest",
-      stepCount: 3
+      stepCount: 3,
+      minHeight: 20 , // Set the minimum height of the legend
+      maxHeight:500
     }));
     heatLegend?.startLabel.setAll({
       fontSize: 12,
@@ -349,6 +351,7 @@ export class MapComponent implements OnInit, OnDestroy {
       fontSize: 12,
       fill: heatLegend.get("endColor")
     });
+   // heatLegend.style.height = "50px";
    // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
     polygonSeries.set("heatRules", [{
       target: polygonSeries.mapPolygons.template,

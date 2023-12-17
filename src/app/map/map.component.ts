@@ -12,6 +12,7 @@ import { DialogComponent } from '../shared/dialog/dialog.component';
 import { IComponentDataItem } from '@amcharts/amcharts5/.internal/core/render/Component';
 import { element } from 'angular';
 import data from '../data/graph';
+import { text } from 'd3';
 
 interface CsvData {
   id: string;
@@ -39,11 +40,11 @@ interface CountryData {
 
 const getColorForValue = (value: number): string => {
   if (value >= 0 && value < 1) {
-    return "#FF0000"; // Red
+    return "#32cd32"; 
   } else if (value >= 1 && value < 2) {
-    return "#aa5500"; // Yellow
+    return "#ffd700 "; 
   } else {
-    return "#00FF00"; // Green
+    return "#b22222"; 
   }
 };
 @Component({
@@ -276,8 +277,16 @@ export class MapComponent implements OnInit, OnDestroy {
           centerY: am5.p50
         })
       );
+      
+      const valueLabel = document.createElement('div');
+      valueLabel.style.fontSize = '12px';
+      valueLabel.style.position = 'absolute';
+      valueLabel.style.top = '10px'; // Adjust the position as needed
+      document.body.appendChild(valueLabel);
       circle.on('radius', (radius: any) => {
         countryLabel.set('x', radius);
+        this.updateValueLabel(valueLabel,radius);
+        
       });
       circle.animate({
         key: "scale",
@@ -331,57 +340,57 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-      orientation: "vertical",
-      startColor: am5.color(0xFF0000), // Red
-      //middleColor: am5.color(0xFFFF00), // Yellow
-      endColor: am5.color(0x00FF00),   // Green
-      startText: "Lowest",
-      endText: "Highest",
-      stepCount: 3,
-      minHeight: 20 , // Set the minimum height of the legend
-      maxHeight:500
-    }));
-    heatLegend?.startLabel.setAll({
-      fontSize: 12,
-      fill: heatLegend.get("startColor")
-    });
+//     let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+//       orientation: "vertical",
+//       startColor: am5.color(0xFF0000), // Red
+//       endColor: am5.color(0x00FF00),   // Green
+//       startText: "Lowest",
+//       endText: "Highest",
+//       stepCount: 3,
+//       minHeight: 20 , // Set the minimum height of the legend
+//       maxHeight:500,
+//     }));
+    
+//     heatLegend?.startLabel.setAll({
+//       fontSize: 12,
+//       fill: heatLegend.get("startColor")
+//     });
 
-    heatLegend?.endLabel.setAll({
-      fontSize: 12,
-      fill: heatLegend.get("endColor")
-    });
-   // heatLegend.style.height = "50px";
-   // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
-    polygonSeries.set("heatRules", [{
-      target: polygonSeries.mapPolygons.template,
-      dataField: "value",
-      min: am5.color(0xff621f),
-      max: am5.color(0x661f00),
-      key: "fill"
-    }]);
-    polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
-      let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-      let countryMeanPairs:any;
-      let countryEntry;
-        const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-    if (data) {
-      countryMeanPairs = Object.entries(data).map(
-        ([country, data]) => [country, data.mean || 0] 
+//     heatLegend?.endLabel.setAll({
+//       fontSize: 12,
+//       fill: heatLegend.get("endColor")
+//     });
+//    // heatLegend.style.height = "50px";
+//    // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
+//     polygonSeries.set("heatRules", [{
+//       target: polygonSeries.mapPolygons.template,
+//       dataField: "value",
+//       min: am5.color(0xff621f),
+//       max: am5.color(0x661f00),
+//       key: "fill"
+//     }]);
+//     polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+//       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+//       let countryMeanPairs:any;
+//       let countryEntry;
+//         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+//     if (data) {
+//       countryMeanPairs = Object.entries(data).map(
+//         ([country, data]) => [country, data.mean || 0] 
         
-      );
-    }
-    if(countryMeanPairs.length){
-      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-    }
-     if(countryEntry !== undefined && countryEntry[1])
-        heatLegend?.showValue(countryEntry[1]);
-    });
-    // change this to template when possible
-polygonSeries.events.on("datavalidated", function () {
-  heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
-  heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
-});
+//       );
+//     }
+//     if(countryMeanPairs.length){
+//       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+//     }
+//      if(countryEntry !== undefined && countryEntry[1])
+//         heatLegend?.showValue(countryEntry[1]);
+//     });
+//     // change this to template when possible
+// polygonSeries.events.on("datavalidated", function () {
+//   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
+//   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
+// });
 
   }
   // private showHeatLegendBar(){
@@ -437,6 +446,9 @@ polygonSeries.events.on("datavalidated", function () {
   // });
   //     }
   // }
+  private updateValueLabel(valueLabel:any,radius: number) {
+    valueLabel.textContent = `Radius: ${radius.toFixed(2)}`; // Adjust formatting as needed
+  }
   private rcpToJson<T>(data: string): T[] {
     const lines = data.split('\n');
     const headers = lines[0].split(',');
@@ -500,12 +512,16 @@ polygonSeries.events.on("datavalidated", function () {
            // this.showHeatLegendBar();
             break;
         }
-        case 'RCP 2.4(medium)':
+        case 'RCP 2.4(medium)':{
+          this.showHeatLegend=false;
             this.updateDefaultColor();
             break;
-        default:
+        }
+        default:{
           this.updateDefaultColor();
+          this.showHeatLegend=false;
           break;
+        }
     }
   }
 

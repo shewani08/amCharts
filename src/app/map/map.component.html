@@ -47,8 +47,24 @@
         </a>
       </div>
     </div>
+    <div class="container" *ngIf="showHeatLegend">
+    <div class="row">
+      <div class="indicator-box">
+        <div class="box-low"></div>
+        <span>Lowest</span>
+      </div>
+      <div class="indicator-box">
+        <div class="box-middle"></div>
+        <span>Modest</span>
+      </div>
+      <div class="indicator-box">
+        <div class="box-high"></div>
+        <span>Highest</span>
+      </div>
+    </div>
   </div>
-
+  </div>
+  
  
 <div id="chartdiv">
   <div class="summary d-flex" *ngIf="clicked">

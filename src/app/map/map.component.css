@@ -28,28 +28,38 @@
     /* Add any additional styles for the table */
     margin-bottom: 0; /* Adjust as needed */
   }
-/* .dropdown-menu li {
-    position: relative;
-    }
-    .dropdown-menu .dropdown-submenu {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: -7px;
-    }
-    .dropdown-menu .dropdown-submenu-left {
-    right: 100%;
-    left: auto;
-    }
-    .dropdown-menu > li:hover > .dropdown-submenu {
-    display: block;
-    }
-    
-    .dropdown-hover:hover>.dropdown-menu {
-    display: inline-block;
-    }
-    
-    .dropdown-hover>.dropdown-toggle:active {
-   
-    pointer-events: none;
-    } */
+  .container {
+    display: flex;
+    justify-content: flex-end; /* Move the row to the right */
+    padding: 10px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .indicator-box {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* Adjust the margin as needed */
+  }
+  
+  .box-high {
+    width: 20px;   /* Adjust the width as needed */
+    height: 10px;  /* Adjust the height as needed */
+    background-color: #b22222;  /* Adjust the background color as needed */
+    margin-right: 5px;  /* Adjust the margin as needed */
+  }
+  .box-low {
+    width: 20px;   /* Adjust the width as needed */
+    height: 10px;  /* Adjust the height as needed */
+    background-color: #32cd32 ;  /* Adjust the background color as needed */
+    margin-right: 5px;  /* Adjust the margin as needed */
+  }
+  .box-middle {
+    width: 20px;   /* Adjust the width as needed */
+    height: 10px;  /* Adjust the height as needed */
+    background-color: #ffd700  ;  /* Adjust the background color as needed */
+    margin-right: 5px;  /* Adjust the margin as needed */
+  }

@@ -14,4 +14,7 @@ export class CsvService {
   getCsvData(): Observable<any> {
     return this.http.get('assets/ctydata.csv', { responseType: 'text' });
   }
+  getRCPData(): Observable<any> {
+    return this.http.get('assets/RCP(low).csv', { responseType: 'text' });
+  }
 }

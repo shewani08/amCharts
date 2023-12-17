@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../shared/dialog/dialog.component';
 import { IComponentDataItem } from '@amcharts/amcharts5/.internal/core/render/Component';
+import { element } from 'angular';
+import data from '../data/graph';
 
 interface CsvData {
   id: string;
@@ -20,8 +22,30 @@ interface CsvData {
   Proportion: string;
 
 }
+interface Entry {
+  Country: string;
+  [key: string]: number | string; // Add other possible property types
+}
 
+interface Result {
+  [country: string]: { count: number; sum: number; mean?: number };
+}
 
+interface CountryData {
+  count: number;
+  sum: number;
+  mean?: number;
+}
+
+const getColorForValue = (value: number): string => {
+  if (value >= 0 && value < 1) {
+    return "#FF0000"; // Red
+  } else if (value >= 1 && value < 2) {
+    return "#FFFF00"; // Yellow
+  } else {
+    return "#00FF00"; // Green
+  }
+};
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -36,7 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public selectedContinent: string = 'Factor 1'; // Default selection
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
-  
+
   clicked: boolean = false;
   //dataSource: { id: any; Continent: any; Country: any; value: any; Number_of_immigrants: any; Proportion: any; }[];
   countryNames = [
@@ -95,29 +119,23 @@ export class MapComponent implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  indicatorName = [
-    'drought intensity change',
-    'non renewable groundwater stress',
-    'water stress index',
-
-    'agricultural water stress index',
-    'crop yield change',
-    'habitat degradation',
-
-    'Consecutive dry days',
-    'Heavy precipitation days (Precipitation > 10mm)',
-    'Very heavy precipitation days (Precipitation > 20mm)',
-    'Wet days (Annual total precipitation when PR > historical 95th percentile)',
-    'Very wet days (Annual total precipitation when PR > historical 99th percentile)',
-    'Precipitation intensity index (Annual total precipitation / no. of wet days)'
-  ]
+  energyIndicator=['Heat stress event exposure'];
+  waterIndicator=['Drought intensity change','Water stress index'];
+  landIndicator =['Agricultural water stress index','Crop yield change'];
+  indicatorName:string[]=[];
   summaryData: any;
+  rcpData: any;
+  meansByCountry: Result | undefined;
+  countryMeanIdPairs: { id: string; value: number; }[] =[];
+  meanData: any;
+  showHeatLegend: boolean = false;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
 
 
 
   ngOnInit(): void {
     this.loadData();
+
   }
 
   ngOnDestroy(): void {
@@ -126,46 +144,77 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onContinentChange(): void {
-    if (this.bubbleSeries) {
-      switch (this.selectedContinent) {
-        case 'Factor 1':
-          this.updateBubbleColor('red');
-          break;
-        case 'Irregular migrants':
-          this.updateBubbleColor('red');
-          break;
-        case 'Economic Score':
-          this.updateBubbleColor('green');
-          break;
-        default:
-          break;
+  private updateBubbleColor(): void {
+  let countryMeanPairs: [string, number][];
+  const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    if (data) {
+      countryMeanPairs = Object.entries(data).map(
+        ([country, data]) => [country, data.mean || 0] 
+        
+      );
+      this.countryMeanIdPairs = Object.entries(data).map(
+        ([country, data]) => ({ id: country, value: data.mean || 0 })
+      );
+    } else {
+      console.error('Means by country is undefined.');
+    }
+   if (this.chart && this.chart.series.length > 0) {
+      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+      if (polygonSeries) {
+        polygonSeries.mapPolygons.each((polygon) => {
+          const dataContext = polygon.dataItem?.dataContext;
+          if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
+            const countryName = dataContext.name;
+            const countryEntry = countryMeanPairs.find(([country]) => country === countryName);
+           // console.log('countryEntry',countryEntry);
+            if (countryEntry?.length) {
+              polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
+            }
+          } else {
+            console.error('Invalid or missing data structure for polygon:', polygon);
+          }
+        });
       }
     }
-
-    console.log('Selected Continent:', this.selectedContinent);
   }
-
-  private updateBubbleColor(color: string): void {
-    if (this.bubbleSeries) {
-      const heatRules = this.bubbleSeries.get('heatRules');
-      if (heatRules && heatRules[0] && heatRules[0]['target']) {
-        const circleTemplate = heatRules[0]['target'];
-        if (circleTemplate) {
-          circleTemplate.set('fill', am5.color(color));
-        }
-      }
+  private updateDefaultColor(): void {
+    if (this.chart && this.chart.series.length > 0) {
+    const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+    if (polygonSeries) {
+      polygonSeries.mapPolygons.each((polygon) => {
+    polygon.set("fill", am5.color(0x6794dc));
+      });
     }
   }
 
+  }
+  
+  private calculateMeanByCountry(data: Entry[], property: string) {
+    const result: Result = {};
+    data.forEach((entry: { [x: string]: any; Country: any; }) => {
+      const country = entry.Country;
+      const score = entry[property];
+      if (!result[country]) {
+        result[country] = { count: 0, sum: 0, mean: 0 };
+      }
+      result[country].count++;
+      result[country].sum += score * 100 / 100;
+      result[country].mean = result[country].sum / result[country].count;
+    });
+    return result;
+  }
 
   private loadData(): void {
-    this.dataService.getCsvData().subscribe((csvData) => {
+    this.dataService?.getCsvData()?.subscribe((csvData) => {
       this.jsonData = this.csvToJson<CsvData>(csvData);
-      console.log('jsonData', this.jsonData);
       this.initChart();
       setInterval(() => this.updateData(), 2000);
     });
+    this.dataService.getRCPData().subscribe((rcp) => {
+      this.rcpData = this.rcpToJson(rcp);
+      const property = 'SSP1_1p5_Score';
+      this.meansByCountry = this.calculateMeanByCountry(this.rcpData, property);
+    })
   }
 
   private initChart(): void {
@@ -180,20 +229,18 @@ export class MapComponent implements OnInit, OnDestroy {
     const root = am5.Root.new(chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-    // this.chart.geoPoint().latitude=500;
-    // this.chart.geoPoint().longitude=500;
-
-
     const polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
-
-        include: [
+    include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
           'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
           'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
           'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'
         ],
         geoJSON: am5geodata_worldLow,
+        valueField: "value",
+        calculateAggregates: true
+        // fill: am5.color(0xffa500)
       })
     );
     this.chart.set("zoomLevel", 0.9);
@@ -211,14 +258,10 @@ export class MapComponent implements OnInit, OnDestroy {
       const container = am5.Container.new(root, {});
       const circle = container.children.push(
         am5.Circle.new(root, {
-          //   dx:-250,
-          // dy:-50,
-          // tooltipY: 0,
           radius: 3,
           strokeOpacity: 0,
           fillOpacity: 0.7,
           fill: colorset.next(),
-          // fill: am5.color(0xffa500),
           cursorOverStyle: 'pointer',
           tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
         }, circleTemplate as any)
@@ -226,13 +269,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
       const countryLabel = container.children.push(
         am5.Label.new(root, {
-          //   dx:-280,
-          // dy:-50,
           text: '{name}',
           paddingLeft: 5,
           populateText: true,
-          // tooltipY: 0,
-          // fontWeight: 'bold',
           fontSize: 10,
           centerY: am5.p50
         })
@@ -258,9 +297,6 @@ export class MapComponent implements OnInit, OnDestroy {
       });
       circle.events.on("click", (event) => {
         this.openDialog(event.target.dataItem);
-        //  const countryId = event.target.get("dataItem.dataContext.id");
-        console.log("Bubble clicked for country with ID:", event.target.dataItem);
-        // Add your custom logic here based on the clicked country
       });
       return am5.Bullet.new(root, {
         sprite: container,
@@ -295,8 +331,126 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-  }
+    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+      orientation: "vertical",
+      startColor: am5.color(0xFF0000), // Red
+      //middleColor: am5.color(0xFFFF00), // Yellow
+      endColor: am5.color(0x00FF00),   // Green
+      startText: "Lowest",
+      endText: "Highest",
+      stepCount: 3
+    }));
+    heatLegend?.startLabel.setAll({
+      fontSize: 12,
+      fill: heatLegend.get("startColor")
+    });
 
+    heatLegend?.endLabel.setAll({
+      fontSize: 12,
+      fill: heatLegend.get("endColor")
+    });
+   // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
+    polygonSeries.set("heatRules", [{
+      target: polygonSeries.mapPolygons.template,
+      dataField: "value",
+      min: am5.color(0xff621f),
+      max: am5.color(0x661f00),
+      key: "fill"
+    }]);
+    polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+      let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+      let countryMeanPairs:any;
+      let countryEntry;
+        const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    if (data) {
+      countryMeanPairs = Object.entries(data).map(
+        ([country, data]) => [country, data.mean || 0] 
+        
+      );
+    }
+    if(countryMeanPairs.length){
+      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+    }
+     if(countryEntry !== undefined && countryEntry[1])
+        heatLegend?.showValue(countryEntry[1]);
+    });
+    // change this to template when possible
+polygonSeries.events.on("datavalidated", function () {
+  heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
+  heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
+});
+
+  }
+  // private showHeatLegendBar(){
+
+  //   if(this.showHeatLegend){
+  //     let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+  //       orientation: "vertical",
+  //       startColor: am5.color(0xFF0000), // Red
+  //       //middleColor: am5.color(0xFFFF00), // Yellow
+  //       endColor: am5.color(0x00FF00),   // Green
+  //       startText: "Lowest",
+  //       endText: "Highest",
+  //       stepCount: 3
+  //     }));
+  //     heatLegend?.startLabel.setAll({
+  //       fontSize: 12,
+  //       fill: heatLegend.get("startColor")
+  //     });
+  
+  //     heatLegend?.endLabel.setAll({
+  //       fontSize: 12,
+  //       fill: heatLegend.get("endColor")
+  //     });
+  //     const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
+  //     polygonSeries.set("heatRules", [{
+  //       target: polygonSeries.mapPolygons.template,
+  //       dataField: "value",
+  //       min: am5.color(0xff621f),
+  //       max: am5.color(0x661f00),
+  //       key: "fill"
+  //     }]);
+  //     polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+  //       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+  //       let countryMeanPairs:any;
+  //       let countryEntry;
+  //         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+  //     if (data) {
+  //       countryMeanPairs = Object.entries(data).map(
+  //         ([country, data]) => [country, data.mean || 0] 
+          
+  //       );
+  //     }
+  //     if(countryMeanPairs.length){
+  //       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+  //     }
+  //      if(countryEntry !== undefined && countryEntry[1])
+  //         heatLegend?.showValue(countryEntry[1]);
+  //     });
+  //     // change this to template when possible
+  // polygonSeries.events.on("datavalidated", function () {
+  //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
+  //   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
+  // });
+  //     }
+  // }
+  private rcpToJson<T>(data: string): T[] {
+    const lines = data.split('\n');
+    const headers = lines[0].split(',');
+    const result: T[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const currentLine = lines[i].split(',');
+      const obj: any = {};
+      for (let j = 0; j < headers.length; j++) {
+        const key = headers[j].trim() as keyof CsvData;
+        const value = currentLine[j] ? currentLine[j].trim() : '';
+        obj[key] = value;
+      }
+      result.push(obj as T);
+    }
+    return result;
+
+  }
   private csvToJson<T>(csvData: string): T[] {
     const lines = csvData.split('\n');
     const headers = lines[0].split(',');
@@ -336,10 +490,31 @@ export class MapComponent implements OnInit, OnDestroy {
 
   selectRcp(value: string): void {
     this.selectedRcpValue = value;
+   switch (value) {
+        case 'RCP 2.6(low)':{
+          this.showHeatLegend=true;
+            this.updateBubbleColor(); 
+           // this.showHeatLegendBar();
+            break;
+        }
+        case 'RCP 2.4(medium)':
+            this.updateDefaultColor();
+            break;
+        default:
+          this.updateDefaultColor();
+          break;
+    }
   }
 
   selectIndicator(value: string): void {
     this.selectedIndicatorValue = value;
+    if(value === 'Energy'){
+      this.indicatorName= this.energyIndicator;
+    }else if(value === 'Water'){
+      this.indicatorName=this.waterIndicator;
+    }else if(value === 'Land'){
+      this.indicatorName=this.landIndicator;
+    }
   }
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
@@ -351,27 +526,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
 
   openDialog(_dataItem: any): void {
-    this.summaryData=_dataItem;
-    // console.log('dataItem',_dataItem);
-    // const dialogRef = this.dialog.open(DialogComponent, {
-    //   data: {
-    //     //width: '250px', 
-    //     panelClass: 'full-size-dialog',
-    //     title: 'Dialog Title',
-    //     data:_dataItem?.dataContext,
-    //   },
-    // });
-    // const t = _dataItem?.dataContext['Continent']
-    // console.log('dataItem is', t);
-     this.clicked = true;
-    // this.dataSource =
-    //   [{
-    //     id: _dataItem?.dataContext?.id,
-    //     Continent: _dataItem?.dataContext.Continent,
-    //     Country: _dataItem?.dataContext.name,
-    //     value: _dataItem?.dataContext.value, Number_of_immigrants: _dataItem?.dataContext.Number_of_immigrants,
-    //     Proportion: _dataItem?.dataContext.Proportion
-    //   }];
-
+    this.summaryData = _dataItem;
+    this.clicked = true;
   }
 }

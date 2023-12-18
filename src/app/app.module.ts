@@ -38,6 +38,7 @@ import { DialogComponent } from './shared/dialog/dialog.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import { TimezonemapComponent } from './timezonemap/timezonemap.component';
+import { FactorNodegraphComponent } from './factor-nodegraph/factor-nodegraph.component';
 
 
 
@@ -58,7 +59,8 @@ import { TimezonemapComponent } from './timezonemap/timezonemap.component';
     BubbleComponent,
     SankeyGraphComponent,
     DialogComponent,
-    TimezonemapComponent
+    TimezonemapComponent,
+    FactorNodegraphComponent
    
    
   ],

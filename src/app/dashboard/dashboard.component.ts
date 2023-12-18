@@ -77,7 +77,7 @@ isHandset: any;
   }
   showCards(e:boolean){
     this.showDashboard= e;
-    this.hideDemo.emit(false);
+   // this.hideDemo.emit(false);
 
   }
   returnPage(e:boolean){
@@ -85,6 +85,7 @@ isHandset: any;
   }
   onTabChange(_e:MatTabChangeEvent){
    console.log('vlue of e is',_e);
+   this.showMap=true;
    if(_e.index === 0){
     this.showMap = false;
    }else{

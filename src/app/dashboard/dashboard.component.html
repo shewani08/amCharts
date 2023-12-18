@@ -31,7 +31,8 @@
           <ng-container *ngIf="card.showGraph">
               <!-- <app-bubble *ngIf="card.title === 'Card 1'"></app-bubble> -->
             <app-map *ngIf="card.title === 'Card 1' && !showMap"></app-map>
-            <app-timezonemap *ngIf="card.title === 'Card 1' && showMap"></app-timezonemap>
+            <!-- <app-timezonemap *ngIf="card.title === 'Card 1' && showMap"></app-timezonemap> -->
+            <app-factor-nodegraph *ngIf="card.title === 'Card 3'" ></app-factor-nodegraph>
             <!-- <app-africamap *ngIf="card.title === 'Card 1'"></app-africamap> -->
             <!-- <app-svg-list *ngIf="card.title === 'Card 3'" ></app-svg-list> -->
             <!-- <app-animate-map *ngIf="card.title === 'Card 2'"></app-animate-map> -->

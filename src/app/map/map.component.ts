@@ -40,11 +40,11 @@ interface CountryData {
 
 const getColorForValue = (value: number): string => {
   if (value >= 0 && value < 1) {
-    return "#32cd32"; 
+    return "#a79dcb"; 
   } else if (value >= 1 && value < 2) {
-    return "#ffd700 "; 
+    return "#b39dc0"; 
   } else {
-    return "#b22222"; 
+    return "#cb9daa"; 
   }
 };
 @Component({
@@ -341,53 +341,56 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-//     let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-//       orientation: "vertical",
-//       startColor: am5.color(0xFF0000), // Red
-//       endColor: am5.color(0x00FF00),   // Green
-//       startText: "Lowest",
-//       endText: "Highest",
-//       stepCount: 3,
-//       minHeight: 20 , // Set the minimum height of the legend
-//       maxHeight:500,
-//     }));
+    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+      orientation: "vertical",
+      endColor: am5.color(0xcb9daa), // Red
+      startColor: am5.color(0xa79dcb),   // Green
+      startText: "Lowest",
+      endText: "Highest",
+      stepCount: 3,
+      minHeight: 20 , // Set the minimum height of the legend
+      maxHeight:500,
+      startValue: 0,
+  
+    endValue: 3
+    }));
     
-//     heatLegend?.startLabel.setAll({
-//       fontSize: 12,
-//       fill: heatLegend.get("startColor")
-//     });
+    heatLegend?.startLabel.setAll({
+      fontSize: 12,
+      fill: heatLegend.get("startColor")
+    });
 
-//     heatLegend?.endLabel.setAll({
-//       fontSize: 12,
-//       fill: heatLegend.get("endColor")
-//     });
-//    // heatLegend.style.height = "50px";
-//    // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
-//     polygonSeries.set("heatRules", [{
-//       target: polygonSeries.mapPolygons.template,
-//       dataField: "value",
-//       min: am5.color(0xff621f),
-//       max: am5.color(0x661f00),
-//       key: "fill"
-//     }]);
-//     polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
-//       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-//       let countryMeanPairs:any;
-//       let countryEntry;
-//         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-//     if (data) {
-//       countryMeanPairs = Object.entries(data).map(
-//         ([country, data]) => [country, data.mean || 0] 
+    heatLegend?.endLabel.setAll({
+      fontSize: 12,
+      fill: heatLegend.get("endColor")
+    });
+   // heatLegend.style.height = "50px";
+   // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
+    polygonSeries.set("heatRules", [{
+      target: polygonSeries.mapPolygons.template,
+      dataField: "value",
+      min: am5.color(0xff621f),
+      max: am5.color(0x661f00),
+      key: "fill"
+    }]);
+    polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+      let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+      let countryMeanPairs:any;
+      let countryEntry;
+        const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    if (data) {
+      countryMeanPairs = Object.entries(data).map(
+        ([country, data]) => [country, data.mean || 0] 
         
-//       );
-//     }
-//     if(countryMeanPairs.length){
-//       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-//     }
-//      if(countryEntry !== undefined && countryEntry[1])
-//         heatLegend?.showValue(countryEntry[1]);
-//     });
-//     // change this to template when possible
+      );
+    }
+    if(countryMeanPairs.length){
+      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+    }
+     if(countryEntry !== undefined && countryEntry[1])
+        heatLegend?.showValue(countryEntry[1]);
+    });
+    // change this to template when possible
 // polygonSeries.events.on("datavalidated", function () {
 //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
 //   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));

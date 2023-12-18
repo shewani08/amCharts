@@ -170,6 +170,7 @@ export class MapComponent implements OnInit, OnDestroy {
            // console.log('countryEntry',countryEntry);
             if (countryEntry?.length) {
               polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
+            
             }
           } else {
             console.error('Invalid or missing data structure for polygon:', polygon);
@@ -393,59 +394,7 @@ export class MapComponent implements OnInit, OnDestroy {
 // });
 
   }
-  // private showHeatLegendBar(){
-
-  //   if(this.showHeatLegend){
-  //     let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-  //       orientation: "vertical",
-  //       startColor: am5.color(0xFF0000), // Red
-  //       //middleColor: am5.color(0xFFFF00), // Yellow
-  //       endColor: am5.color(0x00FF00),   // Green
-  //       startText: "Lowest",
-  //       endText: "Highest",
-  //       stepCount: 3
-  //     }));
-  //     heatLegend?.startLabel.setAll({
-  //       fontSize: 12,
-  //       fill: heatLegend.get("startColor")
-  //     });
   
-  //     heatLegend?.endLabel.setAll({
-  //       fontSize: 12,
-  //       fill: heatLegend.get("endColor")
-  //     });
-  //     const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
-  //     polygonSeries.set("heatRules", [{
-  //       target: polygonSeries.mapPolygons.template,
-  //       dataField: "value",
-  //       min: am5.color(0xff621f),
-  //       max: am5.color(0x661f00),
-  //       key: "fill"
-  //     }]);
-  //     polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
-  //       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-  //       let countryMeanPairs:any;
-  //       let countryEntry;
-  //         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-  //     if (data) {
-  //       countryMeanPairs = Object.entries(data).map(
-  //         ([country, data]) => [country, data.mean || 0] 
-          
-  //       );
-  //     }
-  //     if(countryMeanPairs.length){
-  //       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-  //     }
-  //      if(countryEntry !== undefined && countryEntry[1])
-  //         heatLegend?.showValue(countryEntry[1]);
-  //     });
-  //     // change this to template when possible
-  // polygonSeries.events.on("datavalidated", function () {
-  //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
-  //   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
-  // });
-  //     }
-  // }
   private updateValueLabel(valueLabel:any,radius: number) {
     valueLabel.textContent = `Radius: ${radius.toFixed(2)}`; // Adjust formatting as needed
   }
@@ -507,9 +456,11 @@ export class MapComponent implements OnInit, OnDestroy {
     this.selectedRcpValue = value;
    switch (value) {
         case 'RCP 2.6(low)':{
-          this.showHeatLegend=true;
-            this.updateBubbleColor(); 
-           // this.showHeatLegendBar();
+          // this.showHeatLegend=true;
+          //   this.updateBubbleColor(); 
+          this.showHeatLegend=false;
+          this.updateDefaultColor();
+           
             break;
         }
         case 'RCP 2.4(medium)':{
@@ -541,7 +492,13 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   selectName(value: string): void {
     this.selectedNameValue = value;
+    if(this.selectedRcpValue === 'RCP 2.6(low)' &&  this.selectedIndicatorValue ==='Water' && this.selectedNameValue === 'Water stress index')
+     {
+      this.showHeatLegend=true;
+      this.updateBubbleColor(); 
+     }
   }
+
 
 
   openDialog(_dataItem: any): void {

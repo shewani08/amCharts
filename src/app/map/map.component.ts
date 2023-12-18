@@ -40,11 +40,11 @@ interface CountryData {
 
 const getColorForValue = (value: number): string => {
   if (value >= 0 && value < 1) {
-    return "#dc67ce"; 
+    return "#ff621f"; 
   } else if (value >= 1 && value < 2) {
-    return "#dc67b6"; 
+    return "#d65016"; 
   } else {
-    return "#dc6788"; 
+    return "#842c06"; 
   }
 };
 @Component({
@@ -343,8 +343,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this.bubbleSeries.data.setAll(this.jsonData);
     let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
       orientation: "vertical",
-      endColor: am5.color(0xdc6788), // Red
-      startColor: am5.color(0xdc67ce),   // Green
+      endColor: am5.color(0x842c06), // Red
+      startColor: am5.color(0xff621f),   // Green
       startText: "Lowest",
       endText: "Highest",
       stepCount: 3,

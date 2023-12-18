@@ -46,20 +46,20 @@
   }
   
   .box-high {
-    width: 20px;   /* Adjust the width as needed */
-    height: 10px;  /* Adjust the height as needed */
-    background-color: #b22222;  /* Adjust the background color as needed */
-    margin-right: 5px;  /* Adjust the margin as needed */
+    width: 20px;   
+    height: 10px; 
+    background-color: #842c06;  
+    margin-right: 5px; 
   }
   .box-low {
-    width: 20px;   /* Adjust the width as needed */
-    height: 10px;  /* Adjust the height as needed */
-    background-color: #32cd32 ;  /* Adjust the background color as needed */
-    margin-right: 5px;  /* Adjust the margin as needed */
+    width: 20px;  
+    height: 10px;  
+    background-color: #ff621f ;  
+    margin-right: 5px;  
   }
   .box-middle {
-    width: 20px;   /* Adjust the width as needed */
-    height: 10px;  /* Adjust the height as needed */
-    background-color: #ffd700  ;  /* Adjust the background color as needed */
-    margin-right: 5px;  /* Adjust the margin as needed */
+    width: 20px;   
+    height: 10px; 
+    background-color: #d65016 ;  
+    margin-right: 5px;  
   }

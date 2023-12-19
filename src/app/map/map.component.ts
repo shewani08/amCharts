@@ -130,13 +130,12 @@ export class MapComponent implements OnInit, OnDestroy {
   countryMeanIdPairs: { id: string; value: number; }[] =[];
   meanData: any;
   showHeatLegend: boolean = false;
+  chartdiv: HTMLElement | null | undefined;
+  heatLegend: any;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
-
-
 
   ngOnInit(): void {
     this.loadData();
-
   }
 
   ngOnDestroy(): void {
@@ -160,14 +159,13 @@ export class MapComponent implements OnInit, OnDestroy {
       console.error('Means by country is undefined.');
     }
    if (this.chart && this.chart.series.length > 0) {
-      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+     const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
       if (polygonSeries) {
         polygonSeries.mapPolygons.each((polygon) => {
           const dataContext = polygon.dataItem?.dataContext;
           if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
             const countryName = dataContext.name;
             const countryEntry = countryMeanPairs.find(([country]) => country === countryName);
-           // console.log('countryEntry',countryEntry);
             if (countryEntry?.length) {
               polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
             
@@ -177,7 +175,59 @@ export class MapComponent implements OnInit, OnDestroy {
           }
         });
       }
+      if (this.chart && this.showHeatLegend) {
+      this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
+
+        orientation: "vertical",
+        endColor: am5.color(0x842c06), // Red
+        startColor: am5.color(0xff621f),   // Green
+        startText: "Lowest",
+        endText: "Highest",
+        stepCount: 3,
+        minHeight: 20 , // Set the minimum height of the legend
+        maxHeight:500,
+        startValue: 0,
+        endValue: 3
+      }));
+      console.log('heatLegend',this.heatLegend);
+      
+      this.heatLegend?.startLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("startColor")
+      });
+  
+      this.heatLegend?.endLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("endColor")
+      });
+      polygonSeries.set("heatRules", [{
+        target: polygonSeries.mapPolygons.template,
+        dataField: "value",
+        min: am5.color(0xff621f),
+        max: am5.color(0x661f00),
+        key: "fill"
+      }]);
+      polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+        let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+        let countryMeanPairs:any;
+        let countryEntry;
+          const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+      if (data) {
+        countryMeanPairs = Object.entries(data).map(
+          ([country, data]) => [country, data.mean || 0] 
+          
+        );
+      }
+      if(countryMeanPairs.length){
+        countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+      }
+       if(countryEntry !== undefined && countryEntry[1])
+          this.heatLegend?.showValue(countryEntry[1]);
+      });
     }
+  }else{
+    console.error('Chart container element not found!');
+  }
   }
   private updateDefaultColor(): void {
     if (this.chart && this.chart.series.length > 0) {
@@ -188,8 +238,8 @@ export class MapComponent implements OnInit, OnDestroy {
       });
     }
   }
-
-  }
+  this.heatLegend.hide();
+}
   
   private calculateMeanByCountry(data: Entry[], property: string) {
     const result: Result = {};
@@ -220,15 +270,15 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private initChart(): void {
-    const chartdiv = document.getElementById('chartdiv');
-    if (!chartdiv) {
+    this.chartdiv = document.getElementById('chartdiv');
+    if (!this.chartdiv) {
       console.error('Chart container element not found!');
       return;
     }
     if (this.chart) {
       this.chart.dispose();
     }
-    const root = am5.Root.new(chartdiv);
+    const root = am5.Root.new(this.chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
     const polygonSeries = this.chart.series.push(
@@ -341,55 +391,54 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-      orientation: "vertical",
-      endColor: am5.color(0x842c06), // Red
-      startColor: am5.color(0xff621f),   // Green
-      startText: "Lowest",
-      endText: "Highest",
-      stepCount: 3,
-      minHeight: 20 , // Set the minimum height of the legend
-      maxHeight:500,
-      startValue: 0,
-  
-    endValue: 3
-    }));
     
-    heatLegend?.startLabel.setAll({
-      fontSize: 12,
-      fill: heatLegend.get("startColor")
-    });
+    // let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+    //   orientation: "vertical",
+    //   endColor: am5.color(0x842c06), // Red
+    //   startColor: am5.color(0xff621f),   // Green
+    //   startText: "Lowest",
+    //   endText: "Highest",
+    //   stepCount: 3,
+    //   minHeight: 20 , // Set the minimum height of the legend
+    //   maxHeight:500,
+    //   startValue: 0,
+    //   endValue: 3
+    // }));
+    
+    // heatLegend?.startLabel.setAll({
+    //   fontSize: 12,
+    //   fill: heatLegend.get("startColor")
+    // });
 
-    heatLegend?.endLabel.setAll({
-      fontSize: 12,
-      fill: heatLegend.get("endColor")
-    });
-   // heatLegend.style.height = "50px";
-   // const polygonSeries = this.chart?.series.getIndex(0) as am5map.MapPolygonSeries;
-    polygonSeries.set("heatRules", [{
-      target: polygonSeries.mapPolygons.template,
-      dataField: "value",
-      min: am5.color(0xff621f),
-      max: am5.color(0x661f00),
-      key: "fill"
-    }]);
-    polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
-      let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-      let countryMeanPairs:any;
-      let countryEntry;
-        const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-    if (data) {
-      countryMeanPairs = Object.entries(data).map(
-        ([country, data]) => [country, data.mean || 0] 
+    // heatLegend?.endLabel.setAll({
+    //   fontSize: 12,
+    //   fill: heatLegend.get("endColor")
+    // });
+   
+    // polygonSeries.set("heatRules", [{
+    //   target: polygonSeries.mapPolygons.template,
+    //   dataField: "value",
+    //   min: am5.color(0xff621f),
+    //   max: am5.color(0x661f00),
+    //   key: "fill"
+    // }]);
+    // polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+    //   let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+    //   let countryMeanPairs:any;
+    //   let countryEntry;
+    //     const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    // if (data) {
+    //   countryMeanPairs = Object.entries(data).map(
+    //     ([country, data]) => [country, data.mean || 0] 
         
-      );
-    }
-    if(countryMeanPairs.length){
-      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-    }
-     if(countryEntry !== undefined && countryEntry[1])
-        heatLegend?.showValue(countryEntry[1]);
-    });
+    //   );
+    // }
+    // if(countryMeanPairs.length){
+    //   countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+    // }
+    //  if(countryEntry !== undefined && countryEntry[1])
+    //     heatLegend?.showValue(countryEntry[1]);
+    // });
     // change this to template when possible
 // polygonSeries.events.on("datavalidated", function () {
 //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
@@ -397,6 +446,11 @@ export class MapComponent implements OnInit, OnDestroy {
 // });
 
   }
+
+  private setupHeatLegend(legend: am5.HeatLegend): void {
+    
+  }
+
   
   private updateValueLabel(valueLabel:any,radius: number) {
     valueLabel.textContent = `Radius: ${radius.toFixed(2)}`; // Adjust formatting as needed
@@ -467,11 +521,13 @@ export class MapComponent implements OnInit, OnDestroy {
             break;
         }
         case 'RCP 2.4(medium)':{
+          this.heatLegend.hide();
           this.showHeatLegend=false;
             this.updateDefaultColor();
             break;
         }
         default:{
+          this.heatLegend.hide();
           this.updateDefaultColor();
           this.showHeatLegend=false;
           break;
@@ -499,6 +555,10 @@ export class MapComponent implements OnInit, OnDestroy {
      {
       this.showHeatLegend=true;
       this.updateBubbleColor(); 
+      
+     }else{
+      this.showHeatLegend=false;
+      this.updateDefaultColor();
      }
   }
 

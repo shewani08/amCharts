@@ -49,9 +49,9 @@ export class DialogComponent implements OnChanges {
   displayedColumns: string[] = [
 
     'Country',
-    'value',
+    //'value',
     'Number_of_immigrants',
-    'Proportion'];
+    'Proportion','Year'];
   
    
   

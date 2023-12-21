@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CsvService } from '../service/CsvService';
 import * as am5 from '@amcharts/amcharts5';
@@ -40,11 +40,11 @@ interface CountryData {
 
 const getColorForValue = (value: number): string => {
   if (value >= 0 && value < 1) {
-    return "#ff621f"; 
+    return "#ff621f";
   } else if (value >= 1 && value < 2) {
-    return "#d65016"; 
+    return "#d65016";
   } else {
-    return "#842c06"; 
+    return "#842c06";
   }
 };
 @Component({
@@ -54,7 +54,8 @@ const getColorForValue = (value: number): string => {
 })
 export class MapComponent implements OnInit, OnDestroy {
 
-
+  @ViewChild('dropdown')
+  dropdown!: ElementRef;
   private chart: am5map.MapChart | undefined;
   private bubbleSeries: am5map.MapPointSeries | undefined;
   private jsonData: any;
@@ -120,18 +121,24 @@ export class MapComponent implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  energyIndicator=['Heat stress event exposure'];
-  waterIndicator=['Drought intensity change','Water stress index'];
-  landIndicator =['Agricultural water stress index','Crop yield change'];
-  indicatorName:string[]=[];
+  energyIndicator = ['Heat stress event exposure'];
+  waterIndicator = ['Drought intensity change', 'Water stress index'];
+  landIndicator = ['Agricultural water stress index', 'Crop yield change'];
+
+  indicatorName: string[] = [];
   summaryData: any;
   rcpData: any;
   meansByCountry: Result | undefined;
-  countryMeanIdPairs: { id: string; value: number; }[] =[];
+  countryMeanIdPairs: { id: string; value: number; }[] = [];
   meanData: any;
   showHeatLegend: boolean = false;
   chartdiv: HTMLElement | null | undefined;
   heatLegend: any;
+  polygonSeries: any;
+  countryEntry: any;
+  selectedRcpValues: string[] = [];
+  selectedIndicators: string[] = [];
+  isDropdownOpen = false;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -145,12 +152,12 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private updateBubbleColor(): void {
-  let countryMeanPairs: [string, number][];
-  const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    let countryMeanPairs: [string, number][];
+    const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
     if (data) {
       countryMeanPairs = Object.entries(data).map(
-        ([country, data]) => [country, data.mean || 0] 
-        
+        ([country, data]) => [country, data.mean || 0]
+
       );
       this.countryMeanIdPairs = Object.entries(data).map(
         ([country, data]) => ({ id: country, value: data.mean || 0 })
@@ -158,24 +165,7 @@ export class MapComponent implements OnInit, OnDestroy {
     } else {
       console.error('Means by country is undefined.');
     }
-   if (this.chart && this.chart.series.length > 0) {
-     const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
-      if (polygonSeries) {
-        polygonSeries.mapPolygons.each((polygon) => {
-          const dataContext = polygon.dataItem?.dataContext;
-          if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
-            const countryName = dataContext.name;
-            const countryEntry = countryMeanPairs.find(([country]) => country === countryName);
-            if (countryEntry?.length) {
-              polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
-            
-            }
-          } else {
-            console.error('Invalid or missing data structure for polygon:', polygon);
-          }
-        });
-      }
-      if (this.chart && this.showHeatLegend) {
+    if (this.chart && this.chart.series.length > 0) {
       this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
 
         orientation: "vertical",
@@ -184,63 +174,137 @@ export class MapComponent implements OnInit, OnDestroy {
         startText: "Lowest",
         endText: "Highest",
         stepCount: 3,
-        minHeight: 20 , // Set the minimum height of the legend
-        maxHeight:500,
+        minHeight: 20, // Set the minimum height of the legend
+        maxHeight: 500,
         startValue: 0,
         endValue: 3
       }));
-      console.log('heatLegend',this.heatLegend);
-      
+      console.log('heatLegend', this.heatLegend);
+
       this.heatLegend?.startLabel.setAll({
         fontSize: 12,
         fill: this.heatLegend.get("startColor")
       });
-  
+
       this.heatLegend?.endLabel.setAll({
         fontSize: 12,
         fill: this.heatLegend.get("endColor")
       });
-      polygonSeries.set("heatRules", [{
-        target: polygonSeries.mapPolygons.template,
-        dataField: "value",
-        min: am5.color(0xff621f),
-        max: am5.color(0x661f00),
-        key: "fill"
-      }]);
-      polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
-        let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-        let countryMeanPairs:any;
-        let countryEntry;
-          const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-      if (data) {
-        countryMeanPairs = Object.entries(data).map(
-          ([country, data]) => [country, data.mean || 0] 
-          
-        );
+      // const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+      this.polygonSeries.mapPolygons.template.set("interactive", true);
+      if (this.polygonSeries) {
+        this.setupHeatLegend(1);
+        this.polygonSeries.mapPolygons.each((polygon: { dataItem: { dataContext: any; }; set: (arg0: string, arg1: am5.Color) => void; }) => {
+          const dataContext = polygon.dataItem?.dataContext;
+          if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
+            const countryName = dataContext.name;
+            const countryEntry = countryMeanPairs.find(([country]) => country === countryName);
+            if (countryEntry?.length) {
+              polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
+
+            }
+          } else {
+            console.error('Invalid or missing data structure for polygon:', polygon);
+          }
+        });
+        //   this.polygonSeries.set("heatRules", [{
+        //   target: this.polygonSeries.mapPolygons.template,
+        //   dataField: "value",
+        //   min: am5.color(0xff621f),
+        //   max: am5.color(0x661f00),
+        //   key: "fill"
+        // }]);
+
+        // if(this.polygonSeries.mapPolygons.template.events.has("pointerover")){
+        //      this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
+        //   alert('pointer');
+        // })}else{
+        //   this.polygonSeries.mapPolygons.template.events.on("click", (ev:any)=> {
+        //     alert('clicked');
+        //   });
+
+        // }
+
+
+
       }
-      if(countryMeanPairs.length){
-        countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+      if (this.chart && this.showHeatLegend && this.polygonSeries) {
+        // this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
+
+        //   orientation: "vertical",
+        //   endColor: am5.color(0x842c06), // Red
+        //   startColor: am5.color(0xff621f),   // Green
+        //   startText: "Lowest",
+        //   endText: "Highest",
+        //   stepCount: 3,
+        //   minHeight: 20 , // Set the minimum height of the legend
+        //   maxHeight:500,
+        //   startValue: 0,
+        //   endValue: 3
+        // }));
+        // console.log('heatLegend',this.heatLegend);
+
+        // this.heatLegend?.startLabel.setAll({
+        //   fontSize: 12,
+        //   fill: this.heatLegend.get("startColor")
+        // });
+
+        // this.heatLegend?.endLabel.setAll({
+        //   fontSize: 12,
+        //   fill: this.heatLegend.get("endColor")
+        // });
+        //     if (this.polygonSeries) {
+        //     this.polygonSeries.set("heatRules", [{
+        //       target: this.polygonSeries.mapPolygons.template,
+        //       dataField: "value",
+        //       min: am5.color(0xff621f),
+        //       max: am5.color(0x661f00),
+        //       key: "fill"
+        //     }]);
+        //     console.log(' this.polygonSeries', this.polygonSeries);
+        //     this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
+        //     console.log('pointerover');
+        //       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
+        //       let countryMeanPairs:any;
+        //       let countryEntry;
+        //         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+        //     if (data) {
+        //       countryMeanPairs = Object.entries(data).map(
+        //         ([country, data]) => [country, data.mean || 0] 
+
+        //       );
+        //     }
+        //     if(countryMeanPairs.length){
+        //       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+        //     } 
+        //      if(countryEntry !== undefined && countryEntry[1]){
+        //         this.heatLegend?.showValue(countryEntry[1]);
       }
-       if(countryEntry !== undefined && countryEntry[1])
-          this.heatLegend?.showValue(countryEntry[1]);
-      });
+      //    });
+      //   }else{
+      //     console.log('no polygonSeries');
+      //    }
+      //   }
+      // }else{
+
+      //   console.error('Chart container element not found!');
     }
-  }else{
-    console.error('Chart container element not found!');
-  }
+
   }
   private updateDefaultColor(): void {
     if (this.chart && this.chart.series.length > 0) {
-    const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
-    if (polygonSeries) {
-      polygonSeries.mapPolygons.each((polygon) => {
-    polygon.set("fill", am5.color(0x6794dc));
-      });
+      this.heatLegend.hide();
+      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+      if (polygonSeries) {
+        polygonSeries.mapPolygons.each((polygon) => {
+          polygon.set("fill", am5.color(0x6794dc));
+        });
+      }
+      // this.polygonSeries.hide();
     }
+
   }
-  this.heatLegend.hide();
-}
-  
+
   private calculateMeanByCountry(data: Entry[], property: string) {
     const result: Result = {};
     data.forEach((entry: { [x: string]: any; Country: any; }) => {
@@ -281,9 +345,9 @@ export class MapComponent implements OnInit, OnDestroy {
     const root = am5.Root.new(this.chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-    const polygonSeries = this.chart.series.push(
+    this.polygonSeries = this.chart.series.push(
       am5map.MapPolygonSeries.new(root, {
-    include: [
+        include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
           'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
           'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
@@ -291,7 +355,8 @@ export class MapComponent implements OnInit, OnDestroy {
         ],
         geoJSON: am5geodata_worldLow,
         valueField: "value",
-        calculateAggregates: true
+        calculateAggregates: true,
+        interactive: true
         // fill: am5.color(0xffa500)
       })
     );
@@ -328,7 +393,7 @@ export class MapComponent implements OnInit, OnDestroy {
           centerY: am5.p50
         })
       );
-      
+
       const valueLabel = document.createElement('div');
       valueLabel.style.fontSize = '12px';
       valueLabel.style.position = 'absolute';
@@ -336,8 +401,8 @@ export class MapComponent implements OnInit, OnDestroy {
       document.body.appendChild(valueLabel);
       circle.on('radius', (radius: any) => {
         countryLabel.set('x', radius);
-        this.updateValueLabel(valueLabel,radius);
-        
+        this.updateValueLabel(valueLabel, radius);
+
       });
       circle.animate({
         key: "scale",
@@ -391,38 +456,40 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-    
-    // let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-    //   orientation: "vertical",
-    //   endColor: am5.color(0x842c06), // Red
-    //   startColor: am5.color(0xff621f),   // Green
-    //   startText: "Lowest",
-    //   endText: "Highest",
-    //   stepCount: 3,
-    //   minHeight: 20 , // Set the minimum height of the legend
-    //   maxHeight:500,
-    //   startValue: 0,
-    //   endValue: 3
-    // }));
-    
-    // heatLegend?.startLabel.setAll({
-    //   fontSize: 12,
-    //   fill: heatLegend.get("startColor")
-    // });
 
-    // heatLegend?.endLabel.setAll({
-    //   fontSize: 12,
-    //   fill: heatLegend.get("endColor")
-    // });
-   
-    // polygonSeries.set("heatRules", [{
-    //   target: polygonSeries.mapPolygons.template,
+    //    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
+
+    //       orientation: "vertical",
+    //       endColor: am5.color(0x842c06), // Red
+    //       startColor: am5.color(0xff621f),   // Green
+    //       startText: "Lowest",
+    //       endText: "Highest",
+    //       stepCount: 3,
+    //       minHeight: 20 , // Set the minimum height of the legend
+    //       maxHeight:500,
+    //       startValue: 0,
+    //       endValue: 3
+    //     }));
+
+    //     this.heatLegend?.startLabel.setAll({
+    //       fontSize: 12,
+    //       fill: this.heatLegend.get("startColor")
+    //     });
+
+    //     this.heatLegend?.endLabel.setAll({
+    //       fontSize: 12,
+    //       fill: this.heatLegend.get("endColor")
+    //     });
+
+    // this.polygonSeries.set("heatRules", [{
+    //   target: this.polygonSeries.mapPolygons.template,
     //   dataField: "value",
     //   min: am5.color(0xff621f),
     //   max: am5.color(0x661f00),
     //   key: "fill"
     // }]);
-    // polygonSeries.mapPolygons.template.events.on("pointerover", (ev)=> {
+    // this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
+    //   // console.log('pointerover');
     //   let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
     //   let countryMeanPairs:any;
     //   let countryEntry;
@@ -430,29 +497,56 @@ export class MapComponent implements OnInit, OnDestroy {
     // if (data) {
     //   countryMeanPairs = Object.entries(data).map(
     //     ([country, data]) => [country, data.mean || 0] 
-        
+
     //   );
     // }
     // if(countryMeanPairs.length){
-    //   countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+    //   this.countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
     // }
     //  if(countryEntry !== undefined && countryEntry[1])
-    //     heatLegend?.showValue(countryEntry[1]);
+    //    this.heatLegend?.showValue(countryEntry[1]);
+    //   });
+    //    //change this to template when possible
+    // polygonSeries.events.on("datavalidated", function () {
+    //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
+    //   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
     // });
-    // change this to template when possible
-// polygonSeries.events.on("datavalidated", function () {
-//   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
-//   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
-// });
+    this.setupHeatLegend(0);
 
   }
-
-  private setupHeatLegend(legend: am5.HeatLegend): void {
-    
+  public setupHeatLegend(data: any) {
+    this.polygonSeries.set("heatRules", [{
+      target: this.polygonSeries.mapPolygons.template,
+      dataField: "value",
+      min: am5.color(0xff621f),
+      max: am5.color(0x661f00),
+      key: "fill"
+    }]);
+    this.polygonSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
   }
 
-  
-  private updateValueLabel(valueLabel:any,radius: number) {
+  onMapPolygonPointerOver(ev: any) {
+    // this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev: any) => {
+    // alert('clicked');
+    // this.polygonSeries.mapPolygons.addEventListener('hover',(ev:any)=>{
+    let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
+    let countryMeanPairs: any;
+    let countryEntry;
+    const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    if (data) {
+      countryMeanPairs = Object.entries(data).map(
+        ([country, data]) => [country, data.mean || 0]
+      );
+    }
+    if (countryMeanPairs.length) {
+      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+    }
+    if (countryEntry !== undefined && countryEntry[1])
+      this.heatLegend?.showValue(countryEntry[1]);
+    // });
+  }
+
+  private updateValueLabel(valueLabel: any, radius: number) {
     valueLabel.textContent = `Radius: ${radius.toFixed(2)}`; // Adjust formatting as needed
   }
   private rcpToJson<T>(data: string): T[] {
@@ -506,63 +600,120 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   selectedRcpValue: string | null = null;
   selectedIndicatorValue: string | null = null;
-  selectedNameValue: string | null = null;
+  selectedNameValue: string='';
   selectedCountryValue: string | null = null;
 
   selectRcp(value: string): void {
-    this.selectedRcpValue = value;
-   switch (value) {
-        case 'RCP 2.6(low)':{
-          // this.showHeatLegend=true;
-          //   this.updateBubbleColor(); 
-          this.showHeatLegend=false;
-          this.updateDefaultColor();
-           
-            break;
-        }
-        case 'RCP 2.4(medium)':{
-          this.heatLegend.hide();
-          this.showHeatLegend=false;
+    // const index = this.selectedRcpValues.indexOf(value);
+
+    // if (index === -1) {
+    //   // Value not found, add it to the array
+    //   this.selectedRcpValues.push(value);
+    // } else {
+    //   // Value found, remove it from the array
+    //   this.selectedRcpValues.splice(index, 1);
+    // }
+      this.selectedRcpValue = value;
+     switch (value) {
+          case 'RCP 2.6(low)':{
+            // this.showHeatLegend=true;
+            //   this.updateBubbleColor(); 
+
+            this.showHeatLegend=false;
             this.updateDefaultColor();
+
+              break;
+          }
+          case 'RCP 2.4(medium)':{
+            if(this.heatLegend)
+            this.heatLegend.hide();
+            this.showHeatLegend=false;
+              this.updateDefaultColor();
+              this.polygonSeries.mapPolygons.template.events.off("pointerover", this.onMapPolygonPointerOver.bind(this));
+
+              break;
+          }
+          default:{
+            if(this.heatLegend)
+           this.heatLegend.hide();
+            this.updateDefaultColor();
+            this.showHeatLegend=false;
+
             break;
-        }
-        default:{
-          this.heatLegend.hide();
-          this.updateDefaultColor();
-          this.showHeatLegend=false;
-          break;
-        }
-    }
+          }
+      }
   }
 
+  // selectIndicator(value: string): void {
+  //   this.selectedIndicatorValue = value;
+  //   if(value === 'Energy'){
+  //     this.indicatorName= this.energyIndicator;
+  //   }else if(value === 'Water'){
+  //     this.indicatorName=this.waterIndicator;
+  //   }else if(value === 'Land'){
+  //     this.indicatorName=this.landIndicator;
+  //   }
+  // }
   selectIndicator(value: string): void {
-    this.selectedIndicatorValue = value;
-    if(value === 'Energy'){
-      this.indicatorName= this.energyIndicator;
-    }else if(value === 'Water'){
-      this.indicatorName=this.waterIndicator;
-    }else if(value === 'Land'){
-      this.indicatorName=this.landIndicator;
-    }
+    const index = this.selectedIndicators.indexOf(value);
+
+    if (index === -1) {
+      // Value not found, add it to the array
+      this.selectedIndicators.push(value);
+
+    } else {
+      // Value found, remove it from the array
+      this.selectedIndicators.splice(index, 1);
+    } this.updateIndicatorName();
+
+
+    // Handle other logic based on selected indicators as needed
   }
+  updateIndicatorName(): void {
+
+    console.log('this.selectedIndicators are ', this.selectedIndicators);
+    let combinedIndicators: string[] = [];
+
+    if (this.selectedIndicators.includes('Water')) {
+      combinedIndicators = combinedIndicators.concat(this.waterIndicator);
+    }
+
+    if (this.selectedIndicators.includes('Energy')) {
+      combinedIndicators = combinedIndicators.concat(this.energyIndicator);
+    }
+
+    if (this.selectedIndicators.includes('Land')) {
+      combinedIndicators = combinedIndicators.concat(this.landIndicator);
+    }
+
+    this.indicatorName = Array.from(new Set(combinedIndicators));
+  }
+
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
 
   }
   selectName(value: string): void {
+
+    console.log('value is',value);
     this.selectedNameValue = value;
-    if(this.selectedRcpValue === 'RCP 2.6(low)' &&  this.selectedIndicatorValue ==='Water' && this.selectedNameValue === 'Water stress index')
-     {
-      this.showHeatLegend=true;
-      this.updateBubbleColor(); 
-      
-     }else{
-      this.showHeatLegend=false;
+    console.log('this.selectedIndicatorValue',this.selectedIndicatorValue?.length);
+    console.log('this.selectedNameValue',this.selectedNameValue);
+    if (this.selectedRcpValue === 'RCP 2.6(low)' && (this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water') && this.selectedNameValue === 'Water stress index') {
+      this.showHeatLegend = true;
+      this.updateBubbleColor();
+
+    } else {
+      //  this.polygonSeries.removeEventListener("pointerover", this.removePointer, false);
+      this.showHeatLegend = false;
+      // this.heatLegend.showValue(null);
       this.updateDefaultColor();
-     }
+      // this.chart=undefined;
+      // this.polygonSeries=null;
+      // this.initChart();
+    }
   }
-
-
+  
 
   openDialog(_dataItem: any): void {
     this.summaryData = _dataItem;

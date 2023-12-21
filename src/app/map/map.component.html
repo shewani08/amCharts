@@ -5,23 +5,52 @@
         {{ selectedRcpValue || 'RCP Scenario' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(low)')">RCP 2.6(low)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.4(medium)')">RCP 2.4(medium)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.8(high)')">RCP 2.8(high)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(low)')">RCP 2.6 (LOW)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.4(medium)')">RCP 4.5 (MEDIUM)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.8(high)')"> RCP 8.5 (HIGH)</a>
       </div>
+      <!-- <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="rcpDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Select RCP
+  </button>
+  <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="rcp26" (change)="selectRcp('RCP 2.6(low)')" />
+      <label for="rcp26">RCP 2.6 (LOW)</label>
     </div>
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="rcp45" (change)="selectRcp('RCP 4.5(medium)')" />
+      <label for="rcp45">RCP 4.5 (MEDIUM)</label>
+    </div>
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="rcp85" (change)="selectRcp('RCP 8.5(high)')" />
+      <label for="rcp85">RCP 8.5 (HIGH)</label>
+    </div>
+  </div>
+</div> -->
+</div>
   
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="indicatorDropdown" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-        {{ selectedIndicatorValue || 'Indicator category' }}
-      </button>
-      <div class="dropdown-menu" aria-labelledby="indicatorDropdown">
-        <a class="dropdown-item" href="#" (click)="selectIndicator('Energy')">Energy</a>
-        <a class="dropdown-item" href="#" (click)="selectIndicator('Land')">Land</a>
-        <a class="dropdown-item" href="#" (click)="selectIndicator('Water')">Water</a>
-      </div>
+<div class="dropdown" #dropdown>
+  <button class="btn btn-primary dropdown-toggle rcp" type="button" id="indicatorDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" >
+    {{ selectedIndicators.length > 0 ? selectedIndicators.join(', ') : 'Indicator category' }}
+  </button>
+  <div class="dropdown-menu" aria-labelledby="indicatorDropdown"  >
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="energy" (change)="selectIndicator('Energy')" />
+      <label for="rcp26">Energy</label>
     </div>
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="land" (change)="selectIndicator('Land')" />
+      <label for="rcp45">Land</label>
+    </div>
+    <div class="dropdown-item custom-checkbox">
+      <input type="checkbox" id="water" (change)="selectIndicator('Water')" />
+      <label for="rcp85">Water</label>
+    </div>
+  </div>
+</div>
+    
 
     <div class="dropdown mr-auto">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"

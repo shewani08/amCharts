@@ -64,7 +64,6 @@ export class MapComponent implements OnInit, OnDestroy {
   public continents: string[] = ['Factor 1', 'Irregular migrants', 'Economic Score'];
 
   clicked: boolean = false;
-  //dataSource: { id: any; Continent: any; Country: any; value: any; Number_of_immigrants: any; Proportion: any; }[];
   countryNames = [
     'Algeria',
     'Angola',
@@ -121,10 +120,11 @@ export class MapComponent implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  energyIndicator = ['Heat stress event exposure'];
-  waterIndicator = ['Drought intensity change', 'Water stress index'];
-  landIndicator = ['Agricultural water stress index', 'Crop yield change'];
-
+  indicators=[{id:'Drought intensity change (Water)', name:'Drought intensity change (Water)'},
+    {id:'Water index stress (Water)',name:'Water index stress (Water)'},
+    {id:'Heat Index Event exposure (Energy)',name:'Heat Index Event exposure (Energy)'},
+    {id:'Agriculture water Stress index(Land)',name:'Agriculture water Stress index(Land)'},
+    {id:'Crop yield change (Land)',name:'Crop yield change (Land)'}];
   indicatorName: string[] = [];
   summaryData: any;
   rcpData: any;
@@ -138,7 +138,8 @@ export class MapComponent implements OnInit, OnDestroy {
   countryEntry: any;
   selectedRcpValues: string[] = [];
   selectedIndicators: string[] = [];
-  isDropdownOpen = false;
+  selectedYear: number = 2022;
+  years: number[] = [2022, 2023];
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -171,8 +172,8 @@ export class MapComponent implements OnInit, OnDestroy {
         orientation: "vertical",
         endColor: am5.color(0x842c06), // Red
         startColor: am5.color(0xff621f),   // Green
-        startText: "Lowest",
-        endText: "Highest",
+        startText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Least reduction in available water':'',
+        endText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Most reduction in available water':'',
         stepCount: 3,
         minHeight: 20, // Set the minimum height of the legend
         maxHeight: 500,
@@ -190,7 +191,6 @@ export class MapComponent implements OnInit, OnDestroy {
         fontSize: 12,
         fill: this.heatLegend.get("endColor")
       });
-      // const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
       this.polygonSeries.mapPolygons.template.set("interactive", true);
       if (this.polygonSeries) {
         this.setupHeatLegend(1);
@@ -207,87 +207,7 @@ export class MapComponent implements OnInit, OnDestroy {
             console.error('Invalid or missing data structure for polygon:', polygon);
           }
         });
-        //   this.polygonSeries.set("heatRules", [{
-        //   target: this.polygonSeries.mapPolygons.template,
-        //   dataField: "value",
-        //   min: am5.color(0xff621f),
-        //   max: am5.color(0x661f00),
-        //   key: "fill"
-        // }]);
-
-        // if(this.polygonSeries.mapPolygons.template.events.has("pointerover")){
-        //      this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
-        //   alert('pointer');
-        // })}else{
-        //   this.polygonSeries.mapPolygons.template.events.on("click", (ev:any)=> {
-        //     alert('clicked');
-        //   });
-
-        // }
-
-
-
-      }
-      if (this.chart && this.showHeatLegend && this.polygonSeries) {
-        // this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
-
-        //   orientation: "vertical",
-        //   endColor: am5.color(0x842c06), // Red
-        //   startColor: am5.color(0xff621f),   // Green
-        //   startText: "Lowest",
-        //   endText: "Highest",
-        //   stepCount: 3,
-        //   minHeight: 20 , // Set the minimum height of the legend
-        //   maxHeight:500,
-        //   startValue: 0,
-        //   endValue: 3
-        // }));
-        // console.log('heatLegend',this.heatLegend);
-
-        // this.heatLegend?.startLabel.setAll({
-        //   fontSize: 12,
-        //   fill: this.heatLegend.get("startColor")
-        // });
-
-        // this.heatLegend?.endLabel.setAll({
-        //   fontSize: 12,
-        //   fill: this.heatLegend.get("endColor")
-        // });
-        //     if (this.polygonSeries) {
-        //     this.polygonSeries.set("heatRules", [{
-        //       target: this.polygonSeries.mapPolygons.template,
-        //       dataField: "value",
-        //       min: am5.color(0xff621f),
-        //       max: am5.color(0x661f00),
-        //       key: "fill"
-        //     }]);
-        //     console.log(' this.polygonSeries', this.polygonSeries);
-        //     this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
-        //     console.log('pointerover');
-        //       let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-        //       let countryMeanPairs:any;
-        //       let countryEntry;
-        //         const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-        //     if (data) {
-        //       countryMeanPairs = Object.entries(data).map(
-        //         ([country, data]) => [country, data.mean || 0] 
-
-        //       );
-        //     }
-        //     if(countryMeanPairs.length){
-        //       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-        //     } 
-        //      if(countryEntry !== undefined && countryEntry[1]){
-        //         this.heatLegend?.showValue(countryEntry[1]);
-      }
-      //    });
-      //   }else{
-      //     console.log('no polygonSeries');
-      //    }
-      //   }
-      // }else{
-
-      //   console.error('Chart container element not found!');
+     }
     }
 
   }
@@ -300,7 +220,6 @@ export class MapComponent implements OnInit, OnDestroy {
           polygon.set("fill", am5.color(0x6794dc));
         });
       }
-      // this.polygonSeries.hide();
     }
 
   }
@@ -404,22 +323,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.updateValueLabel(valueLabel, radius);
 
       });
-      circle.animate({
-        key: "scale",
-        from: 1,
-        to: 5,
-        duration: 600,
-        easing: am5.ease.out(am5.ease.cubic),
-        loops: Infinity
-      });
-      circle.animate({
-        key: "opacity",
-        from: 1,
-        to: 0.1,
-        duration: 600,
-        easing: am5.ease.out(am5.ease.cubic),
-        loops: Infinity
-      });
       circle.events.on("click", (event) => {
         this.openDialog(event.target.dataItem);
       });
@@ -456,61 +359,6 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.bubbleSeries.data.setAll(this.jsonData);
-
-    //    let heatLegend = this.chart?.children.push(am5.HeatLegend.new(root, {
-
-    //       orientation: "vertical",
-    //       endColor: am5.color(0x842c06), // Red
-    //       startColor: am5.color(0xff621f),   // Green
-    //       startText: "Lowest",
-    //       endText: "Highest",
-    //       stepCount: 3,
-    //       minHeight: 20 , // Set the minimum height of the legend
-    //       maxHeight:500,
-    //       startValue: 0,
-    //       endValue: 3
-    //     }));
-
-    //     this.heatLegend?.startLabel.setAll({
-    //       fontSize: 12,
-    //       fill: this.heatLegend.get("startColor")
-    //     });
-
-    //     this.heatLegend?.endLabel.setAll({
-    //       fontSize: 12,
-    //       fill: this.heatLegend.get("endColor")
-    //     });
-
-    // this.polygonSeries.set("heatRules", [{
-    //   target: this.polygonSeries.mapPolygons.template,
-    //   dataField: "value",
-    //   min: am5.color(0xff621f),
-    //   max: am5.color(0x661f00),
-    //   key: "fill"
-    // }]);
-    // this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev:any)=> {
-    //   // console.log('pointerover');
-    //   let countryDetail =(ev.target.dataItem?.dataContext as { name: string }).name;
-    //   let countryMeanPairs:any;
-    //   let countryEntry;
-    //     const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-    // if (data) {
-    //   countryMeanPairs = Object.entries(data).map(
-    //     ([country, data]) => [country, data.mean || 0] 
-
-    //   );
-    // }
-    // if(countryMeanPairs.length){
-    //   this.countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
-    // }
-    //  if(countryEntry !== undefined && countryEntry[1])
-    //    this.heatLegend?.showValue(countryEntry[1]);
-    //   });
-    //    //change this to template when possible
-    // polygonSeries.events.on("datavalidated", function () {
-    //   heatLegend?.set("startValue", polygonSeries.getPrivate("valueLow"));
-    //   heatLegend?.set("endValue", polygonSeries.getPrivate("valueHigh"));
-    // });
     this.setupHeatLegend(0);
 
   }
@@ -526,9 +374,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   onMapPolygonPointerOver(ev: any) {
-    // this.polygonSeries.mapPolygons.template.events.on("pointerover", (ev: any) => {
-    // alert('clicked');
-    // this.polygonSeries.mapPolygons.addEventListener('hover',(ev:any)=>{
     let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
     let countryMeanPairs: any;
     let countryEntry;
@@ -543,7 +388,6 @@ export class MapComponent implements OnInit, OnDestroy {
     }
     if (countryEntry !== undefined && countryEntry[1])
       this.heatLegend?.showValue(countryEntry[1]);
-    // });
   }
 
   private updateValueLabel(valueLabel: any, radius: number) {
@@ -604,15 +448,6 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedCountryValue: string | null = null;
 
   selectRcp(value: string): void {
-    // const index = this.selectedRcpValues.indexOf(value);
-
-    // if (index === -1) {
-    //   // Value not found, add it to the array
-    //   this.selectedRcpValues.push(value);
-    // } else {
-    //   // Value found, remove it from the array
-    //   this.selectedRcpValues.splice(index, 1);
-    // }
       this.selectedRcpValue = value;
      switch (value) {
           case 'RCP 2.6(low)':{
@@ -644,16 +479,6 @@ export class MapComponent implements OnInit, OnDestroy {
       }
   }
 
-  // selectIndicator(value: string): void {
-  //   this.selectedIndicatorValue = value;
-  //   if(value === 'Energy'){
-  //     this.indicatorName= this.energyIndicator;
-  //   }else if(value === 'Water'){
-  //     this.indicatorName=this.waterIndicator;
-  //   }else if(value === 'Land'){
-  //     this.indicatorName=this.landIndicator;
-  //   }
-  // }
   selectIndicator(value: string): void {
     const index = this.selectedIndicators.indexOf(value);
 
@@ -669,38 +494,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // Handle other logic based on selected indicators as needed
   }
-  updateIndicatorName(): void {
-
-    console.log('this.selectedIndicators are ', this.selectedIndicators);
-    let combinedIndicators: string[] = [];
-
-    if (this.selectedIndicators.includes('Water')) {
-      combinedIndicators = combinedIndicators.concat(this.waterIndicator);
-    }
-
-    if (this.selectedIndicators.includes('Energy')) {
-      combinedIndicators = combinedIndicators.concat(this.energyIndicator);
-    }
-
-    if (this.selectedIndicators.includes('Land')) {
-      combinedIndicators = combinedIndicators.concat(this.landIndicator);
-    }
-
-    this.indicatorName = Array.from(new Set(combinedIndicators));
-  }
-
-  selectCountry(country: string): void {
-    this.selectedCountryValue = country;
-
-  }
-  selectName(value: string): void {
-
-    console.log('value is',value);
-    this.selectedNameValue = value;
-    console.log('this.selectedIndicatorValue',this.selectedIndicatorValue?.length);
-    console.log('this.selectedNameValue',this.selectedNameValue);
-    if (this.selectedRcpValue === 'RCP 2.6(low)' && (this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water') && this.selectedNameValue === 'Water stress index') {
+   updateIndicatorName(): void {
+console.log('this.selectedIndicators',this.selectedIndicators[0]);
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
       this.showHeatLegend = true;
+      this.updateHeatLegendText(this.selectedIndicators[0] );
       this.updateBubbleColor();
 
     } else {
@@ -712,11 +510,50 @@ export class MapComponent implements OnInit, OnDestroy {
       // this.polygonSeries=null;
       // this.initChart();
     }
+
+  
+   }
+
+  selectCountry(country: string): void {
+    this.selectedCountryValue = country;
+
   }
   
 
   openDialog(_dataItem: any): void {
     this.summaryData = _dataItem;
     this.clicked = true;
+  }
+  selectYear(year: number): void {
+   
+    this.selectedYear = year;
+  }
+  updateHeatLegendText(selectedCategory: string): void {
+    console.log('testing',selectedCategory);
+    selectedCategory = selectedCategory.trim();
+    if (this.heatLegend) {
+    switch (selectedCategory) {
+    
+      case 'Water index stress (Water)':
+       
+        this.heatLegend?.set("startText", "Least reduction in available water");
+        this.heatLegend?.set("endText", "Most reduction in available water");
+        break;
+      case 'Land':
+        this.heatLegend?.set("startText", "Lowest Land");
+        this.heatLegend?.set("endText", "Highest Land");
+        break;
+      case 'Water':
+        this.heatLegend?.set("startText", "Lowest Water");
+        this.heatLegend?.set("endText", "Highest Water");
+        break;
+      default:
+        console.log('setting value');
+        // Set default values or handle other categories if needed
+        this.heatLegend?.set("startText", "Lowest");
+        this.heatLegend?.set("endText", "Highest");
+        break;
+    }
+  }
   }
 }

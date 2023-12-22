@@ -39,6 +39,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import { TimezonemapComponent } from './timezonemap/timezonemap.component';
 import { FactorNodegraphComponent } from './factor-nodegraph/factor-nodegraph.component';
+import {MatSelectModule} from '@angular/material/select';
 
 
 
@@ -82,7 +83,8 @@ import { FactorNodegraphComponent } from './factor-nodegraph/factor-nodegraph.co
     MatTableModule,
     MatDialogModule,
     HttpClientModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

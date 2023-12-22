@@ -1,73 +1,32 @@
-<div class="map-dropdown d-flex">
+<div class="d-flex flex-row">
+  <div class="map-dropdown d-flex">
     <div class="dropdown mr-auto">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+        aria-haspopup="true" aria-expanded="false">
         {{ selectedRcpValue || 'RCP Scenario' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(low)')">RCP 2.6 (LOW)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.4(medium)')">RCP 4.5 (MEDIUM)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.8(high)')"> RCP 8.5 (HIGH)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(LOW)')">RCP 2.6 (LOW)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.4(MEDIUM)')">RCP 4.5 (MEDIUM)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 8.5(HIGH)')"> RCP 8.5 (HIGH)</a>
       </div>
-      <!-- <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="rcpDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Select RCP
-  </button>
-  <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="rcp26" (change)="selectRcp('RCP 2.6(low)')" />
-      <label for="rcp26">RCP 2.6 (LOW)</label>
     </div>
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="rcp45" (change)="selectRcp('RCP 4.5(medium)')" />
-      <label for="rcp45">RCP 4.5 (MEDIUM)</label>
-    </div>
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="rcp85" (change)="selectRcp('RCP 8.5(high)')" />
-      <label for="rcp85">RCP 8.5 (HIGH)</label>
-    </div>
-  </div>
-</div> -->
-</div>
-  
-<div class="dropdown" #dropdown>
-  <button class="btn btn-primary dropdown-toggle rcp" type="button" id="indicatorDropdown" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" >
-    {{ selectedIndicators.length > 0 ? selectedIndicators.join(', ') : 'Indicator category' }}
-  </button>
-  <div class="dropdown-menu" aria-labelledby="indicatorDropdown"  >
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="energy" (change)="selectIndicator('Energy')" />
-      <label for="rcp26">Energy</label>
-    </div>
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="land" (change)="selectIndicator('Land')" />
-      <label for="rcp45">Land</label>
-    </div>
-    <div class="dropdown-item custom-checkbox">
-      <input type="checkbox" id="water" (change)="selectIndicator('Water')" />
-      <label for="rcp85">Water</label>
-    </div>
-  </div>
-</div>
-    
 
-    <div class="dropdown mr-auto">
-      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-        {{ selectedNameValue || 'Indicator name' }}
+    <div class="dropdown" #dropdown>
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="indicatorDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ selectedIndicators.length > 0 ? selectedIndicators.join(', ') : 'Indicator category' }}
       </button>
-      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-       
-        <a class="dropdown-item" href="#" *ngFor="let name of indicatorName" (click)="selectName(name)">
-          {{ name }}
-        </a>
+      <div class="dropdown-menu" aria-labelledby="indicatorDropdown">
+        <div *ngFor="let indicator of indicators" class="dropdown-item custom-checkbox">
+          <input type="checkbox" [id]="indicator.id" (change)="selectIndicator(indicator.name)" />
+          <label [for]="indicator.id">{{ indicator.name }}</label>
+        </div>
       </div>
     </div>
-
-    <div class="dropdown mr-auto">
+    <div class="dropdown mr-auto show-right-country">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+        aria-haspopup="true" aria-expanded="false">
         {{ selectedCountryValue || 'Country' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
@@ -76,35 +35,34 @@
         </a>
       </div>
     </div>
-    <div class="container" *ngIf="showHeatLegend">
+
+    <!-- <div class="year-dropdown ml-auto show-right">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="yearDropdown" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      {{ selectedYear || 'Select Year' }}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="yearDropdown">
+      <a class="dropdown-item" href="#" *ngFor="let year of years" (click)="selectYear(year)">
+        {{ year }}
+      </a>
+    </div>
+  </div> -->
+  </div>
+  <div class="container" *ngIf="showHeatLegend">
     <div class="row">
       <div class="indicator-box">
         <div class="box-low"></div>
-        <span>Lowest</span>
-      </div>
-      <div class="indicator-box">
-        <div class="box-middle"></div>
-        <span>Modest</span>
-      </div>
-      <div class="indicator-box">
-        <div class="box-high"></div>
-        <span>Highest</span>
+        <span>No Data</span>
       </div>
     </div>
   </div>
-  </div>
-  
- 
+</div>
 <div id="chartdiv">
   <div class="summary d-flex" *ngIf="clicked">
-   
+
     <div class="table-container">
-     <app-dialog  [dataItem]="summaryData"></app-dialog>
+      <app-dialog [dataItem]="summaryData"></app-dialog>
     </div>
   </div>
-  
+
 </div>
-
-
-
-

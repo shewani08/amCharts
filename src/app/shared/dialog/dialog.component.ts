@@ -23,6 +23,11 @@ interface CsvData {
   Proportion: string;
 
 }
+interface Food {
+  value: string;
+  viewValue: string;
+}
+
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
@@ -43,6 +48,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogComponent implements OnChanges {
+  selectedYear: number = 2022;
+   years: number[] = [2022, 2023];
   chart: any;
   @Input() dataItem:any;
   dataSource: CsvData[] = [];
@@ -52,6 +59,12 @@ export class DialogComponent implements OnChanges {
     //'value',
     'Number_of_immigrants',
     'Proportion','Year'];
+    foods = [
+      {value: 'steak-0', viewValue: 'Steak'},
+      {value: 'pizza-1', viewValue: 'Pizza'},
+      {value: 'tacos-2', viewValue: 'Tacos'},
+    ];
+
   
    
   
@@ -74,7 +87,7 @@ export class DialogComponent implements OnChanges {
   ngOnInit() {
     this.initializeChart();
     this.chart.set("zoomLevel", 0.8);
-
+    
   }
    initializeChart() {
 
@@ -132,6 +145,10 @@ const chartdiv = document.getElementById('dialog');
   }
 ngOndestroy(){
   this.chart.dispose();
+}
+selectYear(year: number): void {
+  alert('clicked');
+  this.selectedYear = year;
 }
   
   // selectedRcpValue: string | null = null;

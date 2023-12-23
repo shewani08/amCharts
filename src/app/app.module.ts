@@ -40,6 +40,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { TimezonemapComponent } from './timezonemap/timezonemap.component';
 import { FactorNodegraphComponent } from './factor-nodegraph/factor-nodegraph.component';
 import {MatSelectModule} from '@angular/material/select';
+import { MigrantDetailComponent } from './migrant-detail/migrant-detail.component';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 
 
@@ -61,7 +63,8 @@ import {MatSelectModule} from '@angular/material/select';
     SankeyGraphComponent,
     DialogComponent,
     TimezonemapComponent,
-    FactorNodegraphComponent
+    FactorNodegraphComponent,
+    MigrantDetailComponent
    
    
   ],
@@ -84,7 +87,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatDialogModule,
     HttpClientModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

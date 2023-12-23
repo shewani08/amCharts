@@ -1,4 +1,4 @@
-<div class="d-flex flex-row">
+<div class="d-flex flex-row justify-content-between">
   <div class="map-dropdown d-flex">
     <div class="dropdown mr-auto">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
@@ -35,18 +35,9 @@
         </a>
       </div>
     </div>
-
-    <!-- <div class="year-dropdown ml-auto show-right">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="yearDropdown" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-      {{ selectedYear || 'Select Year' }}
-    </button>
-    <div class="dropdown-menu" aria-labelledby="yearDropdown">
-      <a class="dropdown-item" href="#" *ngFor="let year of years" (click)="selectYear(year)">
-        {{ year }}
-      </a>
-    </div>
-  </div> -->
+  <div class="collapsable ml-auto">
+      <app-migrant-detail></app-migrant-detail>
+      </div>
   </div>
   <div class="container" *ngIf="showHeatLegend">
     <div class="row">
@@ -56,6 +47,7 @@
       </div>
     </div>
   </div>
+
 </div>
 <div id="chartdiv">
   <div class="summary d-flex" *ngIf="clicked">

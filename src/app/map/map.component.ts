@@ -546,7 +546,6 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
     console.log('coming end here');
     if (selectedCategory.length > 0) {
       if (selectedCategory[0] === 'Water index stress (Water)') {
-       
         return 'Most reduction in \n available water';
       } else {
         return 'Default end text';

@@ -75,3 +75,7 @@
     background-color: #d65016 ;  
     margin-right: 5px;  
   }
+  .collapsable{
+    position:absolute;
+    right:10px;
+  }

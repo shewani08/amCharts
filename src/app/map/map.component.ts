@@ -533,10 +533,14 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
   updateHeatLegendStartText(selectedCategory: string[]) :string{
     if (selectedCategory.length > 0) {
       console.log('coming here');
-      if (selectedCategory[0] === 'Water index stress (Water)') {
+      if (selectedCategory[0] === 'Water index stress (Water)'|| selectedCategory[0] === 'Agriculture water Stress index(Land)') {
        
                 return 'Least reduction in \n available water';
-      } else {
+      } else if(selectedCategory[0] === 'Crop yield change (Land)'){
+        return 'Least reduction in \n crops';
+      } else if(selectedCategory[0] === 'Heat Index Event exposure (Energy)'){
+        return 'Least increase in heat stress';
+      }else {
         return 'Default start text';
       }
     }
@@ -545,9 +549,13 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
   updateHeatLegendEndText(selectedCategory: string[]):string{
     console.log('coming end here');
     if (selectedCategory.length > 0) {
-      if (selectedCategory[0] === 'Water index stress (Water)') {
+      if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
         return 'Most reduction in \n available water';
-      } else {
+      } else if(selectedCategory[0] === 'Crop yield change (Land)'){
+        return 'Most reduction in \n crops';
+      } else if(selectedCategory[0] === 'Heat Index Event exposure (Energy)'){
+        return 'Most increase in heat stress';
+      }else {
         return 'Default end text';
       }
     }

@@ -17,4 +17,7 @@ export class CsvService {
   getRCPData(): Observable<any> {
     return this.http.get('assets/RCP(low).csv', { responseType: 'text' });
   }
+  getIrregularMigration():Observable<any>{
+    return this.http.get('assets/irregularMigration.csv', { responseType: 'text' });
+  }
 }

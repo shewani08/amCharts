@@ -172,8 +172,10 @@ export class MapComponent implements OnInit, OnDestroy {
         orientation: "vertical",
         endColor: am5.color(0x842c06), // Red
         startColor: am5.color(0xff621f),   // Green
-        startText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Least reduction in available water':'',
-        endText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Most reduction in available water':'',
+        startText:this.updateHeatLegendStartText(this.selectedIndicators),
+        endText:this.updateHeatLegendEndText(this.selectedIndicators),
+        // startText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Least reduction in available water':'',
+        // endText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Most reduction in available water':'',
         stepCount: 3,
         minHeight: 20, // Set the minimum height of the legend
         maxHeight: 500,
@@ -498,7 +500,7 @@ export class MapComponent implements OnInit, OnDestroy {
 console.log('this.selectedIndicators',this.selectedIndicators[0]);
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
       this.showHeatLegend = true;
-      this.updateHeatLegendText(this.selectedIndicators[0] );
+     // this.updateHeatLegendText(this.selectedIndicators[0] );
       this.updateBubbleColor();
 
     } else {
@@ -528,32 +530,28 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
    
     this.selectedYear = year;
   }
-  updateHeatLegendText(selectedCategory: string): void {
-    console.log('testing',selectedCategory);
-    selectedCategory = selectedCategory.trim();
-    if (this.heatLegend) {
-    switch (selectedCategory) {
-    
-      case 'Water index stress (Water)':
+  updateHeatLegendStartText(selectedCategory: string[]) :string{
+    if (selectedCategory.length > 0) {
+      console.log('coming here');
+      if (selectedCategory[0] === 'Water index stress (Water)') {
        
-        this.heatLegend?.set("startText", "Least reduction in available water");
-        this.heatLegend?.set("endText", "Most reduction in available water");
-        break;
-      case 'Land':
-        this.heatLegend?.set("startText", "Lowest Land");
-        this.heatLegend?.set("endText", "Highest Land");
-        break;
-      case 'Water':
-        this.heatLegend?.set("startText", "Lowest Water");
-        this.heatLegend?.set("endText", "Highest Water");
-        break;
-      default:
-        console.log('setting value');
-        // Set default values or handle other categories if needed
-        this.heatLegend?.set("startText", "Lowest");
-        this.heatLegend?.set("endText", "Highest");
-        break;
+                return 'Least reduction in \n available water';
+      } else {
+        return 'Default start text';
+      }
     }
+    return ''; 
   }
-  }
+  updateHeatLegendEndText(selectedCategory: string[]):string{
+    console.log('coming end here');
+    if (selectedCategory.length > 0) {
+      if (selectedCategory[0] === 'Water index stress (Water)') {
+       
+        return 'Most reduction in \n available water';
+      } else {
+        return 'Default end text';
+      }
+    }
+    return ''; 
+}
 }

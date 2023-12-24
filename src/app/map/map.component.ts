@@ -532,7 +532,6 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
   }
   updateHeatLegendStartText(selectedCategory: string[]) :string{
     if (selectedCategory.length > 0) {
-      console.log('coming here');
       if (selectedCategory[0] === 'Water index stress (Water)'|| selectedCategory[0] === 'Agriculture water Stress index(Land)') {
        
                 return 'Least reduction in \n available water';
@@ -547,7 +546,6 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
     return ''; 
   }
   updateHeatLegendEndText(selectedCategory: string[]):string{
-    console.log('coming end here');
     if (selectedCategory.length > 0) {
       if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
         return 'Most reduction in \n available water';

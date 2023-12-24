@@ -20,6 +20,11 @@ export class MigrantDetailComponent {
   panelOpenState = true;
   jsonData: any;
   totalApplications: number = 0;
+  displayedColumns: string[] = ['Overall', 'Predication','Countries'];
+  dataSource = [
+   {  }
+    // Add more data as needed
+  ];
   constructor(private dataService: CsvService){
    
   }
@@ -68,5 +73,9 @@ private csvToJson<T>(csvData: string): T[] {
   }
  // console.log('result is',result);
   return result;
+}
+onPanelClick(): void {
+  // Add your click event logic here
+  console.log('Panel clicked!');
 }
 }

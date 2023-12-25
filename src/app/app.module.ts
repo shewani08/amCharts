@@ -42,6 +42,10 @@ import { FactorNodegraphComponent } from './factor-nodegraph/factor-nodegraph.co
 import {MatSelectModule} from '@angular/material/select';
 import { MigrantDetailComponent } from './migrant-detail/migrant-detail.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+
 
 
 
@@ -89,7 +93,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     HttpClientModule,
     MatTabsModule,
     MatSelectModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

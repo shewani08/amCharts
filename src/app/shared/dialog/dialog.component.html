@@ -1,34 +1,29 @@
-<div id="summary-detail">
-  <h3> Summary </h3>
-  <div id="dialog"> </div>
 
-  
-  <div class="full-size-dialog-content">
-   
+
+
+<div id="summary-detail" [ngStyle]="{'height': dataSource.length ? '250px' : '100px'}">
+  <!-- <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Dropdown button
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Action</a>
+      <a class="dropdown-item" href="#">Another action</a>
+      <a class="dropdown-item" href="#">Something else here</a>
+    </div>
+  </div> -->
+
+  <div id="dialog" [ngStyle]="{'height': dataSource.length ? '200px' : '50px'}"> </div>
+  <div class="full-size-dialog-content" *ngIf="dataSource.length">
     <table mat-table [dataSource]="dataSource" class=" demo-table">
-      <!-- Name Column -->
-      <!-- <ng-container matColumnDef="Continent">
-          <th mat-header-cell *matHeaderCellDef>Continent</th>
-          <td mat-cell *matCellDef="let element">{{element.Continent}}</td>
-        </ng-container> -->
-
-      <!-- Weight Column -->
       <ng-container matColumnDef="Country">
         <th mat-header-cell *matHeaderCellDef>Country</th>
         <td mat-cell *matCellDef="let element">{{element.Country}}</td>
       </ng-container>
-
-      <!-- Weight Column -->
-      <!-- <ng-container matColumnDef="value">
-        <th mat-header-cell *matHeaderCellDef>Value</th>
-        <td mat-cell *matCellDef="let element">{{element.value}}</td>
-      </ng-container> -->
-      <!-- Weight Column -->
       <ng-container matColumnDef="Number_of_immigrants">
         <th mat-header-cell *matHeaderCellDef>Immigrants</th>
         <td mat-cell *matCellDef="let element">{{element.Number_of_immigrants}}</td>
       </ng-container>
-      <!-- Weight Column -->
       <ng-container matColumnDef="Proportion">
         <th mat-header-cell *matHeaderCellDef>Proportion</th>
         <td mat-cell *matCellDef="let element">{{element.Proportion}}</td>
@@ -37,12 +32,12 @@
         <th mat-header-cell *matHeaderCellDef>Year</th>
         <td mat-cell *matCellDef="let element"></td>
       </ng-container>
-
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-
     </table>
   </div>
+  <div *ngIf="!dataSource.length">
+    Click on the bullets shown in the map to get the details.
+    </div>
 </div>
+

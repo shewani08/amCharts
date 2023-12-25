@@ -13,6 +13,8 @@ import { IComponentDataItem } from '@amcharts/amcharts5/.internal/core/render/Co
 import { element } from 'angular';
 import data from '../data/graph';
 import { text } from 'd3';
+import { DataService } from '../service/dataService';
+
 
 interface CsvData {
   id: string;
@@ -140,7 +142,7 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedIndicators: string[] = [];
   selectedYear: number = 2022;
   years: number[] = [2022, 2023];
-  constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog) { }
+  constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog,public mapService: DataService) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -182,7 +184,7 @@ export class MapComponent implements OnInit, OnDestroy {
         startValue: 0,
         endValue: 3
       }));
-      console.log('heatLegend', this.heatLegend);
+     // console.log('heatLegend', this.heatLegend);
 
       this.heatLegend?.startLabel.setAll({
         fontSize: 12,
@@ -385,7 +387,7 @@ export class MapComponent implements OnInit, OnDestroy {
         ([country, data]) => [country, data.mean || 0]
       );
     }
-    if (countryMeanPairs.length) {
+    if (countryMeanPairs?.length) {
       countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
     }
     if (countryEntry !== undefined && countryEntry[1])
@@ -497,7 +499,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // Handle other logic based on selected indicators as needed
   }
    updateIndicatorName(): void {
-console.log('this.selectedIndicators',this.selectedIndicators[0]);
+//console.log('this.selectedIndicators',this.selectedIndicators[0]);
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
       this.showHeatLegend = true;
      // this.updateHeatLegendText(this.selectedIndicators[0] );
@@ -525,6 +527,11 @@ console.log('this.selectedIndicators',this.selectedIndicators[0]);
   openDialog(_dataItem: any): void {
     this.summaryData = _dataItem;
     this.clicked = true;
+    this.sendDataToMigrateComponent(this.summaryData)
+  }
+  sendDataToMigrateComponent(_dataVal: any) {
+   this.mapService.setMapData(_dataVal);
+   console.log('_dataVal is',_dataVal);
   }
   selectYear(year: number): void {
    

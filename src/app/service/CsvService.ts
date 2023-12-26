@@ -20,4 +20,7 @@ export class CsvService {
   getIrregularMigration():Observable<any>{
     return this.http.get('assets/irregularMigration.csv', { responseType: 'text' });
   }
+  getimmigrationData(): Observable<any> {
+    return this.http.get('assets/2050.csv', { responseType: 'text' });
+  }
 }

@@ -31,21 +31,11 @@
             </table>
         </div>
     </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="panelOpenState" (click)="onPanelClick()">
+    <mat-expansion-panel [expanded]="panelOpenState" >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 Summary
-
-                <!-- <mat-form-field>
-                    <mat-label>Purpose</mat-label>
-                    <mat-select>
-                      <mat-option value="business">Business</mat-option>
-                      <mat-option value="leisure">Leisure</mat-option>
-                      <mat-option value="family">Family</mat-option>
-                      
-                    </mat-select>
-                  </mat-form-field> -->
-            </mat-panel-title>
+           </mat-panel-title>
         </mat-expansion-panel-header>
         <app-dialog ></app-dialog>
     </mat-expansion-panel>

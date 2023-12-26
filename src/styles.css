@@ -4,9 +4,24 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-/* .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled{
+#year-option {
+    position: relative;
+    top: -18%;
+    right: -18%;
+    .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled{
     z-index:9999 !important;
+    }
+    .mat-mdc-text-field-wrapper {
+        width: 82%;
+        height: 50px;
+    }
+    .mat-mdc-form-field-infix {
+        height: 50px;
+    }
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: #fff;
+    }
 }
 ::ng-deep .mat-ripple-element {
     display: none !important;
-  } */
+  }

@@ -14,31 +14,23 @@ interface MigrationData {
 @Component({
   selector: 'app-migrant-detail',
   templateUrl: './migrant-detail.component.html',
-  styleUrls: ['./migrant-detail.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+  styleUrls: ['./migrant-detail.component.css']
+  
 
 })
 export class MigrantDetailComponent {
   panelOpenState = true;
   jsonData: any;
   @Input() dataItem: any;
+  @Input() previousData:any;
   totalApplications: number = 0;
   displayedColumns: string[] = ['Overall', 'Predication', 'Countries'];
   dataSource = [
     {}
   ];
-  topCountries:any;
+  topCountries: any;
+  prevData: any;
 
-  cellClicked(element: { name: string; }) {
-    //  event.preventDefault();
-    console.log(element.name + ' cell clicked');
-  }
   constructor(private dataService: CsvService) {
 
   }
@@ -49,23 +41,22 @@ export class MigrantDetailComponent {
         this.totalApplications = parseInt(this.totalApplications + entry.Applications, 10);
       }
       this.findTop3Applications();
-      this.detailedData();
+      this.prevData=this.previousData;
+
     })
 
 
   }
   findTop3Applications(): void {
-    this.jsonData.sort((a:any, b:any) => b.Applications - a.Applications);
+    this.jsonData.sort((a: any, b: any) => b.Applications - a.Applications);
     this.topCountries = this.jsonData.slice(0, 3);
-    console.log('topCountries',this.topCountries);
+    console.log('topCountries', this.topCountries);
   }
   onPanelStateChange(isOpen: boolean): void {
     alert('testing');
     this.panelOpenState = isOpen;
   }
-  detailedData() {
-    //console.log('this.totalApplications>>>>',this.totalApplications);
-  }
+
   openPanel() {
     this.panelOpenState = true;
   }
@@ -89,11 +80,5 @@ export class MigrantDetailComponent {
     // console.log('result is',result);
     return result;
   }
-  onPanelClick(): void {
-    // Add your click event logic here
-    //console.log('Panel clicked!');
-  }
-  openTopMigrationDialog() {
-    alert('hello');
-  }
+
 }

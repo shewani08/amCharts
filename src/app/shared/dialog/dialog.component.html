@@ -1,18 +1,14 @@
 
 
 
-<div id="summary-detail" [ngStyle]="{'height': dataSource.length ? '250px' : '100px'}">
-  <!-- <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Dropdown button
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item" href="#">Action</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
-    </div>
-  </div> -->
-
+<div id="summary-detail" [ngStyle]="{'height': dataSource.length ? '350px' : '150px'}">
+  <mat-form-field id="year-option" *ngIf="dataSource.length">
+    <mat-label>Select a year</mat-label>
+    <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearSelected($event)">
+      <mat-option value="2030" selected>2030</mat-option>
+      <mat-option value="2050">2050</mat-option>
+    </mat-select>
+  </mat-form-field>
   <div id="dialog" [ngStyle]="{'height': dataSource.length ? '200px' : '50px'}"> </div>
   <div class="full-size-dialog-content" *ngIf="dataSource.length">
     <table mat-table [dataSource]="dataSource" class=" demo-table">

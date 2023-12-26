@@ -14,6 +14,9 @@ import { element } from 'angular';
 import data from '../data/graph';
 import { text } from 'd3';
 import { DataService } from '../service/dataService';
+import { Subscription } from 'rxjs';
+import { YearService } from '../service/yearService';
+import { PreviousEvntService } from '../service/previousEvent';
 
 
 interface CsvData {
@@ -122,11 +125,11 @@ export class MapComponent implements OnInit, OnDestroy {
     'Zambia',
     'Zimbabwe'
   ];
-  indicators=[{id:'Drought intensity change (Water)', name:'Drought intensity change (Water)'},
-    {id:'Water index stress (Water)',name:'Water index stress (Water)'},
-    {id:'Heat Index Event exposure (Energy)',name:'Heat Index Event exposure (Energy)'},
-    {id:'Agriculture water Stress index(Land)',name:'Agriculture water Stress index(Land)'},
-    {id:'Crop yield change (Land)',name:'Crop yield change (Land)'}];
+  indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
+  { id: 'Water index stress (Water)', name: 'Water index stress (Water)' },
+  { id: 'Heat Index Event exposure (Energy)', name: 'Heat Index Event exposure (Energy)' },
+  { id: 'Agriculture water Stress index(Land)', name: 'Agriculture water Stress index(Land)' },
+  { id: 'Crop yield change (Land)', name: 'Crop yield change (Land)' }];
   indicatorName: string[] = [];
   summaryData: any;
   rcpData: any;
@@ -140,12 +143,24 @@ export class MapComponent implements OnInit, OnDestroy {
   countryEntry: any;
   selectedRcpValues: string[] = [];
   selectedIndicators: string[] = [];
-  selectedYear: number = 2022;
-  years: number[] = [2022, 2023];
-  constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog,public mapService: DataService) { }
+
+  selectedYear: string = '2030';
+  private selectedYearSubscription: Subscription | undefined;
+  circle: any;
+  previousEvent: any;
+  previousData: any;
+  constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog, public mapService: DataService,
+    private yearService: YearService, private previousEvntService: PreviousEvntService) { }
 
   ngOnInit(): void {
-    this.loadData();
+    this.selectedYear = '2030';
+    this.selectedYearSubscription = this.yearService.selectedYear$.subscribe(year => {
+      this.selectedYear = year;
+      this.loadData();
+
+    });
+
+
   }
 
   ngOnDestroy(): void {
@@ -174,8 +189,8 @@ export class MapComponent implements OnInit, OnDestroy {
         orientation: "vertical",
         endColor: am5.color(0x842c06), // Red
         startColor: am5.color(0xff621f),   // Green
-        startText:this.updateHeatLegendStartText(this.selectedIndicators),
-        endText:this.updateHeatLegendEndText(this.selectedIndicators),
+        startText: this.updateHeatLegendStartText(this.selectedIndicators),
+        endText: this.updateHeatLegendEndText(this.selectedIndicators),
         // startText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Least reduction in available water':'',
         // endText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Most reduction in available water':'',
         stepCount: 3,
@@ -184,7 +199,7 @@ export class MapComponent implements OnInit, OnDestroy {
         startValue: 0,
         endValue: 3
       }));
-     // console.log('heatLegend', this.heatLegend);
+      // console.log('heatLegend', this.heatLegend);
 
       this.heatLegend?.startLabel.setAll({
         fontSize: 12,
@@ -211,7 +226,7 @@ export class MapComponent implements OnInit, OnDestroy {
             console.error('Invalid or missing data structure for polygon:', polygon);
           }
         });
-     }
+      }
     }
 
   }
@@ -244,11 +259,32 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    this.dataService?.getCsvData()?.subscribe((csvData) => {
-      this.jsonData = this.csvToJson<CsvData>(csvData);
-      this.initChart();
-      setInterval(() => this.updateData(), 2000);
-    });
+    if (!this.selectedYear) {
+      this.dataService?.getCsvData()?.subscribe((csvData) => {
+        this.jsonData = this.csvToJson<CsvData>(csvData);
+        this.initChart();
+        setInterval(() => this.updateData(), 2000);
+      });
+    } else if (this.selectedYear === '2050') {
+      this.dataService?.getimmigrationData()?.subscribe((csvData) => {
+        this.jsonData = this.csvToJson<CsvData>(csvData);
+
+        this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
+        console.log('previous Data is ', this.previousData);
+        this.previousEvntService.setPreviousEvent(this.previousData);
+        this.setDataBubble();
+        // this.openDialog(this.previousData);
+      })
+
+    } else {
+      this.dataService?.getCsvData()?.subscribe((csvData) => {
+        this.jsonData = this.csvToJson<CsvData>(csvData);
+        this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
+        this.previousEvntService.setPreviousEvent(this.previousData);
+        this.setDataBubble();
+      })
+    }
+
     this.dataService.getRCPData().subscribe((rcp) => {
       this.rcpData = this.rcpToJson(rcp);
       const property = 'SSP1_1p5_Score';
@@ -296,7 +332,7 @@ export class MapComponent implements OnInit, OnDestroy {
     let colorset = am5.ColorSet.new(root, {});
     this.bubbleSeries.bullets.push((root, series, dataItem) => {
       const container = am5.Container.new(root, {});
-      const circle = container.children.push(
+      this.circle = container.children.push(
         am5.Circle.new(root, {
           radius: 3,
           strokeOpacity: 0,
@@ -322,14 +358,15 @@ export class MapComponent implements OnInit, OnDestroy {
       valueLabel.style.position = 'absolute';
       valueLabel.style.top = '10px'; // Adjust the position as needed
       document.body.appendChild(valueLabel);
-      circle.on('radius', (radius: any) => {
+      this.circle.on('radius', (radius: any) => {
         countryLabel.set('x', radius);
         this.updateValueLabel(valueLabel, radius);
 
       });
-      circle.events.on("click", (event) => {
-        this.openDialog(event.target.dataItem);
-      });
+      this.dataClickedEvent();
+      // this.circle.events.on("click", (event:any) => {
+      //   this.openDialog(event.target.dataItem);
+      // });
       return am5.Bullet.new(root, {
         sprite: container,
         dynamic: true
@@ -362,7 +399,19 @@ export class MapComponent implements OnInit, OnDestroy {
         key: 'radius'
       }
     ]);
-    this.bubbleSeries.data.setAll(this.jsonData);
+    this.setDataBubble()
+
+  }
+  dataClickedEvent() {
+
+    this.circle.events.on("click", (event: any) => {
+      this.previousEvent = event.target.dataItem;
+      this.openDialog(event.target.dataItem);
+    });
+
+  }
+  setDataBubble() {
+    this.bubbleSeries?.data?.setAll(this.jsonData);
     this.setupHeatLegend(0);
 
   }
@@ -448,39 +497,39 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   selectedRcpValue: string | null = null;
   selectedIndicatorValue: string | null = null;
-  selectedNameValue: string='';
+  selectedNameValue: string = '';
   selectedCountryValue: string | null = null;
 
   selectRcp(value: string): void {
-      this.selectedRcpValue = value;
-     switch (value) {
-          case 'RCP 2.6(low)':{
-            // this.showHeatLegend=true;
-            //   this.updateBubbleColor(); 
+    this.selectedRcpValue = value;
+    switch (value) {
+      case 'RCP 2.6(low)': {
+        // this.showHeatLegend=true;
+        //   this.updateBubbleColor(); 
 
-            this.showHeatLegend=false;
-            this.updateDefaultColor();
+        this.showHeatLegend = false;
+        this.updateDefaultColor();
 
-              break;
-          }
-          case 'RCP 2.4(medium)':{
-            if(this.heatLegend)
-            this.heatLegend.hide();
-            this.showHeatLegend=false;
-              this.updateDefaultColor();
-              this.polygonSeries.mapPolygons.template.events.off("pointerover", this.onMapPolygonPointerOver.bind(this));
-
-              break;
-          }
-          default:{
-            if(this.heatLegend)
-           this.heatLegend.hide();
-            this.updateDefaultColor();
-            this.showHeatLegend=false;
-
-            break;
-          }
+        break;
       }
+      case 'RCP 2.4(medium)': {
+        if (this.heatLegend)
+          this.heatLegend.hide();
+        this.showHeatLegend = false;
+        this.updateDefaultColor();
+        this.polygonSeries.mapPolygons.template.events.off("pointerover", this.onMapPolygonPointerOver.bind(this));
+
+        break;
+      }
+      default: {
+        if (this.heatLegend)
+          this.heatLegend.hide();
+        this.updateDefaultColor();
+        this.showHeatLegend = false;
+
+        break;
+      }
+    }
   }
 
   selectIndicator(value: string): void {
@@ -498,11 +547,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // Handle other logic based on selected indicators as needed
   }
-   updateIndicatorName(): void {
-//console.log('this.selectedIndicators',this.selectedIndicators[0]);
+  updateIndicatorName(): void {
+    //console.log('this.selectedIndicators',this.selectedIndicators[0]);
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
       this.showHeatLegend = true;
-     // this.updateHeatLegendText(this.selectedIndicators[0] );
+      // this.updateHeatLegendText(this.selectedIndicators[0] );
       this.updateBubbleColor();
 
     } else {
@@ -515,14 +564,14 @@ export class MapComponent implements OnInit, OnDestroy {
       // this.initChart();
     }
 
-  
-   }
+
+  }
 
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
 
   }
-  
+
 
   openDialog(_dataItem: any): void {
     this.summaryData = _dataItem;
@@ -530,40 +579,39 @@ export class MapComponent implements OnInit, OnDestroy {
     this.sendDataToMigrateComponent(this.summaryData)
   }
   sendDataToMigrateComponent(_dataVal: any) {
-   this.mapService.setMapData(_dataVal);
-   console.log('_dataVal is',_dataVal);
+    this.mapService.setMapData(_dataVal);
   }
-  selectYear(year: number): void {
-   
-    this.selectedYear = year;
-  }
-  updateHeatLegendStartText(selectedCategory: string[]) :string{
+  // selectYear(year: number): void {
+
+  //   this.selectedYear = year;
+  // }
+  updateHeatLegendStartText(selectedCategory: string[]): string {
     if (selectedCategory.length > 0) {
-      if (selectedCategory[0] === 'Water index stress (Water)'|| selectedCategory[0] === 'Agriculture water Stress index(Land)') {
-       
-                return 'Least reduction in \n available water';
-      } else if(selectedCategory[0] === 'Crop yield change (Land)'){
+      if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
+
+        return 'Least reduction in \n available water';
+      } else if (selectedCategory[0] === 'Crop yield change (Land)') {
         return 'Least reduction in \n crops';
-      } else if(selectedCategory[0] === 'Heat Index Event exposure (Energy)'){
+      } else if (selectedCategory[0] === 'Heat Index Event exposure (Energy)') {
         return 'Least increase in heat stress';
-      }else {
+      } else {
         return 'Default start text';
       }
     }
-    return ''; 
+    return '';
   }
-  updateHeatLegendEndText(selectedCategory: string[]):string{
+  updateHeatLegendEndText(selectedCategory: string[]): string {
     if (selectedCategory.length > 0) {
       if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
         return 'Most reduction in \n available water';
-      } else if(selectedCategory[0] === 'Crop yield change (Land)'){
+      } else if (selectedCategory[0] === 'Crop yield change (Land)') {
         return 'Most reduction in \n crops';
-      } else if(selectedCategory[0] === 'Heat Index Event exposure (Energy)'){
+      } else if (selectedCategory[0] === 'Heat Index Event exposure (Energy)') {
         return 'Most increase in heat stress';
-      }else {
+      } else {
         return 'Default end text';
       }
     }
-    return ''; 
-}
+    return '';
+  }
 }

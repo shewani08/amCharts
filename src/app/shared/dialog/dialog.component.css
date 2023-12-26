@@ -1,10 +1,10 @@
  #dialog{
-     width: 200px !important;
+   width: 300px !important;
     
-    position: relative; /* Use absolute positioning within the relative container */
-    top: 30%; /* Move the map to the vertical center */
-    left: 30%; /* Move the map to the horizontal center */
-    transform: translate(-50%, -50%); /* Center the map using translate */
+    position: absolute; 
+    top: 18%;  
+     left: 30%; 
+    transform: translate(-30%, -30%);  
   
   } 
   

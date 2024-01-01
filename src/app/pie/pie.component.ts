@@ -9,6 +9,7 @@ import { DataService } from '../service/dataService';
 import { CsvService } from '../service/CsvService';
 import data from '../data/graph';
 import { RouteService } from '../service/route/central-med';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 interface ChartData {
@@ -58,6 +59,10 @@ export class PieComponent implements OnInit {
   lineSeries: any;
   migrants: any[]=[];
   totalMigration: number = 0;
+  showCentral: boolean = true;
+  showWestern: boolean = false;
+  showThird: boolean= false;
+  mediator: string = 'Central mediterranean';
  
   constructor(private dataService: CsvService,private routeService:RouteService) {}
 
@@ -240,6 +245,25 @@ export class PieComponent implements OnInit {
     }
     return sum;
   } 
+  onTabChange(_e: MatTabChangeEvent) {
+    console.log('value of e is',_e);
+    this.mediator=_e.tab.textLabel;
+    if (_e.index === 0) {
+      this.showCentral = true;
+      this.showWestern = false;
+      this.showThird = false;
+    } else if (_e.index === 1) {
+      this.showCentral = false;
+      this.showWestern = true;
+      this.showThird = false;
+    }
+    else {
+      this.showCentral = false;
+      this.showWestern = false;
+      this.showThird = true;
+    }
+
+  }
 }
 
 

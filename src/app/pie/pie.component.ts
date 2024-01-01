@@ -97,8 +97,8 @@ export class PieComponent implements OnInit {
 
     let polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
       geoJSON: am5geodata_worldLow,
-      include: ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU",
-        "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+      include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+        "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
         'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
         'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
         'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
@@ -143,7 +143,7 @@ export class PieComponent implements OnInit {
     );
     this.cityData();
     citySeries.data.setAll(this.cities);
-    let destinations = ["United Kingdom"];
+    let destinations = ["Denmark"];
     let originLongitude = coordinates!.x;
     let originLatitude = coordinates!.y;
 
@@ -182,9 +182,9 @@ export class PieComponent implements OnInit {
       };
     });
     this.cities.push({
-      id: 'United Kingdom', title: 'United Kingdom', geometry: {
+      id: 'Denmark', title: 'Denmark', geometry: {
         type: "Point",
-        coordinates: [55.37, 3.43]
+        coordinates: [56.26, 56.26]
       }
     })
   }

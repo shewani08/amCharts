@@ -63,6 +63,9 @@ export class PieComponent implements OnInit {
   showWestern: boolean = false;
   showThird: boolean= false;
   mediator: string = 'Central mediterranean';
+  westernMigrants: any[]=[];
+  westernafricaMigrants: any[] = [];
+  selectedMediterranen: any[]=[];
  
   constructor(private dataService: CsvService,private routeService:RouteService) {}
 
@@ -72,6 +75,12 @@ export class PieComponent implements OnInit {
     });
     this.routeService.getMedRouteData().subscribe((rcp) => {
       this.migrants = this.csvToJson<RegionData>(rcp);
+    });
+    this.routeService.getWesternMedRouteData().subscribe((rcp) => {
+      this.westernMigrants = this.csvToJson<RegionData>(rcp);
+    });
+    this.routeService.getWesternMedRouteData().subscribe((rcp) => {
+      this.westernafricaMigrants = this.csvToJson<RegionData>(rcp);
     });
     this.loadMap();
   }
@@ -87,28 +96,29 @@ export class PieComponent implements OnInit {
       projection: am5map.geoMercator()
     }));
 
-    let cont = this.chart.children.push(am5.Container.new(this.root, {
-      layout: this.root.horizontalLayout,
-      x: 20,
-      y: 40
-    }));
+    // let cont = this.chart.children.push(am5.Container.new(this.root, {
+    //   layout: this.root.horizontalLayout,
+    //   x: 20,
+    //   y: 40
+    // }));
 
-    // Add labels and controls
-    cont.children.push(am5.Label.new(this.root, {
-      centerY: am5.p50,
-      text: "Map"
-    }));
+    // // Add labels and controls
+    // cont.children.push(am5.Label.new(this.root, {
+    //   centerY: am5.p50,
+    //   text: "Map"
+    // }));
 
 
     let polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
       geoJSON: am5geodata_worldLow,
-      include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
-        "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
-        'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
-        'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
-        'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
+      // include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+      //   "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+      //   'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+      //   'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
+      //   'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
       calculateAggregates: true,
-      interactive: true
+      interactive: true,
+      exclude: ["AQ"]
     }));
 
     let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
@@ -148,7 +158,7 @@ export class PieComponent implements OnInit {
     );
     this.cityData();
     citySeries.data.setAll(this.cities);
-    let destinations = ["Denmark"];
+    let destinations = ["United Kingdom"];
     let originLongitude = coordinates!.x;
     let originLatitude = coordinates!.y;
 
@@ -187,9 +197,9 @@ export class PieComponent implements OnInit {
       };
     });
     this.cities.push({
-      id: 'Denmark', title: 'Denmark', geometry: {
+      id: 'United Kingdom', title: 'United Kingdom', geometry: {
         type: "Point",
-        coordinates: [56.26, 56.26]
+        coordinates: [-0.1262, 51.5002]
       }
     })
   }
@@ -237,8 +247,9 @@ export class PieComponent implements OnInit {
     let sum = 0;
     let totalSum;
     const countryData = {};
-    for (const date in this.migrants) {
-      const Value = parseInt(this.migrants[date][country], 10);
+    this.selectedMediterranen = this.mediator ==='Central mediterranean' ? this.migrants :'Western mediterranean' ? this.westernMigrants : this.westernafricaMigrants;
+    for (const date in this.selectedMediterranen) {
+      const Value = parseInt(this.selectedMediterranen[date][country], 10);
       if (!isNaN(Value)) {
         sum += Value;
       }
@@ -246,22 +257,23 @@ export class PieComponent implements OnInit {
     return sum;
   } 
   onTabChange(_e: MatTabChangeEvent) {
-    console.log('value of e is',_e);
     this.mediator=_e.tab.textLabel;
-    if (_e.index === 0) {
-      this.showCentral = true;
-      this.showWestern = false;
-      this.showThird = false;
-    } else if (_e.index === 1) {
-      this.showCentral = false;
-      this.showWestern = true;
-      this.showThird = false;
-    }
-    else {
-      this.showCentral = false;
-      this.showWestern = false;
-      this.showThird = true;
-    }
+    console.log('this.selectCountry',this.selectedCountryValue);
+    this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+    // if (_e.index === 0) {
+    //   this.showCentral = true;
+    //   this.showWestern = false;
+    //   this.showThird = false;
+    // } else if (_e.index === 1) {
+    //   this.showCentral = false;
+    //   this.showWestern = true;
+    //   this.showThird = false;
+    // }
+    // else {
+    //   this.showCentral = false;
+    //   this.showWestern = false;
+    //   this.showThird = true;
+    // }
 
   }
 }

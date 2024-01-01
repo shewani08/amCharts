@@ -1,0 +1,12 @@
+#chartdestionation{
+    width: 80vw;
+    height:80vh;
+}
+.dropdown-menu {
+    max-height: 200px; /* Adjust the max height as needed */
+    overflow-y: auto;
+  }
+  .mgrt-table{
+    border:1px solid #dee2e6;
+    height:200px !important;
+  }

@@ -1,6 +1,6 @@
 
 <mat-accordion class="panel">
-    <mat-expansion-panel (closed)="panelOpenState = true" (opened)="panelOpenState = false">
+    <mat-expansion-panel (opened)="onMigrationPanelOpened()" (closed)="onMigrationPanelClosed()" [expanded]="migrationPanelOpenState" >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 Migration Detail
@@ -17,7 +17,7 @@
                     <td mat-cell *matCellDef="let element"> {{totalApplications}}</td>
                 </ng-container>
                 <ng-container matColumnDef="Countries" >
-                    <th mat-header-cell *matHeaderCellDef>Which countries are predicated to have the highest rate of
+                    <th mat-header-cell *matHeaderCellDef>Predicated highest rate of
                         migration to the UK: </th>
                         <td mat-cell *matCellDef="let element" >
                           <ng-container *ngFor="let country of topCountries"> 
@@ -31,7 +31,7 @@
             </table>
         </div>
     </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="panelOpenState" >
+    <mat-expansion-panel (opened)="onSummaryPanelOpened()" (closed)="onSummaryPanelClosed()" [expanded]="summaryPanelOpenState" >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 Summary
@@ -39,46 +39,16 @@
         </mat-expansion-panel-header>
         <app-dialog ></app-dialog>
     </mat-expansion-panel>
-</mat-accordion> 
-<!-- <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel (opened)="onRegionPanelOpened()" (closed)="onRegionPanelClosed()" [expanded]="regionPanelOpenState" >
       <mat-expansion-panel-header>
-        <mat-panel-title>
-          Personal data
-        </mat-panel-title>
-        <mat-panel-description>
-          Type your name and age
-        </mat-panel-description>
+          <mat-panel-title>
+              Region Detail
+          </mat-panel-title>
       </mat-expansion-panel-header>
+      <mat-selection-list>
+        <!-- <mat-list-option *ngFor="let shoe of regionArray">{{ shoe }}</mat-list-option> -->
   
-  <mat-form-field>
-    <mat-label>Select an option</mat-label>
-    <mat-select appendTo="body" >
-      <mat-option >None</mat-option>
-      <mat-option value="option1">Option 1</mat-option>
-      <mat-option value="option2">Option 2</mat-option>
-      <mat-option value="option3">Option 3</mat-option>
-    </mat-select>
-  </mat-form-field>
-  
-    </mat-expansion-panel>
-    <mat-expansion-panel (opened)="panelOpenState = true"
-                         (closed)="panelOpenState = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Self aware panel
-        </mat-panel-title>
-        <mat-panel-description>
-          Currently I am {{panelOpenState ? 'open' : 'closed'}}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-          <mat-form-field>
-        <select matNativeControl required >
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="mercedes">Mercedes</option>
-          <option value="audi">Audi</option>
-        </select>
-      </mat-form-field>
-    </mat-expansion-panel>
-  </mat-accordion> -->
+        
+      </mat-selection-list>
+  </mat-expansion-panel>
+</mat-accordion>

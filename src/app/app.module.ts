@@ -45,6 +45,11 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import { PieComponent } from './pie/pie.component';
+import { MapChartComponent } from './map-chart/map-chart.component';
+
+import {MatChipsModule} from '@angular/material/chips';
+
 
 
 
@@ -69,7 +74,9 @@ import {MatInputModule} from '@angular/material/input';
     DialogComponent,
     TimezonemapComponent,
     FactorNodegraphComponent,
-    MigrantDetailComponent
+    MigrantDetailComponent,
+    PieComponent,
+    MapChartComponent
    
    
   ],
@@ -78,6 +85,8 @@ import {MatInputModule} from '@angular/material/input';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MatChipsModule,
+   
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,

@@ -108,31 +108,29 @@ export class DialogComponent implements OnChanges {
   }
 
   reloadData(dataItem: any) {
- console.log('reload',dataItem);
-  
     const include = [dataItem?.dataContext?.id];
     const newGeoJSONData = am5geodata_worldLow;
-    if(this.chart)
-    this.chart.series.each((series: { set: (arg0: string, arg1: any) => void; }) => {
-      if (series instanceof am5map.MapPolygonSeries) {
-        series.set("include", this.getMap());
-        series.set("geoJSON", newGeoJSONData);
-        series.set("dx", 70);
-        series.set("dy", -70);
-      }
-    });
-if(dataItem){
-    this.dataSource = [
-      {
-        id: dataItem?.dataContext?.id,
-        Continent: dataItem?.dataContext.Continent,
-        Country: dataItem?.dataContext.name,
-        value: dataItem?.dataContext.value,
-        Number_of_immigrants: dataItem?.dataContext.Number_of_immigrants,
-        Proportion: dataItem?.dataContext.Proportion
-      }
-    ];
-  }
+    if (this.chart)
+      this.chart.series.each((series: { set: (arg0: string, arg1: any) => void; }) => {
+        if (series instanceof am5map.MapPolygonSeries) {
+          series.set("include", this.getMap());
+          series.set("geoJSON", newGeoJSONData);
+          series.set("dx", 70);
+          series.set("dy", -70);
+        }
+      });
+    if (dataItem) {
+      this.dataSource = [
+        {
+          id: dataItem?.dataContext?.id,
+          Continent: dataItem?.dataContext.Continent,
+          Country: dataItem?.dataContext.name,
+          value: dataItem?.dataContext.value,
+          Number_of_immigrants: dataItem?.dataContext.Number_of_immigrants,
+          Proportion: dataItem?.dataContext.Proportion
+        }
+      ];
+    }
     this.cdr.detectChanges();
   }
 

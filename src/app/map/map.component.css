@@ -1,5 +1,5 @@
 #chartdiv{
-    width:100%;
+    width:60vw;
     height:100%;
 }
 .map-dropdown{
@@ -41,8 +41,9 @@
   }
   .container {
     display: flex;
-    justify-content: flex-end; /* Move the row to the right */
-    padding: 10px;
+    justify-content: flex-start; /* Move the row to the right */
+    position: relative;
+    left: 16%;
   }
   .row {
     display: flex;
@@ -65,9 +66,10 @@
   .box-low {
     width: 20px;  
     height: 10px;  
+
     /* background-color: #ff621f ;   */
     background-color: #6794dc;
-    margin-right: 5px;  
+    /* margin-right: 5px;   */
   }
   .box-middle {
     width: 20px;   

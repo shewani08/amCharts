@@ -30,7 +30,7 @@ interface CsvData {
 }
 interface Entry {
   Country: string;
-  [key: string]: number | string; // Add other possible property types
+  [key: string]: number | string; 
 }
 
 interface Result {
@@ -50,6 +50,16 @@ const getColorForValue = (value: number): string => {
     return "#d65016";
   } else {
     return "#842c06";
+  }
+  
+};
+const getColorForLand = (value: number): string => {
+  if (value >= 0 && value < 1) {
+    return "#f0b7a1";
+  } else if (value >= 1 && value < 2) {
+    return "#c7856b";
+  } else {
+    return "#9e5336";
   }
 };
 @Component({
@@ -143,12 +153,18 @@ export class MapComponent implements OnInit, OnDestroy {
   countryEntry: any;
   selectedRcpValues: string[] = [];
   selectedIndicators: string[] = [];
-
+  private root: any;
   selectedYear: string = '2030';
   private selectedYearSubscription: Subscription | undefined;
   circle: any;
   previousEvent: any;
   previousData: any;
+  droughtData: any;
+  meansDroughtByCountry: Result | undefined;
+  cropYieldData: any;
+  meansCropYieldByCountry: Result | undefined;
+  agricultureData: any;
+  meansAgricultureByCountry: Result | undefined;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog, public mapService: DataService,
     private yearService: YearService, private previousEvntService: PreviousEvntService) { }
 
@@ -171,7 +187,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private updateBubbleColor(): void {
     let countryMeanPairs: [string, number][];
-    const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    // const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    //const data: { [key: string]: CountryData } | undefined = this.meansDroughtByCountry;
+    const data: { [key: string]: CountryData } | undefined =this.selectedIndicatorData();
     if (data) {
       countryMeanPairs = Object.entries(data).map(
         ([country, data]) => [country, data.mean || 0]
@@ -187,8 +205,10 @@ export class MapComponent implements OnInit, OnDestroy {
       this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
 
         orientation: "vertical",
-        endColor: am5.color(0x842c06), // Red
-        startColor: am5.color(0xff621f),   // Green
+        // endColor: am5.color(0x842c06), 
+        // startColor: am5.color(0xff621f), 
+        endColor: this.updateHeatLegendStartColor(this.selectedIndicators),
+        startColor: this.updateHeatLegendEndColor(this.selectedIndicators),
         startText: this.updateHeatLegendStartText(this.selectedIndicators),
         endText: this.updateHeatLegendEndText(this.selectedIndicators),
         // startText: this.selectedIndicators[0] === 'Water index stress (Water)'?'Least reduction in available water':'',
@@ -213,14 +233,28 @@ export class MapComponent implements OnInit, OnDestroy {
       this.polygonSeries.mapPolygons.template.set("interactive", true);
       if (this.polygonSeries) {
         this.setupHeatLegend(1);
-        this.polygonSeries.mapPolygons.each((polygon: { dataItem: { dataContext: any; }; set: (arg0: string, arg1: am5.Color) => void; }) => {
+        this.polygonSeries.mapPolygons.each((polygon:any) => {
           const dataContext = polygon.dataItem?.dataContext;
           if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
             const countryName = dataContext.name;
-            const countryEntry = countryMeanPairs.find(([country]) => country === countryName);
-            if (countryEntry?.length) {
+            const countryEntry = countryMeanPairs?.find(([country]) => country === countryName);
+            if (countryEntry?.length && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Water index stress (Water)'
+              || this.selectedIndicators[0] === 'Drought intensity change (Water)')) {
               polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
 
+            } else if (countryEntry?.length && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Crop yield change (Land)' ||
+              this.selectedIndicators[0] === 'Agriculture water Stress index(Land)')) {
+              polygon.set("fill", am5.color(getColorForLand(countryEntry[1])));
+
+            }else if (this.selectedIndicators?.length == 2){
+              const gradient = am5.LinearGradient?.new(this.root, {
+                stops: [
+                  { color: am5.color(0xFF621F) },
+                  { color: am5.color(0x946B49) }
+                ]
+              });
+
+              polygon['fill'] = gradient;
             }
           } else {
             console.error('Invalid or missing data structure for polygon:', polygon);
@@ -228,15 +262,70 @@ export class MapComponent implements OnInit, OnDestroy {
         });
       }
     }
+   // this.initChart1();
 
+  }
+  callGradient() {
+   let gradient = am5.LinearGradient.new(this.root, {
+      stops: [{
+        color: am5.color(0xFF621F)
+      }, {
+        color: am5.color(0x946B49)
+      }]
+    });
+    return gradient;
+  }
+  updateHeatLegendEndColor(selectedIndicators: string[]) {
+    if (this.selectedIndicators[0] === 'Water index stress (Water)'
+      || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+        return am5.color(0xff621f);
+    }
+    else if (this.selectedIndicators[0] === 'Crop yield change (Land)' ||
+      this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
+      return am5.color(0xf0b7a1);
+
+    }
+    return null;
+  }
+  updateHeatLegendStartColor(selectedIndicators: string[]) {
+    if (this.selectedIndicators[0] === 'Water index stress (Water)'
+      || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    
+      return am5.color(0x842c06);
+
+    }
+    else if (this.selectedIndicators[0] === 'Crop yield change (Land)' || this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
+      return am5.color(0x752201);
+    }
+    return null;
   }
   private updateDefaultColor(): void {
     if (this.chart && this.chart.series.length > 0) {
-      this.heatLegend.hide();
+      this.heatLegend?.hide();
       const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
       if (polygonSeries) {
         polygonSeries.mapPolygons.each((polygon) => {
           polygon.set("fill", am5.color(0x6794dc));
+        });
+      }
+    }
+
+  }
+
+  private updateGradientColor(): void {
+    if (this.chart && this.chart.series.length > 0) {
+      this.heatLegend?.hide();
+      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+      if (polygonSeries) {
+        this.polygonSeries.mapPolygons.each((polygon:any) => {
+          const gradient = am5.LinearGradient.new(this.root, {
+            stops: [
+              { color: am5.color(0xFF621F) },
+              { color: am5.color(0x946B49) }
+            ]
+          });
+          
+          polygon.color = gradient;
         });
       }
     }
@@ -270,7 +359,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.jsonData = this.csvToJson<CsvData>(csvData);
 
         this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
-        console.log('previous Data is ', this.previousData);
         this.previousEvntService.setPreviousEvent(this.previousData);
         this.setDataBubble();
         // this.openDialog(this.previousData);
@@ -290,6 +378,23 @@ export class MapComponent implements OnInit, OnDestroy {
       const property = 'SSP1_1p5_Score';
       this.meansByCountry = this.calculateMeanByCountry(this.rcpData, property);
     })
+    this.dataService.getDroughtData().subscribe((rcp) => {
+      this.droughtData = this.rcpToJson(rcp);
+      const property = 'SSP1_1p5_Score';
+      this.meansDroughtByCountry = this.calculateMeanByCountry(this.droughtData, property);
+    })
+    this.dataService.getCropYieldData().subscribe((rcp) => {
+      this.cropYieldData = this.rcpToJson(rcp);
+      const property = 'SSP1_1p5_Score';
+      this.meansCropYieldByCountry = this.calculateMeanByCountry(this.cropYieldData, property);
+    })
+    this.dataService.getAgricultureData().subscribe((rcp) => {
+      this.agricultureData = this.rcpToJson(rcp);
+      const property = 'SSP1_1p5_Score';
+      this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property);
+    })
+
+
   }
 
   private initChart(): void {
@@ -327,67 +432,79 @@ export class MapComponent implements OnInit, OnDestroy {
         polygonIdField: 'id'
       })
     );
+   // this.initChart1();
 
     const circleTemplate = am5.Template.new({});
     let colorset = am5.ColorSet.new(root, {});
-    this.bubbleSeries.bullets.push((root, series, dataItem) => {
-      const container = am5.Container.new(root, {});
-      this.circle = container.children.push(
-        am5.Circle.new(root, {
-          radius: 3,
-          strokeOpacity: 0,
-          fillOpacity: 0.7,
-          fill: colorset.next(),
-          cursorOverStyle: 'pointer',
-          tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
-        }, circleTemplate as any)
-      );
+    console.log('this.selectIndicator', this.selectedIndicators);
+    if (!this.selectedIndicators.length || this.selectedIndicators.length === 1)
+      this.bubbleSeries.bullets.push((root, series, dataItem) => {
+        const container = am5.Container.new(root, {});
+        this.circle = container.children.push(
+          am5.Circle.new(root, {
+            radius: 3,
+            strokeOpacity: 0,
+            fillOpacity: 0.7,
+            fill: colorset.next(),
+            cursorOverStyle: 'pointer',
+            tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
+          }, circleTemplate as any)
+        );
 
-      const countryLabel = container.children.push(
-        am5.Label.new(root, {
-          text: '{name}',
-          paddingLeft: 5,
-          populateText: true,
-          fontSize: 10,
-          centerY: am5.p50
-        })
-      );
+        const countryLabel = container.children.push(
+          am5.Label.new(root, {
+            text: '{name}',
+            paddingLeft: 5,
+            populateText: true,
+            fontSize: 10,
+            centerY: am5.p50
+          })
+        );
 
-      const valueLabel = document.createElement('div');
-      valueLabel.style.fontSize = '12px';
-      valueLabel.style.position = 'absolute';
-      valueLabel.style.top = '10px'; // Adjust the position as needed
-      document.body.appendChild(valueLabel);
-      this.circle.on('radius', (radius: any) => {
-        countryLabel.set('x', radius);
-        this.updateValueLabel(valueLabel, radius);
+        const valueLabel = document.createElement('div');
+        valueLabel.style.fontSize = '12px';
+        valueLabel.style.position = 'absolute';
+        valueLabel.style.top = '10px'; // Adjust the position as needed
+        document.body.appendChild(valueLabel);
+        this.circle.on('radius', (radius: any) => {
+          countryLabel.set('x', radius);
+          this.updateValueLabel(valueLabel, radius);
 
+        });
+        this.dataClickedEvent();
+        // this.circle.events.on("click", (event:any) => {
+        //   this.openDialog(event.target.dataItem);
+        // });
+        return am5.Bullet.new(root, {
+          sprite: container,
+          //  sprite:am5.Picture.new(root, {
+          //   width: 32,
+          //   height: 32,
+          //   x: am5.percent(30),
+          //   y: am5.percent(50),
+          //   centerX: am5.percent(50),
+          //   centerY: am5.percent(50),
+          //   src: "/images/icon_btc.svg"
+          // }),
+          dynamic: true
+        });
       });
-      this.dataClickedEvent();
-      // this.circle.events.on("click", (event:any) => {
-      //   this.openDialog(event.target.dataItem);
-      // });
-      return am5.Bullet.new(root, {
-        sprite: container,
-        dynamic: true
-      });
-    });
 
-    this.bubbleSeries.bullets.push((root, series, dataItem) => {
-      return am5.Bullet.new(root, {
-        sprite: am5.Label.new(root, {
-          // text: '{value.formatNumber(\'#\')}',
-          fill: am5.color(0xffffff),
-          populateText: true,
-          centerX: am5.p50,
-          centerY: am5.p50,
-          textAlign: 'center',
-          //   dx:-290,
-          // dy:-10
-        }),
-        dynamic: true
-      });
-    });
+    // this.bubbleSeries.bullets.push((root, series, dataItem) => {
+    //   return am5.Bullet.new(root, {
+    //     sprite: am5.Label.new(root, {
+    //       // text: '{value.formatNumber(\'#\')}',
+    //       fill: am5.color(0xffffff),
+    //       populateText: true,
+    //       centerX: am5.p50,
+    //       centerY: am5.p50,
+    //       textAlign: 'center',
+    //       //   dx:-290,
+    //       // dy:-10
+    //     }),
+    //     dynamic: true
+    //   });
+    // });
     this.bubbleSeries.set('heatRules', [
       {
         target: circleTemplate,
@@ -402,8 +519,123 @@ export class MapComponent implements OnInit, OnDestroy {
     this.setDataBubble()
 
   }
-  dataClickedEvent() {
 
+
+  private initChart1(): void {
+    const circleTemplate = am5.Template.new({});
+   let colorset = am5.ColorSet.new(this.root, {});
+    if (!this.selectedIndicators.length || this.selectedIndicators.length === 1){
+      this.bubbleSeries?.bullets.push((root, series, dataItem) => {
+        const container = am5.Container.new(root, {});
+        this.circle = container.children.push(
+          am5.Circle.new(root, {
+            radius: 3,
+            strokeOpacity: 0,
+            fillOpacity: 0.7,
+           // fill:0xfff,
+            fill: colorset.next(),
+            cursorOverStyle: 'pointer',
+            tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
+          }, circleTemplate as any)
+        );
+
+        const countryLabel = container.children.push(
+          am5.Label.new(root, {
+            text: '{name}',
+            paddingLeft: 5,
+            populateText: true,
+            fontSize: 10,
+            centerY: am5.p50
+          })
+        );
+
+        const valueLabel = document.createElement('div');
+        valueLabel.style.fontSize = '12px';
+        valueLabel.style.position = 'absolute';
+        valueLabel.style.top = '10px'; // Adjust the position as needed
+        document.body.appendChild(valueLabel);
+        this.circle.on('radius', (radius: any) => {
+          countryLabel.set('x', radius);
+          this.updateValueLabel(valueLabel, radius);
+
+        });
+        this.dataClickedEvent();
+        return am5.Bullet.new(root, {
+          sprite: container,
+          dynamic: true
+        });
+      });
+
+    this.bubbleSeries?.set('heatRules', [
+      {
+        target: circleTemplate,
+        dataField: 'value',
+        min: 10,
+        max: 30,
+        minValue: 0,
+        maxValue: 0,
+        key: 'radius'
+      }
+    ]);
+  }else{
+    if (this.bubbleSeries) {
+      this.bubbleSeries.dispose();
+    }  this.bubbleSeries?.bullets.push((root, series, dataItem) => {
+    const container = am5.Container.new(root, {});
+    this.circle = container.children.push(
+      am5.Circle.new(root, {
+        radius: 3,
+        strokeOpacity: 0,
+        fillOpacity: 0.7,
+        fill:0xff621f,
+        //fill: colorset.next(),
+        cursorOverStyle: 'pointer',
+        tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
+      }, circleTemplate as any)
+    );
+
+    const countryLabel = container.children.push(
+      am5.Label.new(root, {
+        text: '{name}',
+        paddingLeft: 5,
+        populateText: true,
+        fontSize: 10,
+        centerY: am5.p50
+      })
+    );
+
+    const valueLabel = document.createElement('div');
+    valueLabel.style.fontSize = '12px';
+    valueLabel.style.position = 'absolute';
+    valueLabel.style.top = '10px'; // Adjust the position as needed
+    document.body.appendChild(valueLabel);
+    this.circle.on('radius', (radius: any) => {
+      countryLabel.set('x', radius);
+      this.updateValueLabel(valueLabel, radius);
+
+    });
+    this.dataClickedEvent();
+    return am5.Bullet.new(root, {
+      sprite: container,
+      dynamic: true
+    });
+  });
+
+this.bubbleSeries?.set('heatRules', [
+  {
+    target: circleTemplate,
+    dataField: 'value',
+    min: 10,
+    max: 30,
+    minValue: 0,
+    maxValue: 0,
+    key: 'radius'
+  }
+]);
+  }
+    this.setDataBubble();
+}
+  dataClickedEvent() {
     this.circle.events.on("click", (event: any) => {
       this.previousEvent = event.target.dataItem;
       this.openDialog(event.target.dataItem);
@@ -430,19 +662,36 @@ export class MapComponent implements OnInit, OnDestroy {
     let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
     let countryMeanPairs: any;
     let countryEntry;
-    const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    //const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
+    // const data: { [key: string]: CountryData } | undefined = this.meansDroughtByCountry;
+    const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
+
     if (data) {
       countryMeanPairs = Object.entries(data).map(
         ([country, data]) => [country, data.mean || 0]
       );
     }
     if (countryMeanPairs?.length) {
-      countryEntry = countryMeanPairs.find(([country]: [string, number]) => country === countryDetail);
+      countryEntry = countryMeanPairs?.find(([country]: [string, number]) => country === countryDetail);
     }
     if (countryEntry !== undefined && countryEntry[1])
       this.heatLegend?.showValue(countryEntry[1]);
   }
 
+  selectedIndicatorData(): any {
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
+      return this.meansByCountry;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+      return this.meansDroughtByCountry;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+      return this.meansCropYieldByCountry;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
+      return this.meansAgricultureByCountry;
+    }
+
+    // Add a default return statement (could be null, an empty object, or another appropriate value)
+    return null;
+  }
   private updateValueLabel(valueLabel: any, radius: number) {
     valueLabel.textContent = `Radius: ${radius.toFixed(2)}`; // Adjust formatting as needed
   }
@@ -502,89 +751,47 @@ export class MapComponent implements OnInit, OnDestroy {
 
   selectRcp(value: string): void {
     this.selectedRcpValue = value;
-    switch (value) {
-      case 'RCP 2.6(low)': {
-        // this.showHeatLegend=true;
-        //   this.updateBubbleColor(); 
-
-        this.showHeatLegend = false;
-        this.updateDefaultColor();
-
-        break;
-      }
-      case 'RCP 2.4(medium)': {
-        if (this.heatLegend)
-          this.heatLegend.hide();
-        this.showHeatLegend = false;
-        this.updateDefaultColor();
-        this.polygonSeries.mapPolygons.template.events.off("pointerover", this.onMapPolygonPointerOver.bind(this));
-
-        break;
-      }
-      default: {
-        if (this.heatLegend)
-          this.heatLegend.hide();
-        this.updateDefaultColor();
-        this.showHeatLegend = false;
-
-        break;
-      }
-    }
   }
 
   selectIndicator(value: string): void {
     const index = this.selectedIndicators.indexOf(value);
-
     if (index === -1) {
-      // Value not found, add it to the array
       this.selectedIndicators.push(value);
-
     } else {
-      // Value found, remove it from the array
       this.selectedIndicators.splice(index, 1);
     } this.updateIndicatorName();
-
-
-    // Handle other logic based on selected indicators as needed
   }
+
   updateIndicatorName(): void {
-    //console.log('this.selectedIndicators',this.selectedIndicators[0]);
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Water index stress (Water)'
+      || this.selectedIndicators[0] === 'Drought intensity change (Water)' || this.selectedIndicators[0] === 'Crop yield change (Land)')
+      || this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
       this.showHeatLegend = true;
-      // this.updateHeatLegendText(this.selectedIndicators[0] );
       this.updateBubbleColor();
-
-    } else {
-      //  this.polygonSeries.removeEventListener("pointerover", this.removePointer, false);
-      this.showHeatLegend = false;
-      // this.heatLegend.showValue(null);
-      this.updateDefaultColor();
-      // this.chart=undefined;
-      // this.polygonSeries=null;
-      // this.initChart();
     }
-
-
+    else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 2){
+      this.updateGradientColor();
+    }
+    else {
+      this.showHeatLegend = false;
+      this.updateDefaultColor();
+    }
   }
 
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
-
   }
-
 
   openDialog(_dataItem: any): void {
     this.summaryData = _dataItem;
     this.clicked = true;
     this.sendDataToMigrateComponent(this.summaryData)
   }
+
   sendDataToMigrateComponent(_dataVal: any) {
     this.mapService.setMapData(_dataVal);
   }
-  // selectYear(year: number): void {
 
-  //   this.selectedYear = year;
-  // }
   updateHeatLegendStartText(selectedCategory: string[]): string {
     if (selectedCategory.length > 0) {
       if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
@@ -600,6 +807,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
     return '';
   }
+
   updateHeatLegendEndText(selectedCategory: string[]): string {
     if (selectedCategory.length > 0) {
       if (selectedCategory[0] === 'Water index stress (Water)' || selectedCategory[0] === 'Agriculture water Stress index(Land)') {
@@ -613,5 +821,8 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     }
     return '';
+  }
+  showBullets(){
+    
   }
 }

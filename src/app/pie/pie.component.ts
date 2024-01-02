@@ -8,8 +8,9 @@ import * as am5percent from "@amcharts/amcharts5/percent";
 import { DataService } from '../service/dataService';
 import { CsvService } from '../service/CsvService';
 import data from '../data/graph';
-import { RouteService } from '../service/route/central-med';
+import { RouteService } from '../service/central-med';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { HeatWaterService } from '../service/HeatWaterService';
 
 
 interface ChartData {
@@ -47,6 +48,7 @@ export class PieComponent implements OnInit {
     'Mozambique', 'Comoros', 'Tanzania', 'South Africa', 'Cape Verde', 'Equatorial Guinea', 'Angola', 'Gabon',
     'Namibia', 'Rwanda'
   ];
+  mapType=['Heat','Water']
   selectedCountryValue: string | null = null;
   circle: any;
   mapData$: any;
@@ -66,8 +68,13 @@ export class PieComponent implements OnInit {
   westernMigrants: any[]=[];
   westernafricaMigrants: any[] = [];
   selectedMediterranen: any[]=[];
+  arrowSeries: any;
+  mapTypeData: any;
+  heatData: any=[];
+  waterData: any=[];
+  polygonSeries: any;
  
-  constructor(private dataService: CsvService,private routeService:RouteService) {}
+  constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
 
   ngOnInit() {
     this.dataService.getCropYieldData().subscribe((rcp) => {
@@ -81,6 +88,12 @@ export class PieComponent implements OnInit {
     });
     this.routeService.getWesternMedRouteData().subscribe((rcp) => {
       this.westernafricaMigrants = this.csvToJson<RegionData>(rcp);
+    });
+    this.heatwaterService.getHeatData().subscribe((rcp) => {
+      this.heatData = this.findHighestHeatCountry(this.csvToJson<RegionData>(rcp));
+    });
+    this.heatwaterService.getWaterData().subscribe((rcp) => {
+      this.waterData = this.findHighestWaterCountry(this.csvToJson<RegionData>(rcp));
     });
     this.loadMap();
   }
@@ -96,20 +109,7 @@ export class PieComponent implements OnInit {
       projection: am5map.geoMercator()
     }));
 
-    // let cont = this.chart.children.push(am5.Container.new(this.root, {
-    //   layout: this.root.horizontalLayout,
-    //   x: 20,
-    //   y: 40
-    // }));
-
-    // // Add labels and controls
-    // cont.children.push(am5.Label.new(this.root, {
-    //   centerY: am5.p50,
-    //   text: "Map"
-    // }));
-
-
-    let polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
+    this.polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
       geoJSON: am5geodata_worldLow,
       // include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
       //   "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
@@ -118,26 +118,26 @@ export class PieComponent implements OnInit {
       //   'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
       calculateAggregates: true,
       interactive: true,
-      exclude: ["AQ"]
+      exclude: ["AQ"],
+    //  fill:am5.color(0xFF621F)
     }));
-
+ 
+//console.log('polygonSeries',polygonSeries);
     let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
     graticuleSeries.mapLines.template.setAll({
       stroke: this.root.interfaceColors.get("alternativeBackground"),
       strokeOpacity: 0.08
     });
-
+    
     this.chart.appear(1000, 100);
   }
   
   arrowLink(coordinates: { x: number; y: string } | null) {
-    let citySeries = this.chart.series.push(
+   
+     let citySeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
     );
-    if (this.lineSeries) {
-      this.chart.series.removeValue(this.lineSeries);
-    }
-    // Create a new line series
+  
     this.lineSeries = this.chart.series.push(am5map.MapLineSeries.new(this.root!, {}));
     citySeries.bullets.push(() => {
       let circle = am5.Circle.new(this.root!, {
@@ -152,20 +152,37 @@ export class PieComponent implements OnInit {
         sprite: circle,
       });
     });
-    // Arrow series
-    let arrowSeries = this.chart.series.push(
-      am5map.MapLineSeries.new(this.root!, {})
-    );
+
     this.cityData();
     citySeries.data.setAll(this.cities);
     let destinations = ["United Kingdom"];
     let originLongitude = coordinates!.x;
     let originLatitude = coordinates!.y;
-
+    this.arrowSeries = this.chart.series.push(
+      am5map.MapPointSeries.new(this.root!, {})
+    );
+    
+    this.arrowSeries.bullets.push(() => {
+      let arrow = am5.Graphics.new(this.root!, {
+        fill: am5.color(0x000000),
+        stroke: am5.color(0x000000),
+        draw: function (display) {
+          display.moveTo(0, -3);
+          display.lineTo(8, 0);
+          display.lineTo(0, 3);
+          display.lineTo(0, -3);
+        }
+      });
+    
+      return am5.Bullet.new(this.root!, {
+        sprite: arrow
+      });
+    });
+    let lineDataItem = [];
     am5.array.each(destinations, (did) => {
       let destinationDataItem = citySeries.getDataItemById(did);
-      if (destinationDataItem) {
-        let lineDataItem = this.lineSeries?.pushDataItem({
+      if (destinationDataItem && this.lineSeries) {
+        lineDataItem = this.lineSeries?.pushDataItem({
           geometry: {
             type: "LineString",
             coordinates: [
@@ -177,7 +194,17 @@ export class PieComponent implements OnInit {
             ],
           },
         });
-
+      // this.lineSeries.data.setAll(lineDataItem);
+        if (this.chart&&
+          lineDataItem ) {
+        this.arrowSeries.pushDataItem({
+          lineDataItem:lineDataItem,
+         positionOnLine: 0.5,
+          autoRotate: true
+        });
+      }else {
+        console.error("Error: Chart or lineDataItem is disposed or invalid");
+      }
 
       } else {
         console.error("Destination data item not found for ID: ", did);
@@ -199,9 +226,33 @@ export class PieComponent implements OnInit {
     this.cities.push({
       id: 'United Kingdom', title: 'United Kingdom', geometry: {
         type: "Point",
+
         coordinates: [-0.1262, 51.5002]
       }
     })
+  }
+
+  setColor(){
+      this.polygonSeries.mapPolygons.each((polygon: any) => {
+        const countryId = polygon.dataItem.dataContext.name;
+        if (countryId === this.heatData['Country']) { 
+          console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
+          polygon.set("fill", am5.color(0xFF621F));
+         // polygon.fill.set(am5.color(0xFF621F));
+        }
+      });
+   
+  }
+
+  setWaterColor(){
+    this.polygonSeries.mapPolygons.each((polygon: any) => {
+      const countryId = polygon.dataItem.dataContext.name;
+      if (countryId === this.waterData['Country']) { 
+        console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
+        polygon.set("fill", am5.color(0x4169e1));
+       // polygon.fill.set(am5.color(0xFF621F));
+      }
+    });
   }
 
   removeDuplicates(array: any[], property: string | number) {
@@ -214,7 +265,40 @@ export class PieComponent implements OnInit {
     this.selectedCountryValue = country;
     const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+    if (this.lineSeries && !this.lineSeries.isDisposed()) {
+      this.chart.series.removeValue(this.lineSeries);
+      this.chart.series.removeValue(this.arrowSeries);
+    }
     this.arrowLink(coordinates);
+  }
+  findHighestHeatCountry(data:any):any{
+    const entryWithHighestValue = data.reduce((maxEntry:any, currentEntry:any) => {
+      const maxValue = parseFloat(currentEntry.Values);
+      const currentMaxValue = parseFloat(maxEntry.Values);
+    
+      // Check if the current entry's value is higher than the current max value
+      if (!isNaN(maxValue) && !isNaN(currentMaxValue) && maxValue > currentMaxValue) {
+        return currentEntry;
+      }
+    
+      return maxEntry;
+    }, data[0]); // Initialize with the first entry
+    return entryWithHighestValue;
+  }
+  findHighestWaterCountry(data:any):any{
+    const entryWithHighestValue = data.reduce((maxEntry:any, currentEntry:any) => {
+      const maxValue = parseFloat(currentEntry.SSP1_1p5_Score);
+      const currentMaxValue = parseFloat(maxEntry.SSP1_1p5_Score);
+    
+      // Check if the current entry's value is higher than the current max value
+      if (!isNaN(maxValue) && !isNaN(currentMaxValue) && maxValue > currentMaxValue) {
+        return currentEntry;
+      }
+    
+      return maxEntry;
+    }, data[0]); // Initialize with the first entry
+    return entryWithHighestValue;
+
   }
 
   private csvToJson<T>(csvData: string): T[] {
@@ -258,7 +342,6 @@ export class PieComponent implements OnInit {
   } 
   onTabChange(_e: MatTabChangeEvent) {
     this.mediator=_e.tab.textLabel;
-    console.log('this.selectCountry',this.selectedCountryValue);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     // if (_e.index === 0) {
     //   this.showCentral = true;
@@ -275,6 +358,32 @@ export class PieComponent implements OnInit {
     //   this.showThird = true;
     // }
 
+  }
+  selectMapType(type: any) {
+   this.updateDefaultColor();
+    this.mapTypeData = type;
+    if (type === 'Heat')
+      setTimeout(() => { this.setColor(); }, 200)
+    else setTimeout(() => { this.setWaterColor(); }, 200)
+
+
+  }
+  private updateDefaultColor(): void {
+    if (this.chart && this.chart.series.length > 0) {
+   
+      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+      if (polygonSeries) {
+        polygonSeries.mapPolygons.each((polygon) => {
+          polygon.set("fill", am5.color(0x6794dc));
+        });
+      }
+    }
+
+  }
+  ngOnDestroy() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
   }
 }
 

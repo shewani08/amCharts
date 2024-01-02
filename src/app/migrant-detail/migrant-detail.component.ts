@@ -40,7 +40,7 @@ export class MigrantDetailComponent {
   jsonData: any;
   @Input() dataItem: any;
   @Input() previousData:any;
-  totalApplications: number = 0;
+  totalApplications: any = 0;
   displayedColumns: string[] = ['Overall', 'Predication', 'Countries'];
   dataSource = [
     {}
@@ -55,6 +55,7 @@ export class MigrantDetailComponent {
   selectedCountry: any;
   regionData: RegionData[]=[];
   regionArray: string | unknown[] | undefined;
+  total: number = 0;
  
 
  constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef) {
@@ -68,7 +69,8 @@ export class MigrantDetailComponent {
     this.dataService?.getIrregularMigration()?.subscribe((migrationData) => {
       this.jsonData = this.csvToJson<MigrationData>(migrationData);
       for (const entry of this.jsonData) {
-        this.totalApplications = parseInt(this.totalApplications + entry.Applications, 10);
+        this.total =parseInt(this.totalApplications + entry.Applications, 10)
+        this.totalApplications = this.total;
       }
       this.findTop3Applications();
       this.prevData = this.previousData;
@@ -85,6 +87,7 @@ export class MigrantDetailComponent {
       }
    });
   }
+
 
   getRegion(data: any, country: any) {
     const result = data

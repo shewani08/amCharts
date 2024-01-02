@@ -83,14 +83,6 @@ isHandset: any;
   returnPage(e:boolean){
     this.showDashboard= e;
   }
-  onTabChange(_e:MatTabChangeEvent){
-   console.log('vlue of e is',_e);
-   this.showMap=true;
-   if(_e.index === 0){
-    this.showMap = false;
-   }else{
-    this.showMap= true;
-   }
-  }
+
 }
 

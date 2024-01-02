@@ -49,6 +49,7 @@ import { PieComponent } from './pie/pie.component';
 import { MapChartComponent } from './map-chart/map-chart.component';
 
 import {MatChipsModule} from '@angular/material/chips';
+import { CurvedLineComponent } from './curved-line/curved-line.component';
 
 
 
@@ -76,7 +77,8 @@ import {MatChipsModule} from '@angular/material/chips';
     FactorNodegraphComponent,
     MigrantDetailComponent,
     PieComponent,
-    MapChartComponent
+    MapChartComponent,
+    CurvedLineComponent
    
    
   ],

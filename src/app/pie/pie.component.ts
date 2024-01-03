@@ -64,7 +64,7 @@ export class PieComponent implements OnInit {
   showCentral: boolean = true;
   showWestern: boolean = false;
   showThird: boolean= false;
-  mediator: string = 'Central mediterranean';
+  mediator: string = 'Center Mediterranean Sea';
   westernMigrants: any[]=[];
   westernafricaMigrants: any[] = [];
   selectedMediterranen: any[]=[];
@@ -86,7 +86,7 @@ export class PieComponent implements OnInit {
     this.routeService.getWesternMedRouteData().subscribe((rcp) => {
       this.westernMigrants = this.csvToJson<RegionData>(rcp);
     });
-    this.routeService.getWesternMedRouteData().subscribe((rcp) => {
+    this.routeService.getWesternAfricaRouteData().subscribe((rcp) => {
       this.westernafricaMigrants = this.csvToJson<RegionData>(rcp);
     });
     this.heatwaterService.getHeatData().subscribe((rcp) => {
@@ -132,7 +132,7 @@ export class PieComponent implements OnInit {
     this.chart.appear(1000, 100);
   }
   
-  arrowLink(coordinates: { x: number; y: string } | null) {
+  arrowLink(coordinates: { x: number; y: string } | null,mediatorCountry: { x: number; y: number; } | null) {
    
      let citySeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
@@ -179,6 +179,7 @@ export class PieComponent implements OnInit {
       });
     });
     let lineDataItem = [];
+    console.log('mediatorCountry',mediatorCountry);
     am5.array.each(destinations, (did) => {
       let destinationDataItem = citySeries.getDataItemById(did);
       if (destinationDataItem && this.lineSeries) {
@@ -187,11 +188,15 @@ export class PieComponent implements OnInit {
             type: "LineString",
             coordinates: [
               [originLongitude, originLatitude],
-              [
-                destinationDataItem.get("longitude") ?? 0,
+              [mediatorCountry?.x,mediatorCountry?.y],
+             // [36.30904040702372, 22.218457547733337],
+               [ destinationDataItem.get("longitude") ?? 0,
                 destinationDataItem.get("latitude") ?? 0,
-              ], // Provide default values if longitude or latitude is undefined
-            ],
+              ], 
+              
+               
+              ]// Provide default values if longitude or latitude is undefined
+          
           },
         });
       // this.lineSeries.data.setAll(lineDataItem);
@@ -229,7 +234,18 @@ export class PieComponent implements OnInit {
 
         coordinates: [-0.1262, 51.5002]
       }
-    })
+    },{ id: 'Center Mediterranean Sea', title: 'Center Mediterranean Sea', geometry: {
+      type: "Point",
+
+      coordinates: [36.30904040702372, 22.218457547733337]}},
+      { id: 'Western Mediterranean', title: 'Western Mediterranean', geometry: {
+        type: "Point",
+  
+        coordinates: [36.34444502849807, -5.291307397436539]}},
+        { id: 'Western Africa', title: 'Western Africa', geometry: {
+          type: "Point",
+    
+          coordinates: [24.53051872073307, -14.226280416672568]}})
   }
 
   setColor(){
@@ -264,12 +280,14 @@ export class PieComponent implements OnInit {
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
     const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
+    const mediatorCountry = this.findCenteralCoordinates(this.mediator);
+    console.log('mediatorCountry',mediatorCountry);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     if (this.lineSeries && !this.lineSeries.isDisposed()) {
       this.chart.series.removeValue(this.lineSeries);
       this.chart.series.removeValue(this.arrowSeries);
     }
-    this.arrowLink(coordinates);
+    this.arrowLink(coordinates,mediatorCountry);
   }
   findHighestHeatCountry(data:any):any{
     const entryWithHighestValue = data.reduce((maxEntry:any, currentEntry:any) => {
@@ -327,11 +345,25 @@ export class PieComponent implements OnInit {
     return null;
   }
 
+  findCenteralCoordinates(selectedCountryValue: string) {
+    console.log('selectedCountryValue',selectedCountryValue);
+    let data =[ {name: 'Center Mediterranean Sea', x:36.30904040702372,y: 22.218457547733337},
+    {name: 'Western Mediterranean', x:36.34444502849807,y: -5.291307397436539},
+    {name: 'Western Africa', x:24.53051872073307,y: -14.226280416672568}]
+    
+    for (const item of data) {
+      if (item.name === selectedCountryValue) {
+        return { x: item.x, y: item.y };
+      }
+    }
+    return null;
+  }
+
   sumCountryData(country: any) {
     let sum = 0;
     let totalSum;
     const countryData = {};
-    this.selectedMediterranen = this.mediator ==='Central mediterranean' ? this.migrants :'Western mediterranean' ? this.westernMigrants : this.westernafricaMigrants;
+    this.selectedMediterranen = this.mediator ==='Center Mediterranean Sea' ? this.migrants :'Western Mediterranean' ? this.westernMigrants : this.westernafricaMigrants;
     for (const date in this.selectedMediterranen) {
       const Value = parseInt(this.selectedMediterranen[date][country], 10);
       if (!isNaN(Value)) {
@@ -342,6 +374,7 @@ export class PieComponent implements OnInit {
   } 
   onTabChange(_e: MatTabChangeEvent) {
     this.mediator=_e.tab.textLabel;
+
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     // if (_e.index === 0) {
     //   this.showCentral = true;

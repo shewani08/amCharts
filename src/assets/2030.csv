@@ -1,0 +1,59 @@
+id,Continent,Country,value,Number_of_immigrants,Proportion 
+DZ,Northern Africa,Algeria,Yes,133,98.1
+AO,Middle Africa,Angola,Yes,1,100
+BJ,Western Africa,Benin,Yes,11,100.98
+BW,Southern Africa,Botswana,Yes,98,100
+BF,Western Africa,Burkina Faso,Yes,9,100.1
+BI,Eastern Africa,Burundi,Yes,1,100
+CV,Western Africa,Cabo Verde,Yes,95,1.5
+CM,Middle Africa,Cameroon,Yes,12233,19.3
+CF,Middle Africa,Central African Republic,Yes,220220,55.7
+TD,Middle Africa,Chad,Yes,530,8.3
+KM,Eastern Africa,Comoros,Yes,19,100.3
+CG,Middle Africa,Congo,Yes,5,100.1
+CI,Western Africa,Côte d'Ivoire,Yes,227,100.4
+CD,Middle Africa,Democratic Republic of the Congo,Yes,1,100
+DJ,Eastern Africa,Djibouti,Yes,5,100.1
+EG,Northern Africa,Egypt,Yes,1,100
+GQ,Middle Africa,Equatorial Guinea,Yes,98,100
+ER,Eastern Africa,Eritrea,Yes,133,98.1
+SZ,Southern Africa,Eswatini,Yes,10,100.98
+ET,Eastern Africa,Ethiopia,Yes,3,100
+GA,Middle Africa,Gabon,Yes,322,100.5
+GM,Western Africa,Gambia,Yes,50,100.8
+GH,Western Africa,Ghana,Yes,6,100.1
+GN,Western Africa,Guinea,Yes,11,100.98
+GW,Western Africa,Guinea-Bissau,Yes,86,1.3
+KE,Eastern Africa,Kenya,Yes,1229,98
+LS,Southern Africa,Lesotho,Yes,17622,227.6
+LR,Western Africa,Liberia,Yes,122,100.98
+LY,Northern Africa,Libya,Yes,50,100.8
+MG,Eastern Africa,Madagascar,Yes,1,100
+MW,Eastern Africa,Malawi,Yes,1,100
+ML,Western Africa,Mali,No,100,100
+MR,Western Africa,Mauritania,No,100,100
+MU,Eastern Africa,Mauritius,No,100,100
+YT,Eastern Africa,Mayotte,No,100,100
+MA,Northern Africa,Morocco,No,100,100
+MZ,Eastern Africa,Mozambique,No,100,100
+NA,Southern Africa,Namibia,No,100,100
+NE,Western Africa,Niger,No,100,100
+NG,Western Africa,Nigeria,No,100,100
+RE,Eastern Africa,Réunion,No,100,100
+RW,Eastern Africa,Rwanda,No,100,100
+SH,Western Africa,Saint Helena,No,100,100
+ST,Middle Africa,Sao Tome and Principe,No,100,100
+SN,Western Africa,Senegal,No,100,100
+SC,Eastern Africa,Seychelles,No,100,100
+SL,Western Africa,Sierra Leone,No,100,100
+SO,Eastern Africa,Somalia,No,100,100
+ZA,Southern Africa,South Africa,No,100,100
+SS,Eastern Africa,South Sudan,No,100,100
+SD,Northern Africa,Sudan,No,100,100
+TG,Western Africa,Togo,No,100,100
+TN,Northern Africa,Tunisia,No,100,100
+UG,Eastern Africa,Uganda,,,
+TZ,Eastern Africa,United Republic of Tanzania,,,
+EH,Northern Africa,Western Sahara,,,
+ZM,Eastern Africa,Zambia,,,
+ZW,Eastern Africa,Zimbabwe,,,

@@ -5,6 +5,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { PreviousEvntService } from '../service/previousEvent';
 import { DataService } from '../service/dataService';
 import { any } from '@amcharts/amcharts5/.internal/core/util/Array';
+import { MatDialog } from '@angular/material/dialog';
+import { MigrantDialogComponent } from '../migrant-dialog/migrant-dialog.component';
 interface MigrationData {
   Year: number;
   Country: string;
@@ -36,6 +38,7 @@ interface Region {
 
 })
 export class MigrantDetailComponent {
+
   panelOpenState = true;
   jsonData: any;
   @Input() dataItem: any;
@@ -56,9 +59,13 @@ export class MigrantDetailComponent {
   regionData: RegionData[]=[];
   regionArray: string | unknown[] | undefined;
   total: number = 0;
+  migrantData: any[]=[];
+  totalMigrant: number = 0;
+  totalMig: string = '';
  
 
- constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef) {
+ constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef,
+  private dialog: MatDialog) {
 
   }
 
@@ -66,29 +73,42 @@ export class MigrantDetailComponent {
     this.dataService.getCropYieldData().subscribe((rcp) => {
       this.regionData = this.csvToJson<RegionData>(rcp);
     });
+  
     this.dataService?.getIrregularMigration()?.subscribe((migrationData) => {
       this.jsonData = this.csvToJson<MigrationData>(migrationData);
       for (const entry of this.jsonData) {
-        this.total =parseInt(this.totalApplications + entry.Applications, 10)
+        this.total = parseInt(this.totalApplications + entry.Applications, 10);
         this.totalApplications = this.total;
       }
-      this.findTop3Applications();
+    //  this.findTop3Applications();
       this.prevData = this.previousData;
-
-    })
-
+    });
+  
     this.mapData$ = this.mapdataService.mapData$;
     this.subscription = this.mapData$.subscribe((data: any) => {
       this.mapData = data;
       if (this.mapData && this.regionData) {
-          this.selectedCountry = this.mapData.dataContext.name;
-          this.regionArray=this.getRegion(this.regionData, this.selectedCountry);
-          console.log('regionResult',this.regionArray);
+        this.selectedCountry = this.mapData.dataContext.name;
+        this.regionArray = this.getRegion(this.regionData, this.selectedCountry);
       }
-   });
+    });
+  
+    this.dataService.getMigrantData().subscribe((rcp) => {
+      this.migrantData = this.csvToJson(rcp);
+      console.log('this.migrantData',this.migrantData);
+      this.total = 0; // Reset total before calculating again
+      for (const entry of this.migrantData) {
+        const parsedValue = parseInt(entry.total_irregular_migrants, 10);
+        if (!isNaN(parsedValue)) {
+          this.total += parsedValue;
+         
+        }
+        this.totalMig =this.addCommasToNumber(this.total);
+      }
+      this.findTop3Applications();
+      console.log('this.total', this.total);
+    });
   }
-
-
   getRegion(data: any, country: any) {
     const result = data
       .filter((entry: { Country: any; }) => entry.Country === country)
@@ -98,10 +118,15 @@ export class MigrantDetailComponent {
     return uniqueRegions.length > 0 ? uniqueRegions : 'Country not found';
   }
 
+   addCommasToNumber(number:number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
  
   findTop3Applications(): void {
-    this.jsonData.sort((a: any, b: any) => b.Applications - a.Applications);
-    this.topCountries = this.jsonData.slice(0, 3);
+    console.log('MD', this.migrantData);
+    this.migrantData.sort((a: any, b: any) => b.total_irregular_migrants - a.total_irregular_migrants);
+    console.log('MD',  this.migrantData);
+    this.topCountries = this.migrantData.slice(0, 3);
   }
   onPanelStateChange(isOpen: boolean): void {
     this.panelOpenState = isOpen;
@@ -179,6 +204,19 @@ export class MigrantDetailComponent {
       result.push(obj as T);
     }
     return result;
+  }
+
+  openDialog(): void {
+    console.log('opendialog');
+    const dialogRef = this.dialog.open(MigrantDialogComponent,{
+      data: this.migrantData,
+      width: '800px', // Set the width
+      height: '400px', // Set the height
+    });
+
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log('Dialog closed:', result);
+    // });
   }
 
 

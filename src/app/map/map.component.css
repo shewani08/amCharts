@@ -1,5 +1,5 @@
 #chartdiv{
-    width:60vw;
+    width:50vw;
     height:100%;
 }
 .map-dropdown{
@@ -81,4 +81,8 @@
     position:absolute;
     right:10px;
     width: 400px;
+  }
+  .disclaimer{
+    position: absolute;
+    bottom: 5%;
   }

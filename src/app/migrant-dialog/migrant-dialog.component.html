@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Africa to UK Migration Detail</h2>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- Country Column -->
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef> Country </th>
+      <td mat-cell *matCellDef="let element" > {{ element.Country }} </td>
+    </ng-container>
+
+    <!-- Columns for each year -->
+    <ng-container *ngFor="let year of displayedColumns">
+      <ng-container [matColumnDef]="year">
+        <th mat-header-cell *matHeaderCellDef> {{ year }} </th>
+        <td mat-cell *matCellDef="let element"> {{ element[year] }} </td>
+      </ng-container>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

@@ -20,8 +20,8 @@ import { PreviousEvntService } from '../service/previousEvent';
 
 
 interface CsvData {
-  id: string;
-  Continent: string;
+  id?: string;
+  Continent?: string;
   Country: string;
   value: string;
   Number_of_immigrants: string;
@@ -154,7 +154,7 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedRcpValues: string[] = [];
   selectedIndicators: string[] = [];
   private root: any;
-  selectedYear: string = '2030';
+  selectedYear: string = '';
   private selectedYearSubscription: Subscription | undefined;
   circle: any;
   previousEvent: any;
@@ -169,13 +169,12 @@ export class MapComponent implements OnInit, OnDestroy {
     private yearService: YearService, private previousEvntService: PreviousEvntService) { }
 
   ngOnInit(): void {
-    this.selectedYear = '2030';
+   // this.selectedYear = '2030';
     this.selectedYearSubscription = this.yearService.selectedYear$.subscribe(year => {
       this.selectedYear = year;
       this.loadData();
 
     });
-
 
   }
 
@@ -349,15 +348,20 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private loadData(): void {
     if (!this.selectedYear) {
-      this.dataService?.getCsvData()?.subscribe((csvData) => {
-        this.jsonData = this.csvToJson<CsvData>(csvData);
-        this.initChart();
-        setInterval(() => this.updateData(), 2000);
-      });
+      // this.dataService?.getCsvData()?.subscribe((csvData) => {
+      //   this.jsonData = this.csvToJson<CsvData>(csvData);
+      //   this.initChart();
+      //   setInterval(() => this.updateData(), 2000);
+      // });
+      this.dataService?.getMigrantData()?.subscribe((csvData) => {
+         this.jsonData = this.csvToJson<CsvData>(csvData);
+         console.log('default',this.jsonData);
+          this.initChart();
+          setInterval(() => this.updateData(), 2000);
+        });
     } else if (this.selectedYear === '2050') {
       this.dataService?.getimmigrationData()?.subscribe((csvData) => {
         this.jsonData = this.csvToJson<CsvData>(csvData);
-
         this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
         this.previousEvntService.setPreviousEvent(this.previousData);
         this.setDataBubble();
@@ -365,7 +369,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
 
     } else {
-      this.dataService?.getCsvData()?.subscribe((csvData) => {
+      this.dataService?.getAfricaimmigrationData()?.subscribe((csvData) => {
         this.jsonData = this.csvToJson<CsvData>(csvData);
         this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
         this.previousEvntService.setPreviousEvent(this.previousData);
@@ -432,7 +436,6 @@ export class MapComponent implements OnInit, OnDestroy {
         polygonIdField: 'id'
       })
     );
-   // this.initChart1();
 
     const circleTemplate = am5.Template.new({});
     let colorset = am5.ColorSet.new(root, {});
@@ -443,11 +446,12 @@ export class MapComponent implements OnInit, OnDestroy {
         this.circle = container.children.push(
           am5.Circle.new(root, {
             radius: 3,
-            strokeOpacity: 0,
+            // strokeOpacity: 0,
             fillOpacity: 0.7,
             fill: colorset.next(),
-            cursorOverStyle: 'pointer',
-            tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
+            // cursorOverStyle: 'pointer',
+          //  tooltipText:'{{Country}}',
+           tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
           }, circleTemplate as any)
         );
 
@@ -477,34 +481,9 @@ export class MapComponent implements OnInit, OnDestroy {
         // });
         return am5.Bullet.new(root, {
           sprite: container,
-          //  sprite:am5.Picture.new(root, {
-          //   width: 32,
-          //   height: 32,
-          //   x: am5.percent(30),
-          //   y: am5.percent(50),
-          //   centerX: am5.percent(50),
-          //   centerY: am5.percent(50),
-          //   src: "/images/icon_btc.svg"
-          // }),
           dynamic: true
         });
       });
-
-    // this.bubbleSeries.bullets.push((root, series, dataItem) => {
-    //   return am5.Bullet.new(root, {
-    //     sprite: am5.Label.new(root, {
-    //       // text: '{value.formatNumber(\'#\')}',
-    //       fill: am5.color(0xffffff),
-    //       populateText: true,
-    //       centerX: am5.p50,
-    //       centerY: am5.p50,
-    //       textAlign: 'center',
-    //       //   dx:-290,
-    //       // dy:-10
-    //     }),
-    //     dynamic: true
-    //   });
-    // });
     this.bubbleSeries.set('heatRules', [
       {
         target: circleTemplate,
@@ -520,121 +499,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   }
 
-
-  private initChart1(): void {
-    const circleTemplate = am5.Template.new({});
-   let colorset = am5.ColorSet.new(this.root, {});
-    if (!this.selectedIndicators.length || this.selectedIndicators.length === 1){
-      this.bubbleSeries?.bullets.push((root, series, dataItem) => {
-        const container = am5.Container.new(root, {});
-        this.circle = container.children.push(
-          am5.Circle.new(root, {
-            radius: 3,
-            strokeOpacity: 0,
-            fillOpacity: 0.7,
-           // fill:0xfff,
-            fill: colorset.next(),
-            cursorOverStyle: 'pointer',
-            tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
-          }, circleTemplate as any)
-        );
-
-        const countryLabel = container.children.push(
-          am5.Label.new(root, {
-            text: '{name}',
-            paddingLeft: 5,
-            populateText: true,
-            fontSize: 10,
-            centerY: am5.p50
-          })
-        );
-
-        const valueLabel = document.createElement('div');
-        valueLabel.style.fontSize = '12px';
-        valueLabel.style.position = 'absolute';
-        valueLabel.style.top = '10px'; // Adjust the position as needed
-        document.body.appendChild(valueLabel);
-        this.circle.on('radius', (radius: any) => {
-          countryLabel.set('x', radius);
-          this.updateValueLabel(valueLabel, radius);
-
-        });
-        this.dataClickedEvent();
-        return am5.Bullet.new(root, {
-          sprite: container,
-          dynamic: true
-        });
-      });
-
-    this.bubbleSeries?.set('heatRules', [
-      {
-        target: circleTemplate,
-        dataField: 'value',
-        min: 10,
-        max: 30,
-        minValue: 0,
-        maxValue: 0,
-        key: 'radius'
-      }
-    ]);
-  }else{
-    if (this.bubbleSeries) {
-      this.bubbleSeries.dispose();
-    }  this.bubbleSeries?.bullets.push((root, series, dataItem) => {
-    const container = am5.Container.new(root, {});
-    this.circle = container.children.push(
-      am5.Circle.new(root, {
-        radius: 3,
-        strokeOpacity: 0,
-        fillOpacity: 0.7,
-        fill:0xff621f,
-        //fill: colorset.next(),
-        cursorOverStyle: 'pointer',
-        tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
-      }, circleTemplate as any)
-    );
-
-    const countryLabel = container.children.push(
-      am5.Label.new(root, {
-        text: '{name}',
-        paddingLeft: 5,
-        populateText: true,
-        fontSize: 10,
-        centerY: am5.p50
-      })
-    );
-
-    const valueLabel = document.createElement('div');
-    valueLabel.style.fontSize = '12px';
-    valueLabel.style.position = 'absolute';
-    valueLabel.style.top = '10px'; // Adjust the position as needed
-    document.body.appendChild(valueLabel);
-    this.circle.on('radius', (radius: any) => {
-      countryLabel.set('x', radius);
-      this.updateValueLabel(valueLabel, radius);
-
-    });
-    this.dataClickedEvent();
-    return am5.Bullet.new(root, {
-      sprite: container,
-      dynamic: true
-    });
-  });
-
-this.bubbleSeries?.set('heatRules', [
-  {
-    target: circleTemplate,
-    dataField: 'value',
-    min: 10,
-    max: 30,
-    minValue: 0,
-    maxValue: 0,
-    key: 'radius'
-  }
-]);
-  }
-    this.setDataBubble();
-}
   dataClickedEvent() {
     this.circle.events.on("click", (event: any) => {
       this.previousEvent = event.target.dataItem;
@@ -737,8 +601,8 @@ this.bubbleSeries?.set('heatRules', [
           value: data[i].value,
           id: data[i].id,
           name: data[i].Country,
-          Number_of_immigrants: data[i].Number_of_immigrants,
-          Proportion: data[i].Proportion
+          Number_of_immigrants: data[i].Number_of_immigrants? data[i].Number_of_immigrants: data[i].total_irregular_migrants,
+          Proportion: data[i].Proportion?data[i].Proportion:data[i].PercentOverall
         };
         this.bubbleSeries.data.setIndex(i, newDataItem);
       }
@@ -750,6 +614,7 @@ this.bubbleSeries?.set('heatRules', [
   selectedCountryValue: string | null = null;
 
   selectRcp(value: string): void {
+    this.mapService.setRCPData(value);
     this.selectedRcpValue = value;
   }
 

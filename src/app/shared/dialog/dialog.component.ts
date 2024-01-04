@@ -28,13 +28,12 @@ interface CsvData {
 })
 export class DialogComponent implements OnChanges {
  
-  selectedYear='2030'
+  selectedYear=''
   chart: any;
   dataSource: CsvData[] = [];
   displayedColumns: string[] = [
 
     'Country',
-    //'value',
     'Number_of_immigrants',
     'Proportion', 'Year'];
  
@@ -46,6 +45,9 @@ export class DialogComponent implements OnChanges {
   selectedCar: number | undefined;
   prevsubscription: any;
   prevData: any;
+  rcpData$: any;
+  rcpSubscription: any;
+  rcpData: any;
 
 
 
@@ -59,24 +61,32 @@ export class DialogComponent implements OnChanges {
   }
 
   ngOnInit() {
-     this.initializeChart();
+    this.initializeChart();
     this.mapData$ = this.dataService.mapData$;
-    this.subscription = this.mapData$.subscribe((data:any) => {
+    this.subscription = this.mapData$.subscribe((data: any) => {
       this.mapData = data;
       if (this.mapData) {
         setTimeout(() => {
           this.reloadData(this.mapData);
-        }, 200);    
-  }
+        }, 200);
+      }
     });
-    this.previousData$=this.previousEvntService.previousEvent$;
-    this.prevsubscription = this.previousData$.subscribe((data:any) => {
+
+    this.rcpData$ = this.dataService.setRCP$;
+    this.rcpSubscription = this.rcpData$.subscribe((data: any) => {
+      this.rcpData = data;
+      this.cdr.detectChanges();
+
+    });
+    this.previousData$ = this.previousEvntService.previousEvent$;
+    this.prevsubscription = this.previousData$.subscribe((data: any) => {
       if (data) {
         setTimeout(() => {
           this.reloadPrevData(data);
         }, 200);
-    }
+      }
     });
+   
   }
 
 

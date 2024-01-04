@@ -1,0 +1,37 @@
+id,Country,2019,2020,2021,2022,2023,total_irregular_migrants
+DZ,Algeria,,10,111,133,2,256
+BJ,Benin,,1,,1,,2
+BF,Burkina,,1,1,11,2,15
+BI,Burundi,,,,2,,2
+CM,Cameroon,,,1,9,,10
+CF,Central African Republic,,1,4,1,,6
+TD,Chad,,59,38,95,12,204
+DJ,Djibouti,,,2,,,2
+EG,Egypt,1,54,395,1233,375,2058
+ER,Eritrea,,509,2893,2020,611,6033
+ET,Ethiopia,5,109,553,530,46,1243
+GM,Gambia,2,16,23,19,7,67
+GH,Ghana,,2,5,5,2,14
+GN,Guinea,2,24,21,27,15,89
+GW,Guinea Bissau,,3,1,1,,5
+,Ivory Coast,1,10,7,5,3,26
+KE,Kenya,,,,1,,1
+LR,Liberia,,1,2,2,1,6
+LY,Libya,,27,162,133,58,380
+ML,Mali,2,32,13,10,2,59
+MR,Mauritania,,3,3,3,,9
+MA,Morocco,,7,20,32,8,67
+NE,Niger,1,4,11,,,16
+NG,Nigeria,2,8,7,50,12,79
+SN,Senegal,,14,9,6,3,32
+SL,Sierra Leone,,2,1,11,3,17
+SO,Somalia,,14,320,86,18,438
+ZA,South Africa,,,1,,,1
+SS,South Sudan,,38,65,129,37,269
+SD,Sudan,,963,1067,1762,385,4177
+TZ,Tanzania,,,,12,5,17
+TG,Togo,,,,,2,2
+TN,Tunisia,,,13,50,15,78
+EH,Western Sahara,,,1,1,,2
+ZW,Zimbabwe,,,,1,,1
+,,,,,,,15683

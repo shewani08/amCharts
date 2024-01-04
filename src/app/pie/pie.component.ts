@@ -137,21 +137,23 @@ export class PieComponent implements OnInit {
      let citySeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
     );
-  
+
     this.lineSeries = this.chart.series.push(am5map.MapLineSeries.new(this.root!, {}));
     citySeries.bullets.push(() => {
-      let circle = am5.Circle.new(this.root!, {
-        radius: 5,
-        tooltipText: "{title}",
-        tooltipY: 0,
-        fill: am5.color(0xffba00),
-        stroke: this.root?.interfaceColors.get("background"),
-        strokeWidth: 2,
-      });
-      return am5.Bullet.new(this.root!, {
-        sprite: circle,
-      });
-    });
+    
+        let circle = am5.Circle.new(this.root!, {
+          radius: 5,
+          tooltipText: "{title}",
+          tooltipY: 0,
+          fill: am5.color(0xffba00),
+          stroke: this.root?.interfaceColors.get("background"),
+          strokeWidth: 2,
+        });
+        return am5.Bullet.new(this.root!, {
+          sprite: circle,
+        });
+      } );
+    
 
     this.cityData();
     citySeries.data.setAll(this.cities);

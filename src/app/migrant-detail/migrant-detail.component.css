@@ -1,0 +1,10 @@
+.content-container {
+    display: flex;
+    flex-direction: column;
+    div{
+        /* position: absolute;
+        float:left; */
+    }
+  }
+  
+ 

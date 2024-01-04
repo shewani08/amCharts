@@ -15,7 +15,6 @@ interface MigrationData {
   Age_Group: string;
   Applications: number;
 }
-
 interface RegionData {
   x: number;
   y: string;
@@ -24,12 +23,10 @@ interface RegionData {
   SSP1_1p5_Score: number;
   SSP1_2p0_Score: number;
   SSP1_3p0_Score:number
-
 }
 interface Region {
   name: string;
 }
-
 @Component({
   selector: 'app-migrant-detail',
   templateUrl: './migrant-detail.component.html',
@@ -38,7 +35,6 @@ interface Region {
 
 })
 export class MigrantDetailComponent {
-
   panelOpenState = true;
   jsonData: any;
   @Input() dataItem: any;
@@ -65,9 +61,7 @@ export class MigrantDetailComponent {
  
 
  constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef,
-  private dialog: MatDialog) {
-
-  }
+  private dialog: MatDialog) {}
 
   ngOnInit() {
     this.dataService.getCropYieldData().subscribe((rcp) => {

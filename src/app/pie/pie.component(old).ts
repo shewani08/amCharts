@@ -49,7 +49,7 @@ export class PieComponent implements OnInit {
     'Namibia', 'Rwanda'
   ];
   mapType=['Heat','Water']
-  selectedCountryValue: any | null = null;
+  selectedCountryValue: string | null = null;
   circle: any;
   mapData$: any;
   subscription: any;
@@ -64,7 +64,7 @@ export class PieComponent implements OnInit {
   showCentral: boolean = true;
   showWestern: boolean = false;
   showThird: boolean= false;
-  mediator: string = 'Central Mediterranean Route';
+  mediator: string = 'Center Mediterranean Sea';
   westernMigrants: any[]=[];
   westernafricaMigrants: any[] = [];
   selectedMediterranen: any[]=[];
@@ -122,6 +122,7 @@ export class PieComponent implements OnInit {
     //  fill:am5.color(0xFF621F)
     }));
  
+//console.log('polygonSeries',polygonSeries);
     let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
     graticuleSeries.mapLines.template.setAll({
       stroke: this.root.interfaceColors.get("alternativeBackground"),
@@ -136,27 +137,26 @@ export class PieComponent implements OnInit {
      let citySeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
     );
-  
+
     this.lineSeries = this.chart.series.push(am5map.MapLineSeries.new(this.root!, {}));
+    citySeries.bullets.push(() => {
+    
+        let circle = am5.Circle.new(this.root!, {
+          radius: 5,
+          tooltipText: "{title}",
+          tooltipY: 0,
+          fill: am5.color(0xffba00),
+          stroke: this.root?.interfaceColors.get("background"),
+          strokeWidth: 2,
+        });
+        return am5.Bullet.new(this.root!, {
+          sprite: circle,
+        });
+      } );
+    
+
     this.cityData();
     citySeries.data.setAll(this.cities);
-    citySeries.bullets.push((bullet:am5.Bullet) => {
-      console.log('bullet',citySeries);
-
-      let circle = am5.Circle.new(this.root!, {
-        radius: 7,
-        tooltipText: "{title}",
-        tooltipY: 0,
-        fill: am5.color(0xffba00),
-        stroke: this.root?.interfaceColors.get("background"),
-        strokeWidth: 2,
-      });
-      return am5.Bullet.new(this.root!, {
-        sprite: circle,
-      });
-    });
-
-
     let destinations = ["United Kingdom"];
     let originLongitude = coordinates!.x;
     let originLatitude = coordinates!.y;
@@ -191,7 +191,7 @@ export class PieComponent implements OnInit {
             coordinates: [
               [originLongitude, originLatitude],
               [mediatorCountry?.x,mediatorCountry?.y],
-              [36.30904040702372, 22.218457547733337],
+             // [36.30904040702372, 22.218457547733337],
                [ destinationDataItem.get("longitude") ?? 0,
                 destinationDataItem.get("latitude") ?? 0,
               ], 
@@ -236,18 +236,18 @@ export class PieComponent implements OnInit {
 
         coordinates: [-0.1262, 51.5002]
       }
-    },{ id: 'Central Mediterranean Route', title: 'Central Mediterranean Route', geometry: {
+    },{ id: 'Center Mediterranean Sea', title: 'Center Mediterranean Sea', geometry: {
       type: "Point",
 
-      coordinates: [22.218457547733337,36.30904040702372 ]}},
+      coordinates: [36.30904040702372, 22.218457547733337]}},
       { id: 'Western Mediterranean', title: 'Western Mediterranean', geometry: {
         type: "Point",
   
-        coordinates: [-5.291307397436539,36.34444502849807 ]}},
+        coordinates: [36.34444502849807, -5.291307397436539]}},
         { id: 'Western Africa', title: 'Western Africa', geometry: {
           type: "Point",
     
-          coordinates: [-14.226280416672568,24.53051872073307 ]}})
+          coordinates: [24.53051872073307, -14.226280416672568]}})
   }
 
   setColor(){
@@ -257,8 +257,6 @@ export class PieComponent implements OnInit {
           console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
           polygon.set("fill", am5.color(0xFF621F));
          // polygon.fill.set(am5.color(0xFF621F));
-         polygon.set("tooltipText", `{name}: Heat Color`);
-         polygon.set("tooltipPosition", "fixed");
         }
       });
    
@@ -271,8 +269,6 @@ export class PieComponent implements OnInit {
         console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
         polygon.set("fill", am5.color(0x4169e1));
        // polygon.fill.set(am5.color(0xFF621F));
-       polygon.set("tooltipText", `{name}: Waterstress`);
-       polygon.set("tooltipPosition", "fixed");
       }
     });
   }
@@ -283,10 +279,11 @@ export class PieComponent implements OnInit {
     );
   }
 
-  selectCountry(country: any): void {
+  selectCountry(country: string): void {
     this.selectedCountryValue = country;
     const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
     const mediatorCountry = this.findCenteralCoordinates(this.mediator);
+    console.log('mediatorCountry',mediatorCountry);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     if (this.lineSeries && !this.lineSeries.isDisposed()) {
       this.chart.series.removeValue(this.lineSeries);
@@ -352,9 +349,9 @@ export class PieComponent implements OnInit {
 
   findCenteralCoordinates(selectedCountryValue: string) {
     console.log('selectedCountryValue',selectedCountryValue);
-    let data =[ {name: 'Central Mediterranean Route', x:22.218457547733337,y:36.30904040702372 },
-    {name: 'Western Mediterranean', x: -5.291307397436539,y:36.34444502849807},
-    {name: 'Western Africa', x:-14.226280416672568,y: 24.53051872073307}]
+    let data =[ {name: 'Center Mediterranean Sea', x:36.30904040702372,y: 22.218457547733337},
+    {name: 'Western Mediterranean', x:36.34444502849807,y: -5.291307397436539},
+    {name: 'Western Africa', x:24.53051872073307,y: -14.226280416672568}]
     
     for (const item of data) {
       if (item.name === selectedCountryValue) {
@@ -368,7 +365,7 @@ export class PieComponent implements OnInit {
     let sum = 0;
     let totalSum;
     const countryData = {};
-    this.selectedMediterranen = this.mediator ==='Central Mediterranean Route' ? this.migrants :'Western Mediterranean' ? this.westernMigrants : this.westernafricaMigrants;
+    this.selectedMediterranen = this.mediator ==='Center Mediterranean Sea' ? this.migrants :'Western Mediterranean' ? this.westernMigrants : this.westernafricaMigrants;
     for (const date in this.selectedMediterranen) {
       const Value = parseInt(this.selectedMediterranen[date][country], 10);
       if (!isNaN(Value)) {
@@ -379,12 +376,8 @@ export class PieComponent implements OnInit {
   } 
   onTabChange(_e: MatTabChangeEvent) {
     this.mediator=_e.tab.textLabel;
+
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
-
-    this.selectCountry(this.selectedCountryValue);
-   
-
-   
     // if (_e.index === 0) {
     //   this.showCentral = true;
     //   this.showWestern = false;

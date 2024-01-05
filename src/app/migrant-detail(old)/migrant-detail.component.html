@@ -3,35 +3,18 @@
     <mat-expansion-panel (opened)="onMigrationPanelOpened()" (closed)="onMigrationPanelClosed()" [expanded]="migrationPanelOpenState" >
         <mat-expansion-panel-header>
             <mat-panel-title>
-                Migration Detail (Africa to UK)
+                Migration Detail
             </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="content-container">
-            <div><h2><b>Overall Migration(Year 2018-2023)-:&nbsp;<a href="#" (click)="openDialog()">{{totalMig}}</a></b></h2></div>
-            <div *ngIf="rcpData"><b>Predicted migration(Year 2018-2023)-:&nbsp;</b>{{totalMig}}</div>
-            <!-- <div><b>Predicted migration-:</b> &nbsp;{{totalMig}} </div> -->
-            
-        <div>
-    
-            <table>
-      <thead>
-        <!-- <h2><b>Highest Rate of Migration</b></h2> -->
-        <tr>
-          <th> Highest Rate of Migration(Top Countries)</th>
-          <th> Migrants No</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let country of topCountries">
-          <tr>
-            <td>{{ country.Country }}</td>
-            <td>{{ country.total_irregular_migrants }}</td>
-          </tr>
-        </ng-container>
-      </tbody>
-            </table>
+            <div><b>Overall Migration from Africa to UK: </b> &nbsp;<a href="#" (click)="openDialog()">{{totalMig}}</a> </div>
+            <div><b>Predicted migration to the UK from Africa:</b> &nbsp;{{totalMig}} </div>
+            <div><b>Predicted highest rate of migration to the UK:</b><br />
+              <ng-container *ngFor="let country of topCountries"> 
+                {{ country.Country }} - {{country.total_irregular_migrants}}
+              </ng-container>
             </div>
-            </div>
+          </div>
           
         <!-- <div class="table-container">
             <table mat-table [dataSource]="dataSource" class="demo-table vertical-header">

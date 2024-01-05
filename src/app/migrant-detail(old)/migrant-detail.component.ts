@@ -58,9 +58,6 @@ export class MigrantDetailComponent {
   migrantData: any[]=[];
   totalMigrant: number = 0;
   totalMig: string = '';
-  rcpData$: any;
-  rcpSubscription: any;
-  rcpData: any;
  
 
  constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef,
@@ -69,13 +66,6 @@ export class MigrantDetailComponent {
   ngOnInit() {
     this.dataService.getCropYieldData().subscribe((rcp) => {
       this.regionData = this.csvToJson<RegionData>(rcp);
-    });
-
-    this.rcpData$ = this.mapdataService.setRCP$;
-    this.rcpSubscription = this.rcpData$.subscribe((data: any) => {
-      this.rcpData = data;
-      this.cdr.detectChanges();
-
     });
   
     this.dataService?.getIrregularMigration()?.subscribe((migrationData) => {

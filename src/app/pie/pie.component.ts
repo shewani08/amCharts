@@ -148,6 +148,8 @@ export class PieComponent implements OnInit {
     this.lineSeries = this.chart.series.push(am5map.MapLineSeries.new(this.root!, {}));
     this.cityData();
     citySeries.data.setAll(this.cities);
+    
+  
     citySeries.bullets.push((bullet:am5.Bullet) => {
       console.log('bullet',citySeries);
 
@@ -226,6 +228,7 @@ export class PieComponent implements OnInit {
       }
     });
   }
+ 
 
   cityData(){
     this.cities = this.coordinates.map(item => {
@@ -359,7 +362,6 @@ export class PieComponent implements OnInit {
   }
 
   findCenteralCoordinates(selectedCountryValue: string) {
-    console.log('selectedCountryValue',selectedCountryValue);
     let data =[ {name: 'Central Mediterranean Route', x:22.218457547733337,y:36.30904040702372 },
     {name: 'Western Mediterranean', x: -5.291307397436539,y:36.34444502849807},
     {name: 'Western Africa', x:-14.226280416672568,y: 24.53051872073307}]
@@ -411,7 +413,7 @@ export class PieComponent implements OnInit {
   }
   selectMapType(type: any) {
    this.updateDefaultColor();
-    this.mapTypeData = type.id;
+    this.mapTypeData = type;
     if (type === 'Heat')
       setTimeout(() => { this.setColor(); }, 200)
     else setTimeout(() => { this.setWaterColor(); }, 200)

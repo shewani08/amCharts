@@ -127,7 +127,7 @@ export class PieComponent implements OnInit {
       calculateAggregates: true,
       interactive: true,
       exclude: ["AQ"],
-    //  fill:am5.color(0xFF621F)
+     //fill:am5.color(0xFF621F)
     }));
  
     let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));

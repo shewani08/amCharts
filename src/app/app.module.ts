@@ -52,6 +52,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { CurvedLineComponent } from './curved-line/curved-line.component';
 import { MigrantDialogComponent } from './migrant-dialog/migrant-dialog.component';
 import { CollectionMapComponent } from './collection-map/collection-map.component';
+import { DataCatalogueComponent } from './data-catalogue/data-catalogue.component';
 
 
 
@@ -82,7 +83,8 @@ import { CollectionMapComponent } from './collection-map/collection-map.componen
     MapChartComponent,
     CurvedLineComponent,
     MigrantDialogComponent,
-    CollectionMapComponent
+    CollectionMapComponent,
+    DataCatalogueComponent
    
    
   ],

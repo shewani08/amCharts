@@ -419,7 +419,7 @@ export class MapComponent implements OnInit, OnDestroy {
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
           'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
           'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
-          'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'
+          'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','CI'
         ],
         geoJSON: am5geodata_worldLow,
         valueField: "value",
@@ -428,7 +428,7 @@ export class MapComponent implements OnInit, OnDestroy {
         // fill: am5.color(0xffa500)
       })
     );
-    this.chart.set("zoomLevel", 0.9);
+    this.chart.set("zoomLevel", 1.1);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',
@@ -460,8 +460,10 @@ export class MapComponent implements OnInit, OnDestroy {
             text: '{name}',
             paddingLeft: 5,
             populateText: true,
-            fontSize: 10,
-            centerY: am5.p50
+            fontSize: 12,
+            fontWeight: "bold",
+            centerY: am5.p50,
+            fontFamily: "-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol"
           })
         );
 

@@ -17,8 +17,8 @@
         {{ mapTypeData || 'Select Indicator' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" *ngFor="let map of mapType" (click)="selectMapType(map)">
-          {{ map }}
+        <a class="dropdown-item" href="#" *ngFor="let map of indicators" (click)="selectMapType(map)">
+          {{ map.id }}
         </a>
       </div>
     </div>
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="dropdown mr-auto show-stress">
+    <div class="dropdown mr-auto ">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
         {{ 'Year' }}

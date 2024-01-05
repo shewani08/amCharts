@@ -48,6 +48,7 @@ export class PieComponent implements OnInit {
     'Mozambique', 'Comoros', 'Tanzania', 'South Africa', 'Cape Verde', 'Equatorial Guinea', 'Angola', 'Gabon',
     'Namibia', 'Rwanda'
   ];
+
   mapType=['Heat','Water']
   selectedCountryValue: any | null = null;
   circle: any;
@@ -95,6 +96,7 @@ export class PieComponent implements OnInit {
     this.heatwaterService.getWaterData().subscribe((rcp) => {
       this.waterData = this.findHighestWaterCountry(this.csvToJson<RegionData>(rcp));
     });
+    this.countryNames.sort((a, b) => a.localeCompare(b));
     this.loadMap();
   }
 

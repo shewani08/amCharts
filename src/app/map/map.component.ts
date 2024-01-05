@@ -645,9 +645,29 @@ export class MapComponent implements OnInit, OnDestroy {
 
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
+    this.chart?.series.each((series) => {
+      if (series instanceof am5map.MapPolygonSeries) {
+        series.mapPolygons.each((mapPolygon) => {
+          // Assuming the data has a property like `name` that represents the country name
+          const mapPolygonName = (mapPolygon.dataItem?.dataContext as { name?: string })?.name;
+          console.log('mapPolygonName',mapPolygonName);
+    
+          if (mapPolygonName === country) {
+          
+           this.openDialog(mapPolygon);
+          } else {
+            // Deselect other map polygons
+            if ('isActive' in mapPolygon) {
+              mapPolygon.isActive = false;
+            }
+          }
+        });
+      }
+    });
   }
 
   openDialog(_dataItem: any): void {
+    console.log('dataItem is',_dataItem);
     this.summaryData = _dataItem;
     this.clicked = true;
     this.sendDataToMigrateComponent(this.summaryData)

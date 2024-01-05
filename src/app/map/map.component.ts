@@ -428,7 +428,7 @@ export class MapComponent implements OnInit, OnDestroy {
         // fill: am5.color(0xffa500)
       })
     );
-    this.chart.set("zoomLevel", 1.1);
+    this.chart.set("zoomLevel", 1.0);
     this.bubbleSeries = this.chart.series.push(
       am5map.MapPointSeries.new(root, {
         valueField: 'value',
@@ -458,12 +458,13 @@ export class MapComponent implements OnInit, OnDestroy {
         const countryLabel = container.children.push(
           am5.Label.new(root, {
             text: '{name}',
+            centerX: am5.p100,
             paddingLeft: 5,
             populateText: true,
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: "bold",
-            centerY: am5.p50,
-            fontFamily: "-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol"
+            //centerY: am5.p50,
+            fontFamily: "segoe ui symbol"
           })
         );
 

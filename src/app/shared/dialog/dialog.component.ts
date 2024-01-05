@@ -17,7 +17,7 @@ interface CsvData {
   Continent: string;
   Country: string;
   value: string;
-  Number_of_immigrants: string;
+  total_irregular_migrants: string;
   Proportion: string;
 }
 @Component({
@@ -136,7 +136,7 @@ export class DialogComponent implements OnChanges {
           Continent: dataItem?.dataContext.Continent,
           Country: dataItem?.dataContext.name,
           value: dataItem?.dataContext.value,
-          Number_of_immigrants: dataItem?.dataContext.Number_of_immigrants,
+          total_irregular_migrants: dataItem?.dataContext.Number_of_immigrants,
           Proportion: dataItem?.dataContext.Proportion
         }
       ];
@@ -151,7 +151,7 @@ export class DialogComponent implements OnChanges {
       Continent: dataItem.Continent,
       Country: dataItem.Country,
       value: dataItem.value,
-      Number_of_immigrants: dataItem.Number_of_immigrants,
+      total_irregular_migrants: dataItem.Number_of_immigrants,
       Proportion: dataItem.Proportion}]
       this.cdr.detectChanges();
       

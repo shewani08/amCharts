@@ -20,7 +20,7 @@
 .full-size-dialog-content{
     /* height: 100%; */
     position: absolute; /* Use absolute positioning within the relative container */
-    top: 50%; /* Move the map to the vertical center */
+    top: 65%; /* Move the map to the vertical center */
    
 }
 #summary-detail{
@@ -36,4 +36,18 @@
 }
 .mat-select-panel {
   z-index: 1000; /* Adjust the value based on your layout */
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
 }

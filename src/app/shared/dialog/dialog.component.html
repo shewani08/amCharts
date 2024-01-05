@@ -11,43 +11,27 @@
   </mat-form-field>
   <div id="dialog" [ngStyle]="{'height': dataSource.length ? '200px' : '50px'}"> </div>
   <div class="full-size-dialog-content" *ngIf="dataSource.length">
-    <table mat-table [dataSource]="dataSource" class=" demo-table">
-      <ng-container matColumnDef="Country">
-        <th mat-header-cell *matHeaderCellDef>Country</th>
-        <td mat-cell *matCellDef="let element">{{element.Country}}</td>
-      </ng-container>
-      <ng-container matColumnDef="Number_of_immigrants" >
-        <th mat-header-cell *matHeaderCellDef>Immigrants</th>
-        <td mat-cell *matCellDef="let element">
-        <ng-container>
-        {{element.Number_of_immigrants}}
+    <table>
+      <thead>
+        <!-- <h2><b>Highest Rate of Migration</b></h2> -->
+        <tr>
+          <th>Country</th>
+          <th> Immigrants</th>
+          <th> Proportion</th>
+          <th> Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let country of dataSource">
+          <tr>
+            <td>{{ country.Country }}</td>
+            <td>{{ country.total_irregular_migrants }}</td>
+            <td>{{ country.Proportion }}</td>
+            <td>  {{ selectedYear ? selectedYear  : '2013-2023' }}</td>
+          </tr>
         </ng-container>
-        
-       
-      </td>
-      
-      </ng-container>
-      <ng-container matColumnDef="Proportion" >
-        <th mat-header-cell *matHeaderCellDef>Proportion</th>
-        <td mat-cell *matCellDef="let element" >
-          <ng-container >
-            {{element.Proportion}}
-            </ng-container>
-            
-           </td>
-        <!-- <td mat-cell *matCellDef="let element" *ngIf="!selectedYear">{{element.Percent-overall}}</td> -->
-      </ng-container>
-      <ng-container matColumnDef="Year">
-        <!-- Conditionally show the header cell -->
-        <th mat-header-cell *matHeaderCellDef >Year</th>
-      
-        <!-- Conditionally show the content inside the cell -->
-        <td mat-cell *matCellDef="let element">
-          {{ selectedYear ? selectedYear  : '2013-2023' }}
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </tbody>
+     
     </table>
   </div>
   <div *ngIf="!dataSource.length">

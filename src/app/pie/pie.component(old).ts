@@ -39,6 +39,13 @@ interface RegionData {
 })
 
 export class PieComponent implements OnInit {
+selectYear(arg0: string) {
+throw new Error('Method not implemented.');
+}
+selectedRcpValue: any;
+selectRcp(arg0: string) {
+throw new Error('Method not implemented.');
+}
   private bubbleSeries: am5map.MapPointSeries | undefined;
   countryNames: string[] = [
     'Tunisia', 'Egypt', 'Eritrea', 'Sudan', 'Gambia', 'Ethiopia', 'Nigeria', 'Algeria', 'South Sudan',

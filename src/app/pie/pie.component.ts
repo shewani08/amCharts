@@ -78,7 +78,11 @@ export class PieComponent implements OnInit {
   selectYearValue:string ='';
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
-
+  indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
+  { id: 'Water index stress (Water)', name: 'Water index stress (Water)' },
+  { id: 'Heat Index Event exposure (Energy)', name: 'Heat Index Event exposure (Energy)' },
+  { id: 'Agriculture water Stress index(Land)', name: 'Agriculture water Stress index(Land)' },
+  { id: 'Crop yield change (Land)', name: 'Crop yield change (Land)' }];
   ngOnInit() {
     this.dataService.getCropYieldData().subscribe((rcp) => {
       this.coordinates = this.removeDuplicates(this.csvToJson<RegionData>(rcp), 'Country');
@@ -407,7 +411,7 @@ export class PieComponent implements OnInit {
   }
   selectMapType(type: any) {
    this.updateDefaultColor();
-    this.mapTypeData = type;
+    this.mapTypeData = type.id;
     if (type === 'Heat')
       setTimeout(() => { this.setColor(); }, 200)
     else setTimeout(() => { this.setWaterColor(); }, 200)

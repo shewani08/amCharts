@@ -17,8 +17,8 @@
         {{ mapTypeData || 'Select Indicator' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" *ngFor="let map of mapType" (click)="selectMapType(map)">
-          {{ map }}
+        <a class="dropdown-item" href="#" *ngFor="let map of indicators" (click)="selectMapType(map)">
+          {{ map.id }}
         </a>
       </div>
     </div>

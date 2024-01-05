@@ -130,7 +130,7 @@ export class MigrantDetailComponent {
     console.log('MD', this.migrantData);
     this.migrantData.sort((a: any, b: any) => b.total_irregular_migrants - a.total_irregular_migrants);
     console.log('MD',  this.migrantData);
-    this.topCountries = this.migrantData.slice(0, 3);
+    this.topCountries = this.migrantData.slice(0, 5);
   }
   onPanelStateChange(isOpen: boolean): void {
     this.panelOpenState = isOpen;

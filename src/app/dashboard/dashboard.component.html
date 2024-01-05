@@ -1,6 +1,6 @@
 <div class="grid-container" *ngIf="showDashboard">
   <div style="display:flex; ">
-  <h1 class="mat-h1">Dashboard:</h1>
+  <!-- <h1 class="mat-h1">Dashboard:</h1> -->
   </div>
   <mat-grid-list cols="2.5" rowHeight="350px">
     <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
@@ -21,14 +21,15 @@
         </mat-card-header>
         <mat-card-content class="dashboard-card-content" style="height:100% !important">        
           <ng-container *ngIf="card.showGraph">
-            <app-pie *ngIf="card.title === 'Card 2'"></app-pie>
+            <app-pie *ngIf="card.title === 'Migration Through Northern African Routes'"></app-pie>
             <!-- <app-collection-map *ngIf="card.title === 'Card 1'"></app-collection-map> -->
               <!-- <app-bubble *ngIf="card.title === 'Card 1'"></app-bubble> -->
               <!-- <app-curved-line *ngIf="card.title === 'Card 1'"></app-curved-line> -->
-            <app-map *ngIf="card.title === 'Card 1' && !showMap"></app-map>
+            <app-map *ngIf="card.title === 'Migration from Africa' && !showMap"></app-map>
+            <app-data-catalogue *ngIf="card.title === 'Card 3'"></app-data-catalogue>
             <!-- <app-map-chart *ngIf="card.title === 'Card 2'"></app-map-chart> -->
             <!-- <app-timezonemap *ngIf="card.title === 'Card 1' && showMap"></app-timezonemap> -->
-            <app-factor-nodegraph *ngIf="card.title === 'Card 3'" ></app-factor-nodegraph>
+            <!-- <app-factor-nodegraph *ngIf="card.title === 'Card 3'" ></app-factor-nodegraph> -->
             <!-- <app-africamap *ngIf="card.title === 'Card 1'"></app-africamap> -->
             <!-- <app-svg-list *ngIf="card.title === 'Card 3'" ></app-svg-list> -->
             <!-- <app-animate-map *ngIf="card.title === 'Card 2'"></app-animate-map> -->

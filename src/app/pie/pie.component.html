@@ -23,6 +23,30 @@
       </div>
     </div>
 
+    <div class="dropdown mr-auto show-stress">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ selectedRcpValue || 'RCP Scenario' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(LOW)')">RCP 2.6 (LOW)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 4.5(MEDIUM)')">RCP 4.5 (MEDIUM)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 8.5(HIGH)')"> RCP 8.5 (HIGH)</a>
+      </div>
+    </div>
+
+    <div class="dropdown mr-auto show-stress">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{ 'Year' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" (click)="selectYear('2030')">'2030'</a>
+        <a class="dropdown-item" href="#" (click)="selectYear('2050')">'2050'</a>
+     
+      </div>
+    </div>
+
   </div>
 
   <mat-tab-group (selectedTabChange)="onTabChange($event)">

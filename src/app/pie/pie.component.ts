@@ -74,6 +74,8 @@ export class PieComponent implements OnInit {
   heatData: any=[];
   waterData: any=[];
   polygonSeries: any;
+  selectedRcpValue: string='';
+  selectYearValue:string ='';
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
 
@@ -399,7 +401,7 @@ export class PieComponent implements OnInit {
     // else {
     //   this.showCentral = false;
     //   this.showWestern = false;
-    //   this.showThird = true;
+    //   this.showThird = true;aqw1 
     // }
 
   }
@@ -423,6 +425,13 @@ export class PieComponent implements OnInit {
       }
     }
 
+  }
+  selectRcp(value: string): void {
+    this.selectedRcpValue=value;
+   
+  }
+  selectYear(value:string){
+    this.selectYearValue=value;
   }
   ngOnDestroy() {
     if (this.chart) {

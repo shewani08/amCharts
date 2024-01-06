@@ -11,6 +11,7 @@ import data from '../data/graph';
 import { RouteService } from '../service/central-med';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { HeatWaterService } from '../service/HeatWaterService';
+import { forEach } from 'angular';
 
 
 interface ChartData {
@@ -76,6 +77,7 @@ export class PieComponent implements OnInit {
   polygonSeries: any;
   selectedRcpValue: string='';
   selectYearValue:string ='';
+  coordinaateandcountry: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
   indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
@@ -144,36 +146,132 @@ export class PieComponent implements OnInit {
      let citySeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
     );
-  
     this.lineSeries = this.chart.series.push(am5map.MapLineSeries.new(this.root!, {}));
     this.cityData();
-    citySeries.data.setAll(this.cities);
-    
   
-    citySeries.bullets.push((bullet:am5.Bullet) => {
-      console.log('bullet',citySeries);
+   
+   const cities = {
+    type: "FeatureCollection",
+    features: this.coordinaateandcountry?.map((coord: { name: any; coordinates: any; }) => ({
+      type: "Feature",
+      properties: {
+        name: coord.name
+      },
+      geometry: {
+        type: "Point",
+        coordinates: coord.coordinates
+      }
+    }))
+  };
 
-      let circle = am5.Circle.new(this.root!, {
-        radius: 7,
-        tooltipText: "{title}",
-        tooltipY: 0,
-        fill: am5.color(0xffba00),
-        stroke: this.root?.interfaceColors.get("background"),
-        strokeWidth: 2,
-      });
-      return am5.Bullet.new(this.root!, {
-        sprite: circle,
-      });
-    });
+  // Create point series
+var pointSeries = this.chart.series.push(
+  am5map.MapPointSeries.new(this.root!, {
+   // geoJSON: cities
+  })
+);
 
-
+pointSeries.bullets.push(() => {
+  return am5.Bullet.new(this.root!, {
+    sprite: am5.Circle.new(this.root!, {
+      radius: 5,
+      fill: am5.color(0xffba00),
+      tooltipText: "{name}"
+    })
+  });
+});
+ 
+  
     let destinations = ["United Kingdom"];
     let originLongitude = coordinates!.x;
     let originLatitude = coordinates!.y;
     this.arrowSeries = this.chart.series.push(
       am5map.MapPointSeries.new(this.root!, {})
     );
+
     
+    
+    let lineDataItem = [];
+ 
+
+var lineSeries = this.chart.series.push(
+  am5map.MapLineSeries.new(this.root!, {})
+);
+
+
+var points: any[] = [];
+
+// Loop to push data items to pointSeries
+this.coordinateDetail().forEach((item: any) => {
+  points.push(pointSeries.pushDataItem(item));
+});
+
+lineSeries.pushDataItem({
+ pointsToConnect: points
+});
+
+   
+   
+    lineSeries.mapLines.template.setAll({
+      stroke: am5.color(0xffba00),
+      strokeWidth: 2,
+      strokeOpacity: 1
+    });
+    console.log('dataItem',points.length);
+//  points.each((lineDataItem: any) => {
+    // for(let i=0;i<points.length-1;i++){
+    //   this.arrowSeries.bullets.push(() => {
+    //     let arrow = am5.Graphics.new(this.root!, {
+    //       fill: am5.color(0x000000),
+    //       stroke: am5.color(0x000000),
+    //       draw: function (display) {
+    //         display.moveTo(0, -3);
+    //         display.lineTo(8, 0);
+    //         display.lineTo(0, 3);
+    //         display.lineTo(0, -3);
+    //       }
+    //     });
+    
+    //     return am5.Bullet.new(this.root!, {
+    //       sprite: arrow
+    //     });
+    //   });
+    
+    //   if (this.chart && this.arrowSeries) {
+    //     this.arrowSeries.pushDataItem({
+    //       lineDataItem: lineSeries,
+    //       positionOnLine: 100, // Adjust the position based on the index
+    //       autoRotate: true
+    //     });
+    //   }
+
+    // }
+   // });
+
+   for (let i = 0; i < points.length - 1; i++) {
+    this.createArrow(points[i], points[i + 1]);
+  }
+    
+         if (this.chart&&
+          lineSeries ) {
+        this.arrowSeries.pushDataItem({
+          lineDataItem:lineSeries,
+         positionOnLine: 1.5,
+          autoRotate: true
+        });
+      }else {
+        console.error("Error: Chart or lineDataItem is disposed or invalid");
+      }
+
+     
+  }
+
+  createArrow(startPoint: any, endPoint: any) {
+    const positionOnLine = 1;  // You may adjust this value based on your requirements
+  
+    const arrowX = startPoint.pointX + (endPoint.pointX - startPoint.pointX) * positionOnLine;
+    const arrowY = startPoint.pointY + (endPoint.pointY - startPoint.pointY) * positionOnLine;
+  
     this.arrowSeries.bullets.push(() => {
       let arrow = am5.Graphics.new(this.root!, {
         fill: am5.color(0x000000),
@@ -185,51 +283,38 @@ export class PieComponent implements OnInit {
           display.lineTo(0, -3);
         }
       });
-    
+  
       return am5.Bullet.new(this.root!, {
-        sprite: arrow
+        sprite: arrow,
+        locationX: arrowX,
+        locationY: arrowY,
+       // rotation: this.calculateArrowRotation(startPoint, endPoint)  // Optional: Rotate arrow based on line direction
       });
     });
-    let lineDataItem = [];
-    console.log('mediatorCountry',mediatorCountry);
-    am5.array.each(destinations, (did) => {
-      let destinationDataItem = citySeries.getDataItemById(did);
-      if (destinationDataItem && this.lineSeries) {
-        lineDataItem = this.lineSeries?.pushDataItem({
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [originLongitude, originLatitude],
-              [mediatorCountry?.x,mediatorCountry?.y],
-              [36.30904040702372, 22.218457547733337],
-               [ destinationDataItem.get("longitude") ?? 0,
-                destinationDataItem.get("latitude") ?? 0,
-              ], 
-              
-               
-              ]// Provide default values if longitude or latitude is undefined
-          
-          },
-        });
-      // this.lineSeries.data.setAll(lineDataItem);
-        if (this.chart&&
-          lineDataItem ) {
-        this.arrowSeries.pushDataItem({
-          lineDataItem:lineDataItem,
-         positionOnLine: 0.5,
-          autoRotate: true
-        });
-      }else {
-        console.error("Error: Chart or lineDataItem is disposed or invalid");
-      }
-
-      } else {
-        console.error("Destination data item not found for ID: ", did);
-      }
-    });
+  }
+  
+  calculateArrowRotation(startPoint: any, endPoint: any): number {
+    const angle = Math.atan2(endPoint.pointY - startPoint.pointY, endPoint.pointX - startPoint.pointX);
+    return (angle * 180) / Math.PI;
   }
  
-
+coordinateDetail():any{
+  const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
+  const mediatorCountry = this.findCenteralCoordinates(this.mediator);
+  // const cordinate= [
+  //   [coordinates?.x, coordinates?.y],
+  //   [mediatorCountry?.x,mediatorCountry?.y],
+  //   [36.30904040702372, 22.218457547733337],
+  //  [-0.1262, 51.5002]
+    
+     
+  //   ]
+  const cordinate=[{ name :this.selectedCountryValue,latitude:coordinates?.x, longitude:coordinates?.y },
+    { name :this.selectedCountryValue,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
+    {  name :this.selectedCountryValue,latitude: 36.30904040702372, longitude: 22.218457547733337},
+    {  name :this.selectedCountryValue,latitude:-0.1262, longitude: 51.5002}]
+    return cordinate;
+}
   cityData(){
     this.cities = this.coordinates.map(item => {
       return {
@@ -299,6 +384,7 @@ export class PieComponent implements OnInit {
     const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
     const mediatorCountry = this.findCenteralCoordinates(this.mediator);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+    this.coordinaateandcountry =this.findCoordinatesandCountry(this.selectedCountryValue, this.coordinates);
     if (this.lineSeries && !this.lineSeries.isDisposed()) {
       this.chart.series.removeValue(this.lineSeries);
       this.chart.series.removeValue(this.arrowSeries);
@@ -352,6 +438,18 @@ export class PieComponent implements OnInit {
     return result;
   }
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   findCoordinatesByCountry(selectedCountryValue: string, coordinates: RegionData[]) {
     for (const item of coordinates) {
       if (item.Country === selectedCountryValue) {
@@ -359,6 +457,15 @@ export class PieComponent implements OnInit {
       }
     }
     return null;
+  }
+  findCoordinatesandCountry(selectedCountryValue: string, coordinates: RegionData[]) {
+    let coordinateCountry =[];
+    for (const item of coordinates) {
+      if (item.Country === selectedCountryValue) {
+       coordinateCountry.push({name:selectedCountryValue,coordinates:[item.x,item.y]});
+      }
+    }
+    return coordinateCountry;
   }
 
   findCenteralCoordinates(selectedCountryValue: string) {
@@ -390,7 +497,6 @@ export class PieComponent implements OnInit {
   onTabChange(_e: MatTabChangeEvent) {
     this.mediator=_e.tab.textLabel;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
-
     this.selectCountry(this.selectedCountryValue);
    
 

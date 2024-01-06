@@ -78,6 +78,7 @@ export class PieComponent implements OnInit {
   selectedRcpValue: string='';
   selectYearValue:string ='';
   coordinaateandcountry: any;
+  pointSeries: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
   indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
@@ -165,13 +166,13 @@ export class PieComponent implements OnInit {
   };
 
   // Create point series
-var pointSeries = this.chart.series.push(
+ this.pointSeries = this.chart.series.push(
   am5map.MapPointSeries.new(this.root!, {
    // geoJSON: cities
   })
 );
 
-pointSeries.bullets.push(() => {
+this.pointSeries.bullets.push(() => {
   return am5.Bullet.new(this.root!, {
     sprite: am5.Circle.new(this.root!, {
       radius: 5,
@@ -194,7 +195,7 @@ pointSeries.bullets.push(() => {
     let lineDataItem = [];
  
 
-var lineSeries = this.chart.series.push(
+this.lineSeries = this.chart.series.push(
   am5map.MapLineSeries.new(this.root!, {})
 );
 
@@ -203,16 +204,16 @@ var points: any[] = [];
 
 // Loop to push data items to pointSeries
 this.coordinateDetail().forEach((item: any) => {
-  points.push(pointSeries.pushDataItem(item));
+  points.push(this.pointSeries.pushDataItem(item));
 });
 
-lineSeries.pushDataItem({
+this.lineSeries.pushDataItem({
  pointsToConnect: points
 });
 
    
    
-    lineSeries.mapLines.template.setAll({
+    this.lineSeries.mapLines.template.setAll({
       stroke: am5.color(0xffba00),
       strokeWidth: 2,
       strokeOpacity: 1
@@ -253,9 +254,9 @@ lineSeries.pushDataItem({
   }
     
          if (this.chart&&
-          lineSeries ) {
+          this.lineSeries ) {
         this.arrowSeries.pushDataItem({
-          lineDataItem:lineSeries,
+          lineDataItem:this.lineSeries,
          positionOnLine: 1.5,
           autoRotate: true
         });
@@ -387,7 +388,7 @@ coordinateDetail():any{
     this.coordinaateandcountry =this.findCoordinatesandCountry(this.selectedCountryValue, this.coordinates);
     if (this.lineSeries && !this.lineSeries.isDisposed()) {
       this.chart.series.removeValue(this.lineSeries);
-      this.chart.series.removeValue(this.arrowSeries);
+      this.chart.series.removeValue(this.pointSeries);
     }
     this.arrowLink(coordinates,mediatorCountry);
   }

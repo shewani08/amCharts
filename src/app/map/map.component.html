@@ -24,6 +24,7 @@
         </div>
       </div>
     </div>
+   
     <div class="dropdown mr-auto show-right-country">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -48,11 +49,10 @@
     </div>
   </div>
 </div>
-<div id="chartdiv">
-  <!-- <div class="summary d-flex" *ngIf="clicked">
-    <div class="table-container"></div>
-    
-  </div> -->
+{{selectedIndicators}}
+<div id="chartdiv" *ngIf="showMap" >
+ 
   <div class="disclaimer"><p>Note: The scores are relative to the current situation of the country for the different indicators.</p></div>
 </div>
+<div id="mapchart" *ngIf="!showMap" ></div>
 

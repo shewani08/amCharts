@@ -40,4 +40,7 @@ export class CsvService {
   getMigrantData(): Observable<any> {
     return this.http.get('assets/uk_irregular_african_migrants_cleaned_year_ending_september_2023.csv', { responseType: 'text' });
   }
+  getTemperatureData(){
+    return this.http.get('assets/cleaned_temperature_data_indicator_tr20_score.csv', { responseType: 'text' });
+  }
 }

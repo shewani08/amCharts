@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CsvService } from '../service/CsvService';
 import * as am5 from '@amcharts/amcharts5';
@@ -72,6 +72,7 @@ export class MapComponent implements OnInit, OnDestroy {
   @ViewChild('dropdown')
   dropdown!: ElementRef;
   private chart: am5map.MapChart | undefined;
+  private mapchart: am5map.MapChart | undefined;
   private bubbleSeries: am5map.MapPointSeries | undefined;
   private jsonData: any;
 
@@ -140,6 +141,7 @@ export class MapComponent implements OnInit, OnDestroy {
   { id: 'Heat Index Event exposure (Energy)', name: 'Heat Index Event exposure (Energy)' },
   { id: 'Agriculture water Stress index(Land)', name: 'Agriculture water Stress index(Land)' },
   { id: 'Crop yield change (Land)', name: 'Crop yield change (Land)' }];
+  mergedJSON: any;
   indicatorName: string[] = [];
   summaryData: any;
   rcpData: any;
@@ -165,8 +167,42 @@ export class MapComponent implements OnInit, OnDestroy {
   meansCropYieldByCountry: Result | undefined;
   agricultureData: any;
   meansAgricultureByCountry: Result | undefined;
+  tempjsonData: any;
+
+
+  fetchData: any;
+  droughtData1:any;
+  meansDroughtByCountry1:any;
+  agricultureData1: any;
+  meansAgricultureByCountry1: any;
+  mergedDroughtJSON: any;
+  mpdiv: HTMLElement | null | undefined;
+  showMap: boolean=true;
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog, public mapService: DataService,
-    private yearService: YearService, private previousEvntService: PreviousEvntService) { }
+    private yearService: YearService, private previousEvntService: PreviousEvntService,
+    private cdr: ChangeDetectorRef) {
+      
+     
+      this.dataService.getDroughtData().subscribe((rcp) => {
+        this.droughtData1 = this.rcpToJson(rcp);
+        const property = 'SSP1_1p5_Score';
+        this.meansDroughtByCountry1 = this.calculateMeanByCountry(this.droughtData1, property);
+        this.fetchData =this.getData();
+     console.log('this.fetchData',this.fetchData);
+        this.mergedDroughtJSON = this.mergeTwoJson(this.fetchData,this.meansDroughtByCountry1,'mean1');
+       // this.initializeMap();
+      })
+      this.dataService.getAgricultureData().subscribe((rcp) => {
+        this.agricultureData1 = this.rcpToJson(rcp);
+        const property = 'SSP1_1p5_Score';
+        this.meansAgricultureByCountry1 = this.calculateMeanByCountry(this.agricultureData1, property);
+        console.log('meansAgricultureByCountry',this.meansAgricultureByCountry);
+        if(this.mergedDroughtJSON && this.meansAgricultureByCountry1)
+        this.mergedJSON = this.mergeTwoJson(this.mergedDroughtJSON,this.meansAgricultureByCountry1,'mean2');
+       // setTimeout(()=>this.initializeMap(),2000);
+         
+      })
+     }
 
   ngOnInit(): void {
    // this.selectedYear = '2030';
@@ -177,7 +213,33 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
   }
+  mergeTwoJson(src1: any, src2: { [x: string]: any; }, meanType: string) {
+    alert('coming');
+    const mergedData = [];
+    if(src1 && src2)
+    for (const entry of src1) {
+        const countryName = entry.Country;
 
+        if (src2[countryName]) {
+            const mergedEntry = { ...src2[countryName], ...entry };
+
+            // Check for property conflicts and rename if needed
+            for (const prop in src2[countryName]) {
+                if (mergedEntry.hasOwnProperty(prop) && prop !== "Country") {
+                    // Rename the conflicting property in src2
+                    const renamedProp = meanType;
+                    mergedEntry[renamedProp] = src2[countryName][prop];
+                    delete mergedEntry[prop];
+                }
+            }
+
+            mergedData.push(mergedEntry);
+        }
+    }
+
+    console.log('mergedData', mergedData);
+    return mergedData;
+}
   ngOnDestroy(): void {
     if (this.chart) {
       this.chart.dispose();
@@ -333,7 +395,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private calculateMeanByCountry(data: Entry[], property: string) {
     const result: Result = {};
-    data.forEach((entry: { [x: string]: any; Country: any; }) => {
+    data?.forEach((entry: { [x: string]: any; Country: any; }) => {
       const country = entry.Country;
       const score = entry[property];
       if (!result[country]) {
@@ -376,7 +438,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setDataBubble();
       })
     }
-
     this.dataService.getRCPData().subscribe((rcp) => {
       this.rcpData = this.rcpToJson(rcp);
       const property = 'SSP1_1p5_Score';
@@ -402,14 +463,11 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private initChart(): void {
+   // if(!this.chartdiv){
     this.chartdiv = document.getElementById('chartdiv');
-    if (!this.chartdiv) {
-      console.error('Chart container element not found!');
-      return;
-    }
-    if (this.chart) {
-      this.chart.dispose();
-    }
+    if (this.chartdiv) {
+      const styles = window.getComputedStyle(this.chartdiv);
+    // }
     const root = am5.Root.new(this.chartdiv);
     root.setThemes([am5themes_Animated.new(root)]);
     this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
@@ -499,6 +557,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     ]);
     this.setDataBubble()
+  }
 
   }
 
@@ -635,16 +694,41 @@ export class MapComponent implements OnInit, OnDestroy {
       || this.selectedIndicators[0] === 'Drought intensity change (Water)' || this.selectedIndicators[0] === 'Crop yield change (Land)')
       || this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
       this.showHeatLegend = true;
+   
+     this.showMap=true;
       this.updateBubbleColor();
+      this.cdr.detectChanges();
+      this.initChart();
     }
     else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 2){
-      this.updateGradientColor();
+      this.showMap=true;
+      this.cdr.detectChanges();
+      this.initChart();
+     // this.updateGradientColor();
+    }
+    else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 3){
+      this.showMap=false;
+     
+     this.cdr.detectChanges();
+     this.initializeMap();
+     
+
     }
     else {
+      this.showMap=true;
       this.showHeatLegend = false;
       this.updateDefaultColor();
     }
   }
+  //  switchMaps() {
+  //   if (mapContainer1.style.display === 'block') {
+  //     mapContainer1.style.display = 'none';
+  //     mapContainer2.style.display = 'block';
+  //   } else {
+  //     mapContainer1.style.display = 'block';
+  //     mapContainer2.style.display = 'none';
+  //   }
+  // }
 
   selectCountry(country: string): void {
     this.selectedCountryValue = country;
@@ -713,4 +797,97 @@ export class MapComponent implements OnInit, OnDestroy {
   showBullets(){
     
   }
+  initializeMap() {
+    const mapchart = document.getElementById('mapchart');
+    if (mapchart) {
+    const styles = window.getComputedStyle(mapchart);
+    const root1 = am5.Root.new(mapchart);
+    root1.setThemes([
+      am5themes_Animated.new(root1)
+    ]);
+    const map = root1.container.children.push(
+      am5map.MapChart.new(root1, {
+        panX: 'none',
+        projection: am5map.geoNaturalEarth1()
+      })
+    );
+    const polygonSeries = map.series.push(
+      am5map.MapPolygonSeries.new(root1, {
+        geoJSON: am5geodata_worldLow,
+        exclude: ['antarctica'],
+        include: [
+          'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+          'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
+          'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','CI'
+        ],
+      })
+    );
+    this.mapchart?.set("zoomLevel", 1.4);
+    const pointSeries = map.series.push(
+      am5map.MapPointSeries.new(root1, {})
+    );
+    const colorSet = am5.ColorSet.new(root1, { step: 2 });
+    pointSeries.bullets.push(function (root1: am5.Root, series: any, dataItem: { get: (arg0: string) => number; }) {
+      const value = dataItem.get('value') || 0;
+      const container = am5.Container.new(root1, {});
+      const color = colorSet.next();
+      const baseRadius = 8;
+      for (let i = 1; i <= 3; i++) {
+        const radius = baseRadius + i * 5; 
+        container.children.push(am5.Circle.new(root1, {
+          radius: 4,
+          fill: i == 1? am5.color(0x964B00): i==2?am5.color(0xDEF4FC):am5.color(0x00FF00),
+          dx:10*i,
+         tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',
+        }));
+          
+      container.children.push(am5.Line.new(root1, {
+        stroke: color,
+        dx:10*i,
+        height: -40,
+        strokeGradient: am5.LinearGradient.new(root1, {
+          stops: [
+            { opacity: 2 },
+            { opacity: 2 },
+            { opacity: 0 }
+          ]
+        })
+      }));
+      }
+      return am5.Bullet.new(root1, {
+        sprite: container
+      });
+    });
+
+    for (let i = 0; i < this.mergedJSON?.length; i++) {
+      console.log('this.mergedJSON',this.mergedJSON);
+      if(this.mergedJSON){
+      
+        const d = this.mergedJSON[i];
+        console.log('value of d is',this.mergedJSON);
+        pointSeries.data.push({
+          geometry: { type: 'Point', coordinates: [d.x, d.y] },
+          title: d.Country,
+          value: d.Country,
+          mean:d.mean,
+          mean1:d.mean1,
+          mean2:d.mean2
+        });
+      }
+    }
+  }
+  }
+  getData() {
+    let uniqueCountries: any;
+    const t = this.removeDuplicates(this.droughtData1, 'Country');
+     return t; 
+  }
+
+  removeDuplicates(array: any[], property: string | number) {
+    return array?.filter((obj, index, self) =>
+      index === self.findIndex((el) => el[property] === obj[property])
+    );
+  }
 }
+

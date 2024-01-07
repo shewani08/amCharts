@@ -1,6 +1,17 @@
 #chartdiv{
-    width:60vw;
-    height:100%;
+  width:60vw;
+  height:100%;
+}
+
+
+#mapchart{
+  width: 60vw;
+  height: 100%;
+  position: absolute;
+  
+  top: 16%;
+  right: -18%;
+   
 }
 .map-dropdown{
     display: inline-flex;

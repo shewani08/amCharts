@@ -1,7 +1,7 @@
 #chartdiv{
   width:60vw;
   height:100%;
-}
+  }
 
 
 #mapchart{
@@ -14,6 +14,7 @@
 .map-dropdown{
     display: inline-flex;
     margin:2px;
+    
 }
 .rcp{
   margin-right: 0.25rem;
@@ -22,9 +23,12 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: max-width 0.3s ease;
+  background-color: #e68301;
+  border-color: #e68301;
 }
 .rcp:hover {
   max-width: 600px;
+  
 }
 .dropdown-menu {
     max-height: 200px; 

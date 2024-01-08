@@ -38,14 +38,7 @@
       <app-migrant-detail></app-migrant-detail>
     </div>
   </div>
-  <div class="container" *ngIf="showMap">
-    <div class="row">
-      <div class="indicator-box">
-        <div class="box-low"></div>
-        <span>No Data</span>
-      </div>
-    </div>
-    </div>
+  
     <div class="container" *ngIf="!showMap">
       <div class="row">
       <div class="indicator-box">
@@ -67,6 +60,15 @@
 <div id="chartdiv" *ngIf="showMap">
   <div class="disclaimer">
     <p>Note: The scores are relative to the current situation of the country for the different indicators.</p>
+    <div class="container" *ngIf="showMap">
+      <div class="row">
+        <div class="indicator-box">
+          <div class="box-low"></div>
+          <span>No Data</span>
+        </div>
+      </div>
+      </div>
   </div>
+  
 </div>
 <div id="mapchart" *ngIf="!showMap"></div>

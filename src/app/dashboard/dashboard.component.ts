@@ -36,16 +36,16 @@ export class DashboardComponent {
         return [
           { title: 'Migration from Africa', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard1 },
           { title: 'Migration Through Northern African Routes', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard2 },
-          { title: 'Card 3', cols: 2.5, rows: 2.5, showGraph: false, graph: this.graphCard3 },
-          { title: 'Card 4', cols: 2.5, rows: 2.5, showGraph: false, graph: this.graphCard4 }
+          { title: 'Data Catalogue', cols: 2.5, rows: 2.5, showGraph: false, graph: this.graphCard3 },
+          //{ title: 'Card 4', cols: 2.5, rows: 2.5, showGraph: false, graph: this.graphCard4 }
         ];
       }
   
       return [
           { title: 'Migration from Africa', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard1 },
           { title: 'Migration Through Northern African Routes', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard2 },
-          { title: 'Card 3', cols: 2.5, rows: 2.5 ,showGraph: true, graph: this.graphCard3 },
-          { title: 'Card 4', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard4 }
+          { title: 'Data Catalogue', cols: 2.5, rows: 2.5 ,showGraph: true, graph: this.graphCard3 },
+          //{ title: 'Card 4', cols: 2.5, rows: 2.5, showGraph: true, graph: this.graphCard4 }
       ];
     })
   );

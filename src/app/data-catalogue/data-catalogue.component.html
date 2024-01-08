@@ -1,35 +1,43 @@
-<h2>Data Catalogue</h2>
 <!-- data-catalogue.component.html -->
 
-<!-- table-basic-example.component.html -->
+<div class="card">
+  <h2>Data Catalogue</h2>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef> Sr.No. </th>
-      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-    </ng-container>
-  
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Data Source</th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-    </ng-container>
-  
-    <!-- Weight Column -->
-    <ng-container matColumnDef="weight">
-      <th mat-header-cell *matHeaderCellDef>Deep Dive Find Or Previously Know  </th>
-      <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-    </ng-container>
-  
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef>Where is it Used?</th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-    </ng-container>
-  
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-  
+      <!-- Position Column -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef> Sr.No. </th>
+        <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+      </ng-container>
+
+      <!-- Name Column with Link -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Data Source</th>
+        <td mat-cell *matCellDef="let element">
+          <a href="{{element.website}}" target="_blank">{{element.name}}</a>
+        </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="weight">
+        <th mat-header-cell *matHeaderCellDef>Deep Dive Find Or Previously Know  </th>
+        <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef>Where is it Used?</th>
+        <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+          class="mat-mdc-row" 
+          [ngClass]="{'demo-row-is-clicked': clickedRows.has(row)}"
+          (click)="clickedRows.has(row) ? clickedRows.delete(row) : clickedRows.add(row)">
+      </tr>
+    </table>
+  </div>
+</div>

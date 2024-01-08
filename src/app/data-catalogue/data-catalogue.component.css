@@ -1,19 +1,35 @@
 /* table-basic-example.component.css */
 
+/* data-catalogue.component.css */
+
+.card {
+  width: 100%; /* Adjust the width as needed */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.table-container {
+  height: 800px; /* Set a fixed height for the container */
+  overflow: auto; /* Enable scrolling if the content overflows */
+}
+
 .demo-table {
-    width: 100%;
-  }
+  width: 100%;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+
   
-  .mat-mdc-row .mat-mdc-cell {
-    border-bottom: 1px solid transparent;
-    border-top: 1px solid transparent;
-    cursor: pointer;
-  }
-  
-  .mat-mdc-row:hover .mat-mdc-cell {
-    border-color: currentColor;
-  }
-  
-  .demo-row-is-clicked {
-    font-weight: bold;
-  }

@@ -46,9 +46,9 @@ interface CountryData {
 const getColorForValue = (value: number): string => {
 
   if (value >= 0 && value < 1) {
-    return "#B8BD22";
+    return "#CFCD9D";
   } else if (value >= 1 && value < 2) {
-    return "#d65016";
+    return "#CA9485";
   } else {
     return "#B41404";
   }
@@ -527,7 +527,7 @@ export class MapComponent implements OnInit, OnDestroy {
         const container = am5.Container.new(root, {});
         this.circle = container.children.push(
           am5.Circle.new(root, {
-            radius: 3,
+            radius: 4,
             // strokeOpacity: 0,
             fillOpacity: 0.7,
             fill: colorset.next(),
@@ -880,7 +880,7 @@ export class MapComponent implements OnInit, OnDestroy {
      // console.log('maxMean series',maxMean);
       const container = am5.Container.new(root1, {});
       const color = colorSet.next();
-      const baseRadius = 2;
+      const baseRadius = 5;
       for (let i = 1; i <= 3; i++) {
         console.log('maxMean series',maxMean);
         console.log('maxMean series',mean);

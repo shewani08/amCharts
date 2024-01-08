@@ -498,7 +498,7 @@ export class MapComponent implements OnInit, OnDestroy {
       am5map.MapPolygonSeries.new(this.root, {
         include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
-          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'ML', 'MW', 'MR', 'MU',
           'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
           'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','CI'
         ],
@@ -855,7 +855,7 @@ export class MapComponent implements OnInit, OnDestroy {
         exclude: ['antarctica'],
         include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
-          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+          'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'ML', 'MW', 'MR', 'MU',
           'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
           'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','CI'
         ],
@@ -874,7 +874,7 @@ export class MapComponent implements OnInit, OnDestroy {
       for (let i = 1; i <= 3; i++) {
        // const radius = baseRadius + i * 5; 
         container.children.push(am5.Circle.new(root1, {
-          radius: 8,
+          radius: 10,
           // x: x, // Set the x-coordinate
           // y: y
           fill: i == 1? am5.color(0xAF35C2): i==2?am5.color(0x445DF0):am5.color(0x04B404),
@@ -885,7 +885,11 @@ export class MapComponent implements OnInit, OnDestroy {
       container.children.push(am5.Line.new(root1, {
         stroke: color,
         dx:20*i,
+<<<<<<< HEAD
         height:-30,
+=======
+        height: -30,
+>>>>>>> 06721eb9df92e05af9253b8085cc9d49f03460ea
         strokeGradient: am5.LinearGradient.new(root1, {
           stops: [
             { opacity: 2 },

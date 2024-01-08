@@ -885,11 +885,8 @@ export class MapComponent implements OnInit, OnDestroy {
       container.children.push(am5.Line.new(root1, {
         stroke: color,
         dx:20*i,
-<<<<<<< HEAD
         height:-30,
-=======
-        height: -30,
->>>>>>> 06721eb9df92e05af9253b8085cc9d49f03460ea
+    
         strokeGradient: am5.LinearGradient.new(root1, {
           stops: [
             { opacity: 2 },

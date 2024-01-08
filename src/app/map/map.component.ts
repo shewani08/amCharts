@@ -44,6 +44,7 @@ interface CountryData {
 }
 
 const getColorForValue = (value: number): string => {
+
   if (value >= 0 && value < 1) {
     return "#ff621f";
   } else if (value >= 1 && value < 2) {
@@ -188,7 +189,7 @@ export class MapComponent implements OnInit, OnDestroy {
         const property = 'SSP1_1p5_Score';
         this.meansDroughtByCountry1 = this.calculateMeanByCountry(this.droughtData1, property);
         this.fetchData =this.getData();
-     console.log('this.fetchData',this.fetchData);
+    // console.log('this.fetchData',this.fetchData);
         this.mergedDroughtJSON = this.mergeTwoJson(this.fetchData,this.meansDroughtByCountry1,'mean1');
        // this.initializeMap();
       })
@@ -196,7 +197,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.agricultureData1 = this.rcpToJson(rcp);
         const property = 'SSP1_1p5_Score';
         this.meansAgricultureByCountry1 = this.calculateMeanByCountry(this.agricultureData1, property);
-        console.log('meansAgricultureByCountry',this.meansAgricultureByCountry);
+       // console.log('meansAgricultureByCountry',this.meansAgricultureByCountry);
         if(this.mergedDroughtJSON && this.meansAgricultureByCountry1)
         this.mergedJSON = this.mergeTwoJson(this.mergedDroughtJSON,this.meansAgricultureByCountry1,'mean2');
        // setTimeout(()=>this.initializeMap(),2000);
@@ -214,7 +215,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   }
   mergeTwoJson(src1: any, src2: { [x: string]: any; }, meanType: string) {
-    alert('coming');
     const mergedData = [];
     if(src1 && src2)
     for (const entry of src1) {
@@ -278,7 +278,8 @@ export class MapComponent implements OnInit, OnDestroy {
         minHeight: 20, // Set the minimum height of the legend
         maxHeight: 500,
         startValue: 0,
-        endValue: 3
+        endValue: 3,
+        pixelHeight:30
       }));
       // console.log('heatLegend', this.heatLegend);
 
@@ -292,13 +293,18 @@ export class MapComponent implements OnInit, OnDestroy {
         fill: this.heatLegend.get("endColor")
       });
       this.polygonSeries.mapPolygons.template.set("interactive", true);
+      console.log('this.polygonSeries',this.polygonSeries);
       if (this.polygonSeries) {
         this.setupHeatLegend(1);
-        this.polygonSeries.mapPolygons.each((polygon:any) => {
+        this.polygonSeries?.mapPolygons?.each((polygon:any) => {
+          console.log('polygon is',polygon);
           const dataContext = polygon.dataItem?.dataContext;
+          console.log('dataContext',dataContext);
           if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
             const countryName = dataContext.name;
             const countryEntry = countryMeanPairs?.find(([country]) => country === countryName);
+            console.log('countryEntry',countryEntry);
+            console.log('selectedIndicators',this.selectedIndicators);
             if (countryEntry?.length && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Water index stress (Water)'
               || this.selectedIndicators[0] === 'Drought intensity change (Water)')) {
               polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
@@ -417,7 +423,7 @@ export class MapComponent implements OnInit, OnDestroy {
       // });
       this.dataService?.getMigrantData()?.subscribe((csvData) => {
          this.jsonData = this.csvToJson<CsvData>(csvData);
-         console.log('default',this.jsonData);
+        // console.log('default',this.jsonData);
           this.initChart();
           setInterval(() => this.updateData(), 2000);
         });
@@ -462,17 +468,32 @@ export class MapComponent implements OnInit, OnDestroy {
 
   }
 
-  private initChart(): void {
-   // if(!this.chartdiv){
+   initChart(): void {
+   
     this.chartdiv = document.getElementById('chartdiv');
-    if (this.chartdiv) {
-      const styles = window.getComputedStyle(this.chartdiv);
-    // }
-    const root = am5.Root.new(this.chartdiv);
-    root.setThemes([am5themes_Animated.new(root)]);
-    this.chart = root.container.children.push(am5map.MapChart.new(root, {}));
-    this.polygonSeries = this.chart.series.push(
-      am5map.MapPolygonSeries.new(root, {
+
+    if (!this.chartdiv) {
+      console.error('Chart container element not found!');
+      return;
+    }
+  
+    if (this.chart) {
+      // Dispose of the existing chart and root
+   //   this.chart.dispose();
+    }
+  
+    // Dispose of the existing root associated with 'chartdiv'
+    if (this.root) {
+      // Dispose of the existing root
+      this.root.dispose();
+    }
+  
+    // Create a new am5.Root
+    this.root = am5.Root.new(this.chartdiv);
+    this.root.setThemes([am5themes_Animated.new(this.root)]);
+    this.chart = this.root.container.children.push(am5map.MapChart.new(this.root, {}));
+    this.polygonSeries = this.chart?.series.push(
+      am5map.MapPolygonSeries.new(this.root, {
         include: [
           'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
           'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
@@ -486,9 +507,10 @@ export class MapComponent implements OnInit, OnDestroy {
         // fill: am5.color(0xffa500)
       })
     );
-    this.chart.set("zoomLevel", 1.0);
-    this.bubbleSeries = this.chart.series.push(
-      am5map.MapPointSeries.new(root, {
+    console.log(' this.polygonSeries', this.polygonSeries);
+    this.chart?.set("zoomLevel", 1.0);
+    this.bubbleSeries = this.chart?.series.push(
+      am5map.MapPointSeries.new(this.root, {
         valueField: 'value',
         calculateAggregates: true,
         polygonIdField: 'id'
@@ -496,10 +518,10 @@ export class MapComponent implements OnInit, OnDestroy {
     );
 
     const circleTemplate = am5.Template.new({});
-    let colorset = am5.ColorSet.new(root, {});
-    console.log('this.selectIndicator', this.selectedIndicators);
+    let colorset = am5.ColorSet.new(this.root, {});
+   // console.log('this.selectIndicator', this.selectedIndicators);
     if (!this.selectedIndicators.length || this.selectedIndicators.length === 1)
-      this.bubbleSeries.bullets.push((root, series, dataItem) => {
+      this.bubbleSeries?.bullets.push((root, series, dataItem) => {
         const container = am5.Container.new(root, {});
         this.circle = container.children.push(
           am5.Circle.new(root, {
@@ -545,7 +567,7 @@ export class MapComponent implements OnInit, OnDestroy {
           dynamic: true
         });
       });
-    this.bubbleSeries.set('heatRules', [
+    this.bubbleSeries?.set('heatRules', [
       {
         target: circleTemplate,
         dataField: 'value',
@@ -556,11 +578,16 @@ export class MapComponent implements OnInit, OnDestroy {
         key: 'radius'
       }
     ]);
-    this.setDataBubble()
-  }
+    this.setDataBubble();
+    //this.updateBubbleColor();
+  
 
   }
-
+  updateShowMap(val:boolean) {
+   // this.initChart();
+    this.showMap = val;
+    this.cdr.detectChanges();
+  }
   dataClickedEvent() {
     this.circle.events.on("click", (event: any) => {
       this.previousEvent = event.target.dataItem;
@@ -571,6 +598,7 @@ export class MapComponent implements OnInit, OnDestroy {
   setDataBubble() {
     this.bubbleSeries?.data?.setAll(this.jsonData);
     this.setupHeatLegend(0);
+    //this.updateBubbleColor();
 
   }
   public setupHeatLegend(data: any) {
@@ -581,6 +609,7 @@ export class MapComponent implements OnInit, OnDestroy {
       max: am5.color(0x661f00),
       key: "fill"
     }]);
+ 
     this.polygonSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
   }
 
@@ -690,27 +719,34 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   updateIndicatorName(): void {
+    //console.log('selectedIndicators',this.selectedIndicators);
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)' || this.selectedIndicators[0] === 'Crop yield change (Land)')
       || this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
+        // this.updateBubbleColor();
       this.showHeatLegend = true;
-   
-     this.showMap=true;
-      this.updateBubbleColor();
-      this.cdr.detectChanges();
-      this.initChart();
-    }
-    else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 2){
       this.showMap=true;
       this.cdr.detectChanges();
       this.initChart();
+      setTimeout(()=> this.updateBubbleColor(),200)
+      
+     
+    //  
+     // this.cdr.detectChanges();
+      //this.updateShowMap(true);
+    }
+    else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 2){
+    //  this.showMap=true;
+    //  this.cdr.detectChanges();
+      this.updateShowMap(true);
      // this.updateGradientColor();
     }
     else if(this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 3){
       this.showMap=false;
-     
-     this.cdr.detectChanges();
+   // this.updateShowMap(false);
+      this.cdr.detectChanges();
      this.initializeMap();
+
      
 
     }
@@ -737,7 +773,7 @@ export class MapComponent implements OnInit, OnDestroy {
         series.mapPolygons.each((mapPolygon) => {
           // Assuming the data has a property like `name` that represents the country name
           const mapPolygonName = (mapPolygon.dataItem?.dataContext as { name?: string })?.name;
-          console.log('mapPolygonName',mapPolygonName);
+         // console.log('mapPolygonName',mapPolygonName);
     
           if (mapPolygonName === country) {
           
@@ -754,7 +790,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   openDialog(_dataItem: any): void {
-    console.log('dataItem is',_dataItem);
+   // console.log('dataItem is',_dataItem);
     this.summaryData = _dataItem;
     this.clicked = true;
     this.sendDataToMigrateComponent(this.summaryData)
@@ -807,8 +843,8 @@ export class MapComponent implements OnInit, OnDestroy {
     ]);
     const map = root1.container.children.push(
       am5map.MapChart.new(root1, {
-        panX: 'none',
-        projection: am5map.geoNaturalEarth1()
+        // panX: 'none',
+        // projection: am5map.geoNaturalEarth1()
       })
     );
     const polygonSeries = map.series.push(
@@ -823,7 +859,7 @@ export class MapComponent implements OnInit, OnDestroy {
         ],
       })
     );
-    this.mapchart?.set("zoomLevel", 1.4);
+    this.mapchart?.set("zoomLevel", 1);
     const pointSeries = map.series.push(
       am5map.MapPointSeries.new(root1, {})
     );
@@ -834,11 +870,13 @@ export class MapComponent implements OnInit, OnDestroy {
       const color = colorSet.next();
       const baseRadius = 8;
       for (let i = 1; i <= 3; i++) {
-        const radius = baseRadius + i * 5; 
+       // const radius = baseRadius + i * 5; 
         container.children.push(am5.Circle.new(root1, {
-          radius: 4,
+          radius: 8,
+          // x: x, // Set the x-coordinate
+          // y: y
           fill: i == 1? am5.color(0x964B00): i==2?am5.color(0xDEF4FC):am5.color(0x00FF00),
-          dx:10*i,
+          dx:20*i,
          tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',
         }));
           
@@ -861,11 +899,11 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     for (let i = 0; i < this.mergedJSON?.length; i++) {
-      console.log('this.mergedJSON',this.mergedJSON);
+    //  console.log('this.mergedJSON',this.mergedJSON);
       if(this.mergedJSON){
       
         const d = this.mergedJSON[i];
-        console.log('value of d is',this.mergedJSON);
+     //   console.log('value of d is',this.mergedJSON);
         pointSeries.data.push({
           geometry: { type: 'Point', coordinates: [d.x, d.y] },
           title: d.Country,

@@ -8,9 +8,7 @@
   width: 60vw;
   height: 100%;
   position: absolute;
-  
-  top: 16%;
-  right: -18%;
+  right: 30%;
    
 }
 .map-dropdown{
@@ -18,11 +16,26 @@
     margin:2px;
 }
 .rcp{
-    margin-right: 0.25rem;
+  margin-right: 0.25rem;
+  max-width: 300px; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: max-width 0.3s ease;
+}
+.rcp:hover {
+  max-width: 600px;
 }
 .dropdown-menu {
-    max-height: 200px; /* Adjust the max height as needed */
+    max-height: 200px; 
     overflow-y: auto;
+    max-width: 300px; 
+    white-space: normal; 
+  }
+  
+  .dropdown-item {
+    width: 100%; 
+    box-sizing: border-box; 
   }
 
   .year-dropdown{
@@ -54,7 +67,7 @@
     display: flex;
     justify-content: flex-start; /* Move the row to the right */
     position: relative;
-    left: 16%;
+    left: 6%;
   }
   .row {
     display: flex;
@@ -96,4 +109,8 @@
   .disclaimer{
     position: absolute;
     bottom: 5%;
+  }
+  .custom-map-polygon{
+    position:absolute;
+    top:70% !important;
   }

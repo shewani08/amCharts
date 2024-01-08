@@ -133,11 +133,11 @@ export class PieComponent implements OnInit {
      //fill:am5.color(0xFF621F)
     }));
  
-    let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
-    graticuleSeries.mapLines.template.setAll({
-      stroke: this.root.interfaceColors.get("alternativeBackground"),
-      strokeOpacity: 0.08
-    });
+    // let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
+    // graticuleSeries.mapLines.template.setAll({
+    //   stroke: this.root.interfaceColors.get("alternativeBackground"),
+    //   strokeOpacity: 0.08
+    // });
     
     this.chart.appear(1000, 100);
   }
@@ -172,11 +172,12 @@ export class PieComponent implements OnInit {
   })
 );
 this.pointSeries.bullets.push((root: am5.Root, series: any, dataItem: any) => {
+
   const isMediator = dataItem.get('name') === this.mediator;
   const fillColor = isMediator ? am5.color(0xFF0000) : am5.color(0x00FF00);
   return am5.Bullet.new(this.root!, {
     sprite: am5.Circle.new(this.root!, {
-      radius: 5,
+      radius: isMediator ? 10 : 5,
       fill: fillColor,
       tooltipText: "{name}"
     })
@@ -313,7 +314,7 @@ coordinateDetail():any{
   //   ]
   const cordinate=[{ name :this.selectedCountryValue,latitude:coordinates?.x, longitude:coordinates?.y },
     { name :'Mali',latitude:-6.25, longitude:24.75 },
-    { name :this.selectedCountryValue,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
+    { name :this.mediator,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
     {  name :'United Kingdom',latitude: 51.509865, longitude: -0.118092},
     ]
     return cordinate;

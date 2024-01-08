@@ -104,19 +104,19 @@
   .land-indicator{
     width: 20px;   
     height: 10px; 
-    background-color: #964B00 ;  
+    background-color: #AF35C2 ;  
     margin-right: 5px;  
   }
   .water-indicator{
     width: 20px;   
     height: 10px; 
-    background-color: #DEF4FC ;  
+    background-color: #445DF0 ;  
     margin-right: 5px;  
   }
   .heat-indicator{
     width: 20px;   
     height: 10px; 
-    background-color: #00FF00 ;  
+    background-color: #04B404 ;  
     margin-right: 5px;  
   }
   .collapsable{

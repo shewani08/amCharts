@@ -171,13 +171,12 @@ export class PieComponent implements OnInit {
    // geoJSON: cities
   })
 );
-this.pointSeries.bullets.push((root: am5.Root, series: any, dataItem: any) => {
-  const isMediator = dataItem.get('name') === this.mediator;
-  const fillColor = isMediator ? am5.color(0xFF0000) : am5.color(0x00FF00);
+
+this.pointSeries.bullets.push(() => {
   return am5.Bullet.new(this.root!, {
     sprite: am5.Circle.new(this.root!, {
       radius: 5,
-      fill: fillColor,
+      fill: am5.color(0xffba00),
       tooltipText: "{name}"
     })
   });
@@ -312,10 +311,9 @@ coordinateDetail():any{
      
   //   ]
   const cordinate=[{ name :this.selectedCountryValue,latitude:coordinates?.x, longitude:coordinates?.y },
-    { name :'Mali',latitude:-6.25, longitude:24.75 },
     { name :this.selectedCountryValue,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
-    {  name :'United Kingdom',latitude: 51.509865, longitude: -0.118092},
-    ]
+    {  name :this.selectedCountryValue,latitude: 36.30904040702372, longitude: 22.218457547733337},
+    {  name :this.selectedCountryValue,latitude:-0.1262, longitude: 51.5002}]
     return cordinate;
 }
   cityData(){
@@ -472,9 +470,9 @@ coordinateDetail():any{
   }
 
   findCenteralCoordinates(selectedCountryValue: string) {
-    let data =[ {name: 'Central Mediterranean Route', y:22.218457547733337,x:36.30904040702372 },
-    {name: 'Western Mediterranean', y: -5.291307397436539,x:36.34444502849807},
-    {name: 'Western Africa', y:-14.226280416672568,x: 24.53051872073307}]
+    let data =[ {name: 'Central Mediterranean Route', x:22.218457547733337,y:36.30904040702372 },
+    {name: 'Western Mediterranean', x: -5.291307397436539,y:36.34444502849807},
+    {name: 'Western Africa', x:-14.226280416672568,y: 24.53051872073307}]
     
     for (const item of data) {
       if (item.name === selectedCountryValue) {

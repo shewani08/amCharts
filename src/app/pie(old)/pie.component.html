@@ -17,8 +17,8 @@
         {{ mapTypeData || 'Select Indicator' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" *ngFor="let map of mapType" (click)="selectMapType(map)">
-          {{ map }}
+        <a class="dropdown-item" href="#" *ngFor="let map of indicators" (click)="selectMapType(map)">
+          {{ map.id }}
         </a>
       </div>
     </div>
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="dropdown mr-auto show-stress">
+    <div class="dropdown mr-auto ">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
         {{ 'Year' }}
@@ -49,13 +49,13 @@
 
   </div>
 
-
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Central Mediterranean Route"> </mat-tab>
+    <mat-tab label="Western Mediterranean Route"> </mat-tab>
+    <mat-tab label="Western Africa Route"> </mat-tab>
+  </mat-tab-group>
 </div>
-<mat-tab-group (selectedTabChange)="onTabChange($event)">
-  <mat-tab label="Central Mediterranean Route"> </mat-tab>
-  <mat-tab label="Western Mediterranean Route"> </mat-tab>
-  <mat-tab label="Western Africa Route"> </mat-tab>
-</mat-tab-group>
+
 
 <div class="d-flex">
   <div class="p-2" id="chartdestionation"></div>
@@ -63,21 +63,20 @@
     <table class="table table-sm">
       <thead>
         <tr>
-          <th scope="col">Total Migration</th>
           <th scope="col">From</th>
-          <th scope="col">via</th>
           <th scope="col">To</th>
+          <th scope="col">via</th>
+          <th scope="col">Total Imigratants</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td scope="row">{{totalMigration}}</td>
+          <th scope="row">{{totalMigration}}</th>
           <td>{{selectedCountryValue}}</td>
           <td>{{mediator}}</td>
           <td>United Kingdom</td>
         </tr>
       </tbody>
     </table>
-
   </div>
 </div>

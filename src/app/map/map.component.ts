@@ -877,15 +877,15 @@ export class MapComponent implements OnInit, OnDestroy {
           radius: 8,
           // x: x, // Set the x-coordinate
           // y: y
-          fill: i == 1? am5.color(0x964B00): i==2?am5.color(0xDEF4FC):am5.color(0x00FF00),
+          fill: i == 1? am5.color(0xAF35C2): i==2?am5.color(0x445DF0):am5.color(0x04B404),
           dx:20*i,
          tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',
         }));
           
       container.children.push(am5.Line.new(root1, {
         stroke: color,
-        dx:10*i,
-        height: -40,
+        dx:20*i,
+        height:-30,
         strokeGradient: am5.LinearGradient.new(root1, {
           stops: [
             { opacity: 2 },

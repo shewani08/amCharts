@@ -314,8 +314,10 @@ coordinateDetail():any{
   //   ]
   const cordinate=[{ name :this.selectedCountryValue,latitude:coordinates?.x, longitude:coordinates?.y },
     { name :'Mali',longitude:-6.25, latitude:24.75 },
-    { name :this.mediator,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
-    {  name :'United Kingdom',latitude: 51.509865, longitude: -0.118092},
+    { name :'Libya',longitude:13.1913 , latitude:32.8872 },
+   { name :this.mediator,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
+   //{ name :'Italy',longitude:12.240456489308606 , latitude:43.08918192577643 },
+    { name :'United Kingdom',latitude: 51.509865, longitude: -0.118092},
     ]
     return cordinate;
 }
@@ -475,7 +477,7 @@ coordinateDetail():any{
   findCenteralCoordinates(selectedCountryValue: string) {
     console.log('selectedCountryValue',selectedCountryValue);
     let data =[ {name: 'Central Mediterranean Route', y:22.218457547733337,x:36.30904040702372 },
-    {name: 'Western Mediterranean', y:-5.291307397436539,x:36.34444502849807},
+    {name: 'Western Mediterranean', x:-5.291307397436539,y:36.34444502849807},
     {name: 'Western Africa Route', y:-14.226280416672568,x:24.53051872073307}]
     
     for (const item of data) {

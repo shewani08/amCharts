@@ -279,7 +279,9 @@ export class MapComponent implements OnInit, OnDestroy {
         maxHeight: 500,
         startValue: 0,
         endValue: 3,
-        pixelHeight:30
+        pixelHeight:30,
+       // x:-10,
+        y:60
       }));
       // console.log('heatLegend', this.heatLegend);
 

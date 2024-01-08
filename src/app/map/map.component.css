@@ -101,6 +101,24 @@
     background-color: #d65016 ;  
     margin-right: 5px;  
   }
+  .land-indicator{
+    width: 20px;   
+    height: 10px; 
+    background-color: #964B00 ;  
+    margin-right: 5px;  
+  }
+  .water-indicator{
+    width: 20px;   
+    height: 10px; 
+    background-color: #DEF4FC ;  
+    margin-right: 5px;  
+  }
+  .heat-indicator{
+    width: 20px;   
+    height: 10px; 
+    background-color: #00FF00 ;  
+    margin-right: 5px;  
+  }
   .collapsable{
     position:absolute;
     right:10px;

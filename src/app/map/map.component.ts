@@ -46,11 +46,11 @@ interface CountryData {
 const getColorForValue = (value: number): string => {
 
   if (value >= 0 && value < 1) {
-    return "#ff621f";
+    return "#B8BD22";
   } else if (value >= 1 && value < 2) {
     return "#d65016";
   } else {
-    return "#842c06";
+    return "#B41404";
   }
   
 };
@@ -347,7 +347,7 @@ export class MapComponent implements OnInit, OnDestroy {
   updateHeatLegendEndColor(selectedIndicators: string[]) {
     if (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
-        return am5.color(0xff621f);
+        return am5.color(0xB8BD22);
     }
     else if (this.selectedIndicators[0] === 'Crop yield change (Land)' ||
       this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
@@ -360,7 +360,7 @@ export class MapComponent implements OnInit, OnDestroy {
     if (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
     
-      return am5.color(0x842c06);
+      return am5.color(0xB41404);
 
     }
     else if (this.selectedIndicators[0] === 'Crop yield change (Land)' || this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {
@@ -811,7 +811,10 @@ export class MapComponent implements OnInit, OnDestroy {
         return 'Least reduction in \n crops';
       } else if (selectedCategory[0] === 'Heat Index Event exposure (Energy)') {
         return 'Least increase in heat stress';
-      } else {
+      }else if (selectedCategory[0] === 'Drought intensity change (Water)') {
+        return 'Least increase drought intensity';
+      }
+      else {
         return 'Default start text';
       }
     }
@@ -826,7 +829,10 @@ export class MapComponent implements OnInit, OnDestroy {
         return 'Most reduction in \n crops';
       } else if (selectedCategory[0] === 'Heat Index Event exposure (Energy)') {
         return 'Most increase in heat stress';
-      } else {
+      }else if (selectedCategory[0] === 'Drought intensity change (Water)') {
+        return 'Most increase drought intensity';
+      } else 
+      {
         return 'Default end text';
       }
     }

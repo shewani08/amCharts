@@ -866,19 +866,38 @@ export class MapComponent implements OnInit, OnDestroy {
       am5map.MapPointSeries.new(root1, {})
     );
     const colorSet = am5.ColorSet.new(root1, { step: 2 });
-    pointSeries.bullets.push(function (root1: am5.Root, series: any, dataItem: { get: (arg0: string) => number; }) {
-      const value = dataItem.get('value') || 0;
+    pointSeries.bullets.push(function (root1: am5.Root, series: any, dataItem: any) {
+      const mean = dataItem.dataContext.mean || 0;
+      const mean1 = dataItem.dataContext.mean1 || 0;
+      const mean2 = dataItem.dataContext.mean2 || 0;
+      const maxMean = Math.max(mean, mean1, mean2);
+     // console.log('maxMean series',maxMean);
       const container = am5.Container.new(root1, {});
       const color = colorSet.next();
-      const baseRadius = 8;
+      const baseRadius = 2;
       for (let i = 1; i <= 3; i++) {
+        console.log('maxMean series',maxMean);
+        console.log('maxMean series',mean);
+        console.log('maxMean1 series',mean1);
+        console.log('maxMean2 series',mean2);
+        let radius = i* 5;
+        // Set the radius based on the maximum value
+        if (i == 1 && maxMean === dataItem.dataContext.mean) {
+          radius = baseRadius + i * 5;  // Set radius based on mean
+        } else if (i==2 && maxMean === dataItem.dataContext.mean1) {
+          radius = baseRadius + i * 5 + 2;  // Set radius based on mean1
+        } else if (i==3 && maxMean === dataItem.dataContext.mean2) {
+          radius = baseRadius + i * 5 + 4;  // Set radius based on mean2
+        }
+        console.log('maxMean is',radius);
        // const radius = baseRadius + i * 5; 
         container.children.push(am5.Circle.new(root1, {
-          radius: 10,
+          radius: i==1 && maxMean === dataItem.dataContext.mean ? 10 :i==2 && maxMean === dataItem.dataContext.mean1?
+          10:i==3 && maxMean === dataItem.dataContext.mean2?10:5,
           // x: x, // Set the x-coordinate
           // y: y
           fill: i == 1? am5.color(0xAF35C2): i==2?am5.color(0x445DF0):am5.color(0x04B404),
-          dx:20*i,
+          dx:10*i,
          tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',
         }));
           
@@ -886,11 +905,10 @@ export class MapComponent implements OnInit, OnDestroy {
         stroke: color,
         dx:20*i,
         height:-30,
-    
         strokeGradient: am5.LinearGradient.new(root1, {
           stops: [
-            { opacity: 2 },
-            { opacity: 2 },
+            { opacity: 1 },
+            { opacity: 1 },
             { opacity: 0 }
           ]
         })

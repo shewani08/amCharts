@@ -872,18 +872,18 @@ export class MapComponent implements OnInit, OnDestroy {
       for (let i = 1; i <= 3; i++) {
        // const radius = baseRadius + i * 5; 
         container.children.push(am5.Circle.new(root1, {
-          radius: 8,
+          radius: 10,
           // x: x, // Set the x-coordinate
           // y: y
-          fill: i == 1? am5.color(0x964B00): i==2?am5.color(0xDEF4FC):am5.color(0x00FF00),
+          fill: i == 1? am5.color(0xF47218): i==2?am5.color(0x25379D):am5.color(0x2E9C2E),
           dx:20*i,
          tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',
         }));
           
       container.children.push(am5.Line.new(root1, {
         stroke: color,
-        dx:10*i,
-        height: -40,
+        dx:20*i,
+        height: -20,
         strokeGradient: am5.LinearGradient.new(root1, {
           stops: [
             { opacity: 2 },

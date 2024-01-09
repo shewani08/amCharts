@@ -200,109 +200,109 @@ export class MapChartComponent implements OnInit, AfterViewInit {
       am5map.MapPointSeries.new(root, {})
     );
     const colorSet = am5.ColorSet.new(root, { step: 2 });
-    // pointSeries.bullets.push(function (root, series, dataItem) {
-    //   const value = dataItem.get('value') || 0;
-    //   const container = am5.Container.new(root, {});
-    //   const color = colorSet.next();
-    //   const baseRadius = 8;
-    //   for (let i = 1; i <= 3; i++) {
-    //     const radius = baseRadius + i * 5; 
-    //     container.children.push(am5.Picture.new(root, {
-    //       width: 32,
-    //       height: 32,
-    //       x: am5.percent(30),
-    //       y: am5.percent(50),
-    //        dx:10*i,
-
-    //       centerX: am5.percent(50),
-    //       centerY: am5.percent(50),
-    //     //  text: "pie_chart"
-    //     src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
-    //     }))
-        
-        
-       
-          
-    //   container.children.push(am5.Line.new(root, {
-    //     stroke: color,
-    //     dx:10*i,
-    //     height: -40,
-    //     strokeGradient: am5.LinearGradient.new(root, {
-    //       stops: [
-    //         { opacity: 2 },
-    //         { opacity: 2 },
-    //         { opacity: 0 }
-    //       ]
-    //     })
-    //   }));
-    //   }
-    //   return am5.Bullet.new(root, {
-    //    // sprite: container
-    //    sprite: am5.Picture.new(root, {
-    //               width: 32,
-    //               height: 32,
-    //               x: am5.percent(30),
-    //               y: am5.percent(50),
-    //               centerX: am5.percent(50),
-    //               centerY: am5.percent(50),
-    //               src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
-    //             })
-    //   });
-    // });
     pointSeries.bullets.push(function (root, series, dataItem) {
       const value = dataItem.get('value') || 0;
       const container = am5.Container.new(root, {});
       const color = colorSet.next();
       const baseRadius = 8;
-    
       for (let i = 1; i <= 3; i++) {
-        const radius = baseRadius + i * 5;
-    
-        // Create a Container to hold both Picture and Label
-        const pictureContainer = am5.Container.new(root, {});
-    
-        // Create a Picture element
-        const picture = am5.Container.new(root, {
+        const radius = baseRadius + i * 5; 
+        container.children.push(am5.Picture.new(root, {
           width: 32,
           height: 32,
           x: am5.percent(30),
           y: am5.percent(50),
-          dx: 10 * i,
+           dx:10*i,
+
           centerX: am5.percent(50),
           centerY: am5.percent(50),
-        });
-    
-        // Add a Label as a child to the Container
-        const label = pictureContainer.children.push(am5.Label.new(root, {
-          text: "pie_chart", // Material Icon name
-          fontSize: 24, // Adjust the font size as needed
-          fill: am5.color(0), // Set the text color
-          textAlign: "center", // Center the text
-         // verticalAlign: "middle" // Center the text vertically
-          // width: "40",
-          // height: "40",
-        }));
-    
-        container.children.push(pictureContainer);
-    
-        container.children.push(am5.Line.new(root, {
-          stroke: color,
-          dx: 10 * i,
-          height: -40,
-          strokeGradient: am5.LinearGradient.new(root, {
-            stops: [
-              { opacity: 2 },
-              { opacity: 2 },
-              { opacity: 0 }
-            ]
-          })
-        }));
+        //  text: "pie_chart"
+        src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
+        }))
+        
+        
+       
+          
+      container.children.push(am5.Line.new(root, {
+        stroke: color,
+        dx:10*i,
+        height: -40,
+        strokeGradient: am5.LinearGradient.new(root, {
+          stops: [
+            { opacity: 2 },
+            { opacity: 2 },
+            { opacity: 0 }
+          ]
+        })
+      }));
       }
-    
       return am5.Bullet.new(root, {
-        sprite: container
+       // sprite: container
+       sprite: am5.Picture.new(root, {
+                  width: 32,
+                  height: 32,
+                  x: am5.percent(30),
+                  y: am5.percent(50),
+                  centerX: am5.percent(50),
+                  centerY: am5.percent(50),
+                  src: "assests/Images/world.jpg"
+                })
       });
     });
+    // pointSeries.bullets.push(function (root, series, dataItem) {
+    //   const value = dataItem.get('value') || 0;
+    //   const container = am5.Container.new(root, {});
+    //   const color = colorSet.next();
+    //   const baseRadius = 8;
+    
+    //   for (let i = 1; i <= 3; i++) {
+    //     const radius = baseRadius + i * 5;
+    
+    //     // Create a Container to hold both Picture and Label
+    //     const pictureContainer = am5.Container.new(root, {});
+    
+    //     // Create a Picture element
+    //     const picture = am5.Container.new(root, {
+    //       width: 32,
+    //       height: 32,
+    //       x: am5.percent(30),
+    //       y: am5.percent(50),
+    //       dx: 10 * i,
+    //       centerX: am5.percent(50),
+    //       centerY: am5.percent(50),
+    //     });
+    
+    //     // Add a Label as a child to the Container
+    //     const label = pictureContainer.children.push(am5.Label.new(root, {
+    //       text: "pie_chart", // Material Icon name
+    //       fontSize: 24, // Adjust the font size as needed
+    //       fill: am5.color(0), // Set the text color
+    //       textAlign: "center", // Center the text
+    //      // verticalAlign: "middle" // Center the text vertically
+    //       // width: "40",
+    //       // height: "40",
+    //     }));
+    
+    //     container.children.push(pictureContainer);
+    
+    //     container.children.push(am5.Line.new(root, {
+    //       stroke: color,
+    //       dx: 10 * i,
+    //       height: -40,
+    //       strokeGradient: am5.LinearGradient.new(root, {
+    //         stops: [
+    //           { opacity: 2 },
+    //           { opacity: 2 },
+    //           { opacity: 0 }
+    //         ]
+    //       })
+    //     }));
+    //   }
+    
+    //   return am5.Bullet.new(root, {
+    //     sprite: container
+    //   });
+    // });
 
     for (let i = 0; i < this.mergedJSON.length; i++) {
       if(this.mergedJSON){

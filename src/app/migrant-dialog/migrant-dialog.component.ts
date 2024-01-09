@@ -12,7 +12,7 @@ import {MatTableModule} from '@angular/material/table';
 export class MigrantDialogComponent {
   @Input()
   dataSource!: any[];
-  displayedColumns: string[] = ["Country", "2019", "2020", "2021", "2022", "2023", "total_irregular_migrants"];
+  displayedColumns: string[] = ["Country", "2018","2019", "2020", "2021", "2022", "2023", "total_irregular_migrants"];
  //displayedColumns: string[] = ["Country"];
   constructor(
     public dialogRef: MatDialogRef<MigrantDialogComponent>,

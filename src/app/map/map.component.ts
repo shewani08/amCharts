@@ -347,7 +347,7 @@ export class MapComponent implements OnInit, OnDestroy {
   updateHeatLegendEndColor(selectedIndicators: string[]) {
     if (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
-        return am5.color(0xB8BD22);
+        return am5.color(0xCFCD9D);
     }
     else if (this.selectedIndicators[0] === 'Crop yield change (Land)' ||
       this.selectedIndicators[0] === 'Agriculture water Stress index(Land)') {

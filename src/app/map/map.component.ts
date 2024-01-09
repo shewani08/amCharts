@@ -877,8 +877,6 @@ export class MapComponent implements OnInit, OnDestroy {
       const mean1 = dataItem.dataContext.mean1 || 0;
       const mean2 = dataItem.dataContext.mean2 || 0;
       const maxMean = Math.max(mean, mean1, mean2);
-      
-    
       const container = am5.Container.new(root1, {
        
       });

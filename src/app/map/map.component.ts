@@ -902,7 +902,7 @@ export class MapComponent implements OnInit, OnDestroy {
           10:i==3 && maxMean === dataItem.dataContext.mean2?10:5,
           // x: x, // Set the x-coordinate
           // y: y
-          fill: i == 1? am5.color(0xAF35C2): i==2?am5.color(0x445DF0):am5.color(0x04B404),
+          fill: i == 1? am5.color(0xD56651): i==2?am5.color(0x65BADA):am5.color(0x39753A),
           dx:15*i,
         //  dy:10*i,
          tooltipText:i == 1? 'Drought-{mean1}': i==2?'Water-{mean2}':'Agriculture-{mean1}',

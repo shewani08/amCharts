@@ -1,1 +1,76 @@
 <p>causalanalysis works!</p>
+<div class="d-flex flex-row justify-content-between" style="width:60vw;">
+    <div class="map-dropdown d-flex">
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{ health || 'Health' }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+          <a class="dropdown-item" href="#" (click)="selectHealth('Low Health Vulnerability')">Low Health Vulnerability</a>
+          <a class="dropdown-item" href="#" (click)="selectHealth('Medium Health Vulnerability')">Medium Health Vulnerability</a>
+          <a class="dropdown-item" href="#" (click)="selectHealth('High Health Vulnerability')">High Health Vulnerabilit</a>
+        </div>
+      </div>
+  
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{'Inflation'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >Negative Inflation</a>
+            <a class="dropdown-item" href="#" >Less than 5% Inflation</a>
+            <a class="dropdown-item" href="#" >Between 5-20% Inflation</a>
+            <a class="dropdown-item" href="#" >Between 20-30% Inflation</a>
+            <a class="dropdown-item" href="#" >More than 30% Inflation</a>
+          </div>
+      </div>
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{'Economic'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >Low Economic Readiness</a>
+            <a class="dropdown-item" href="#" >Medium Economic Readiness</a>
+            <a class="dropdown-item" href="#" >High Economic Readiness</a>
+            </div>
+      </div>
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{'Political'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >Low Political Stability</a>
+            <a class="dropdown-item" href="#" >Medium Political Stability</a>
+            <a class="dropdown-item" href="#" >High Political Stability</a>
+            </div>
+      </div>
+
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{'Food & Water'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >Low Political Stability</a>
+            <a class="dropdown-item" href="#" >Medium Political Stability</a>
+            <a class="dropdown-item" href="#" >High Political Stability</a>
+            </div>
+      </div>
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{'Social'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >Low Social Stability</a>
+            <a class="dropdown-item" href="#" >Medium Social Stability</a>
+            <a class="dropdown-item" href="#" >High Social Stability</a>
+            </div>
+      </div>
+    </div>
+    </div>
+    <div id="chartdiv1" style="width: 100%; height: 500px;"></div>

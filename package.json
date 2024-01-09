@@ -43,6 +43,7 @@
     "jquery": "^3.7.1",
     "json-loader": "^0.5.7",
     "leaflet": "^1.9.4",
+    "material-icons": "^1.13.12",
     "mdb-angular-ui-kit": "^5.1.0",
     "papaparse": "^5.4.1",
     "plotly.js": "^2.27.1",

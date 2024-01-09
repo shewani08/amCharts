@@ -25,12 +25,12 @@ throw new Error('Method not implemented.');
     "Food & Water",
     "Economic",
     "Political",
-    "AnotherCircle",
-    "LastCircle"
+    "Social",
+    
   ];
   selectedValues: SelectedValues = {};
   dropdownOptions: DropdownOptions = {};
-
+  circleColors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
   ngOnInit(): void {
     //selectHealth(type:string){
      //this.health=type;

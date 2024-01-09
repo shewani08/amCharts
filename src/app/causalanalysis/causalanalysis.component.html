@@ -1,4 +1,4 @@
-<p>causalanalysis works!</p>
+<!-- <p>causalanalysis works!</p> -->
 <div class="d-flex flex-row justify-content-between" style="width:60vw;">
     <div class="map-dropdown d-flex">
       <div class="dropdown mr-auto show-stress">
@@ -9,7 +9,7 @@
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
           <a class="dropdown-item" href="#" (click)="selectHealth('Low Health Vulnerability')">Low Health Vulnerability</a>
           <a class="dropdown-item" href="#" (click)="selectHealth('Medium Health Vulnerability')">Medium Health Vulnerability</a>
-          <a class="dropdown-item" href="#" (click)="selectHealth('High Health Vulnerability')">High Health Vulnerabilit</a>
+          <a class="dropdown-item" href="#" (click)="selectHealth('High Health Vulnerability')">High Health Vulnerability</a>
         </div>
       </div>
   
@@ -71,6 +71,24 @@
             <a class="dropdown-item" href="#" >High Social Stability</a>
             </div>
       </div>
+
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{ 'RCP Senario' }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#" >'2030'</a>
+            <a class="dropdown-item" href="#" >'2050'</a>
+          <!-- <a class="dropdown-item" href="#" (click)="selectYear('2030')">'2030'</a> -->
+          <!-- <a class="dropdown-item" href="#" (click)="selectYear('2050')">'2050'</a> -->
+       
+        </div>
+      </div>
+
     </div>
     </div>
     <div id="chartdiv1" style="width: 100%; height: 500px;"></div>
+    <!-- <div class="circle-container">
+        <div *ngFor="let color of circleColors" class="circle" [style.background-color]="color"></div>
+      </div> -->

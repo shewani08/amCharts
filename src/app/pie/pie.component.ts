@@ -114,25 +114,31 @@ export class PieComponent implements OnInit {
     this.root.setThemes([
       am5themes_Animated.new(this.root)
     ]);
+    // if (this.root) {
+    // this.root.width = am5.percent(100);
+    // this.root.height = am5.percent(100);
+    // }
     this.chart = this.root.container.children.push(am5map.MapChart.new(this.root, {
-      panX: "translateX",
-      panY: "translateY",
-      projection: am5map.geoMercator()
+      // panX: "translateX",
+      // panY: "translateY",
+      // projection: am5map.geoMercator()
     }));
+   
 
     this.polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
       geoJSON: am5geodata_worldLow,
-      // include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
-      //   "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
-      //   'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
-      //   'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
-      //   'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
+      include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+        "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+        'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+        'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
+        'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
       calculateAggregates: true,
       interactive: true,
       exclude: ["AQ"],
+      
      //fill:am5.color(0xFF621F)
     }));
- 
+    this.chart?.set("zoomLevel", 1);
     // let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
     // graticuleSeries.mapLines.template.setAll({
     //   stroke: this.root.interfaceColors.get("alternativeBackground"),

@@ -15,7 +15,7 @@ import { element } from 'angular';
 import data from '../data/graph';
 import { text } from 'd3';
 import { DataService } from '../service/dataService';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { YearService } from '../service/yearService';
 import { PreviousEvntService } from '../service/previousEvent';
 
@@ -135,19 +135,15 @@ export class MapComponent implements OnInit, OnDestroy {
       this.droughtData1 = this.rcpToJson(rcp);
       const property = 'SSP1_1p5_Score';
       this.meansDroughtByCountry1 = this.calculateMeanByCountry(this.droughtData1, property);
-    //  this.fetchData = this.getData();
-    //  console.log('this.fetchData',this.fetchData);
-      this.mergedDroughtJSON = this.mergeTwoJson(this.fetchData, this.meansDroughtByCountry1, 'mean1');
+     // this.mergedDroughtJSON = this.mergeTwoJson(this.fetchData, this.meansDroughtByCountry1, 'mean1');
     })
     this.dataService.getAgricultureData().subscribe((rcp) => {
       this.agricultureData1 = this.rcpToJson(rcp);
       const property = 'SSP1_1p5_Score';
       this.meansAgricultureByCountry1 = this.calculateMeanByCountry(this.agricultureData1, property);
-      if (this.mergedDroughtJSON && this.meansAgricultureByCountry1)
-        this.mergedJSON = this.mergeTwoJson(this.mergedDroughtJSON, this.meansAgricultureByCountry1, 'mean2');
- 
+      if (this.mergedDroughtJSON && this.meansAgricultureByCountry1){}
+      //  this.mergedJSON = this.mergeTwoJson(this.mergedDroughtJSON, this.meansAgricultureByCountry1, 'mean2');
       // setTimeout(()=>this.initializeMap(),2000);
-
     })
   }
 
@@ -156,31 +152,49 @@ export class MapComponent implements OnInit, OnDestroy {
       this.selectedYear = year;
       this.loadData();
     });
+   
   }
   mergeTwoJson(src1: any, src2: { [x: string]: any; }, meanType: string) {
     const mergedData = [];
     if (src1 && src2)
       for (const entry of src1) {
         const countryName = entry.Country;
-
         if (src2[countryName]) {
           const mergedEntry = { ...src2[countryName], ...entry };
-
-          // Check for property conflicts and rename if needed
           for (const prop in src2[countryName]) {
             if (mergedEntry.hasOwnProperty(prop) && prop !== "Country") {
-              // Rename the conflicting property in src2
               const renamedProp = meanType;
               mergedEntry[renamedProp] = src2[countryName][prop];
               delete mergedEntry[prop];
             }
           }
-
           mergedData.push(mergedEntry);
         }
       }
+    return mergedData;
+  }
 
-   // console.log('mergedData', mergedData);
+  mergeJsonSources(sources: any[]) {
+    const mergedData = [];
+    if (sources.every(src => src)) {
+      for (const entry of sources[0]) {
+        const countryName = entry.Country;
+        const mergedEntry: any = { ...entry };
+        for (let i = 1; i < sources.length; i++) {
+          const source = sources[i];
+          if (source[countryName]) {
+            for (const prop in source[countryName]) {
+              if (prop !== "Country") {
+                const renamedProp = `mean${i}`;
+                mergedEntry[renamedProp] = source[countryName][prop];
+              }
+            }
+            Object.assign(mergedEntry, source[countryName]);
+          }
+        }
+        mergedData.push(mergedEntry);
+      }
+    }
     return mergedData;
   }
   ngOnDestroy(): void {
@@ -191,8 +205,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private updateBubbleColor(): void {
     let countryMeanPairs: [string, number][];
-    // const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-    //const data: { [key: string]: CountryData } | undefined = this.meansDroughtByCountry;
     const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
     if (data) {
       countryMeanPairs = Object.entries(data).map(
@@ -207,7 +219,6 @@ export class MapComponent implements OnInit, OnDestroy {
     }
     if (this.chart && this.chart.series.length > 0) {
       this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
-
         orientation: "vertical",
         // endColor: am5.color(0x842c06), 
         // startColor: am5.color(0xff621f), 
@@ -409,8 +420,31 @@ export class MapComponent implements OnInit, OnDestroy {
       const property = 'SSP1_1p5_Score';
       this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property);
     })
-
-
+    if (this.fetchData && this.meansDroughtByCountry1 && this.meansAgricultureByCountry1 && this.meansCropYieldByCountry) {
+      this.mergedJSON = this.mergeJsonSources([this.fetchData, this.meansDroughtByCountry1, this.meansAgricultureByCountry1]);
+      setTimeout(() => {
+        console.log('Merged Data:', this.mergedJSON);
+      }, 200);
+    }
+    forkJoin([
+      this.dataService.getRCPData(),
+      this.dataService.getDroughtData(),
+      this.dataService.getCropYieldData(),
+      this.dataService.getAgricultureData()
+    ]).subscribe(([rcpData, droughtData, cropYieldData, agricultureData]) => {
+      const property = 'SSP1_1p5_Score';
+      this.rcpData = this.rcpToJson(rcpData);
+      this.droughtData = this.rcpToJson(droughtData);
+      this.cropYieldData = this.rcpToJson(cropYieldData);
+      this.agricultureData = this.rcpToJson(agricultureData);
+    
+      // Now, you can merge the data
+      this.mergedJSON = this.mergeJsonSources([this.fetchData, this.calculateMeanByCountry(this.droughtData,property), this.calculateMeanByCountry(this.cropYieldData,property) ]);
+    
+      setTimeout(() => {
+       // console.log('Merged Data:', mergedData);
+      }, 200);
+    });
   }
 
   initChart(): void {
@@ -604,7 +638,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const currentLine = lines[i].split(',');
       const obj: any = {};
       for (let j = 0; j < headers.length; j++) {
-        const key = headers[j].trim() as keyof CsvData;
+                const key = headers[j].trim() as keyof CsvData;
         const value = currentLine[j] ? currentLine[j].trim() : '';
         obj[key] = value;
       }
@@ -677,8 +711,10 @@ export class MapComponent implements OnInit, OnDestroy {
       setTimeout(() => this.updateBubbleColor(), 200)
     }
     else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 2) {
-     if(this.selectedIndicators[0] === 'Drought intensity change (Water)'  && this.selectedIndicators[1] === 'Agriculture water Stress index (Land)' ||
-     this.selectedIndicators[1] === 'Drought intensity change (Water)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)'){
+     if((this.selectedIndicators[0] === 'Drought intensity change (Water)'  && this.selectedIndicators[1] === 'Agriculture water Stress index (Land)') ||
+    (this.selectedIndicators[1] === 'Drought intensity change (Water)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)')||
+     (this.selectedIndicators[0] === 'Drought intensity change (Water)'  && this.selectedIndicators[1] === 'Heat Index Event exposure (Energy)') ||
+    ( this.selectedIndicators[1] === 'Drought intensity change (Water)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)')){
       this.showMap = false;
       
       // this.updateShowMap(false);
@@ -689,12 +725,23 @@ export class MapComponent implements OnInit, OnDestroy {
     
     }
     else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 3) {
+      const expectedIndicators = [
+        'Drought intensity change (Water)',
+        'Agriculture water Stress index (Land)',
+        'Heat Index Event exposure (Energy)'
+      ];
+      
+      // Sort both arrays and compare
+      const sortedSelectedIndicators = this.selectedIndicators.slice().sort();
+      const sortedExpectedIndicators = expectedIndicators.slice().sort();
+      const indicatorsMatch = JSON.stringify(sortedSelectedIndicators) === JSON.stringify(sortedExpectedIndicators);
+      
+      if (indicatorsMatch) {
       this.showMap = false;
-      // this.updateShowMap(false);
       this.cdr.detectChanges();
       this.initializeMap();
 
-
+      }
 
     }
     else {
@@ -776,6 +823,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
  
   initializeMap() {
+  
     const mapchart = document.getElementById('mapchart');
     if (mapchart) {
       const styles = window.getComputedStyle(mapchart);
@@ -863,25 +911,46 @@ export class MapComponent implements OnInit, OnDestroy {
           sprite: container
         });
       });
-
-      for (let i = 0; i < this.mergedJSON?.length; i++) {
-        // console.log('this.mergedJSON',this.mergedJSON);
-        if (this.mergedJSON) {
-
+      console.log('this.mergedJSON',this.mergedJSON);
+      // for (let i = 0; i < this.mergedJSON?.length; i++) {
+         
+      //   if (this.mergedJSON) {
+      //     const d = this.mergedJSON[i];
+      //     pointSeries.data.push({
+      //       geometry: { type: 'Point', coordinates: [d.latitude, d.longitude] },
+      //       id:d.id,
+      //       title: d.Country,
+      //       value: d.Country,
+      //       mean: d.mean3,
+      //       mean1: d.mean1,
+      //       mean2: d.mean2
+      //     });
+      //   }
+      // }
+      if (this.mergedJSON) {
+        for (let i = 0; i < this.mergedJSON.length; i++) {
           const d = this.mergedJSON[i];
-          //   console.log('value of d is',this.mergedJSON);
-          pointSeries.data.push({
+      
+          // Assuming you have an array of mean values in the order you want
+          const meanValues = [d.mean1, d.mean2, d.mean3];
+      
+          const pointData:any = {
             geometry: { type: 'Point', coordinates: [d.latitude, d.longitude] },
-            id:d.id,
+            id: d.id,
             title: d.Country,
             value: d.Country,
-            mean: d.mean,
-            mean1: d.mean1,
-            mean2: d.mean2
-          });
+          };
+      
+          // Set mean values iteratively
+          for (let j = 0; j < meanValues.length; j++) {
+            pointData[`mean${j + 1}`] = meanValues[j];
+          }
+      
+          pointSeries.data.push(pointData);
         }
       }
     }
+     
   }
   getData() {
     let uniqueCountries: any;

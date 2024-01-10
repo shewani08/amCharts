@@ -212,41 +212,40 @@ export class MapChartComponent implements OnInit, AfterViewInit {
           height: 32,
           x: am5.percent(30),
           y: am5.percent(50),
-           dx:10*i,
-
+          dx: 10 * i,
           centerX: am5.percent(50),
           centerY: am5.percent(50),
-        //  text: "pie_chart"
-        src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
+          //  text: "pie_chart"
+          src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
         }))
-        
+
         
        
           
-      container.children.push(am5.Line.new(root, {
-        stroke: color,
-        dx:10*i,
-        height: -40,
-        strokeGradient: am5.LinearGradient.new(root, {
-          stops: [
-            { opacity: 2 },
-            { opacity: 2 },
-            { opacity: 0 }
-          ]
-        })
-      }));
-      }
+      // container.children.push(am5.Line.new(root, {
+      //   stroke: color,
+      //   dx:10*i,
+      //   height: -40,
+      //   strokeGradient: am5.LinearGradient.new(root, {
+      //     stops: [
+      //       { opacity: 2 },
+      //       { opacity: 2 },
+      //       { opacity: 0 }
+      //     ]
+      //   })
+      // }));
+       }
       return am5.Bullet.new(root, {
-       // sprite: container
-       sprite: am5.Picture.new(root, {
-                  width: 32,
-                  height: 32,
-                  x: am5.percent(30),
-                  y: am5.percent(50),
-                  centerX: am5.percent(50),
-                  centerY: am5.percent(50),
-                  src: "assests/Images/world.jpg"
-                })
+        sprite: container
+      //  sprite: am5.Picture.new(root, {
+      //             width: 32,
+      //             height: 32,
+      //             x: am5.percent(30),
+      //             y: am5.percent(50),
+      //             centerX: am5.percent(50),
+      //             centerY: am5.percent(50),
+      //             src: "assests/Images/world.jpg"
+      //           })
       });
     });
     // pointSeries.bullets.push(function (root, series, dataItem) {

@@ -124,6 +124,7 @@ export class MapComponent implements OnInit, OnDestroy {
   mpdiv: HTMLElement | null | undefined;
   showMap: boolean = true;
   root1: any;
+  waterIndexData: any=[];
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog, public mapService: DataService,
     private yearService: YearService, private previousEvntService: PreviousEvntService,
     private cdr: ChangeDetectorRef) {
@@ -372,11 +373,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private loadData(): void {
     if (!this.selectedYear) {
-      // this.dataService?.getCsvData()?.subscribe((csvData) => {
-      //   this.jsonData = this.csvToJson<CsvData>(csvData);
-      //   this.initChart();
-      //   setInterval(() => this.updateData(), 2000);
-      // });
       this.dataService?.getMigrantData()?.subscribe((csvData) => {
         this.jsonData = this.csvToJson<CsvData>(csvData);
         // console.log('default',this.jsonData);
@@ -401,7 +397,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
     }
     this.dataService.getRCPData().subscribe((rcp) => {
-      this.rcpData = this.rcpToJson(rcp);
+      this.waterIndexData = this.rcpToJson(rcp);
       const property = 'SSP1_1p5_Score';
       this.meansByCountry = this.calculateMeanByCountry(this.rcpData, property);
     })
@@ -735,7 +731,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const sortedSelectedIndicators = this.selectedIndicators.slice().sort();
       const sortedExpectedIndicators = expectedIndicators.slice().sort();
       const indicatorsMatch = JSON.stringify(sortedSelectedIndicators) === JSON.stringify(sortedExpectedIndicators);
-      
+      console.log('indicatorsMatch',indicatorsMatch);
       if (indicatorsMatch) {
       this.showMap = false;
       this.cdr.detectChanges();

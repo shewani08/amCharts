@@ -208,16 +208,14 @@ export class MapChartComponent implements OnInit, AfterViewInit {
       for (let i = 1; i <= 3; i++) {
         const radius = baseRadius + i * 5; 
         container.children.push(am5.Picture.new(root, {
-          width: 32,
-          height: 32,
-          x: am5.percent(30),
-          y: am5.percent(50),
+     
           dx: 10 * i,
-          centerX: am5.percent(50),
-          centerY: am5.percent(50),
+          width: 15,
+          height: 15,
+          centerX: am5.p50,
+          centerY: am5.p50,
           //  text: "pie_chart"
-          src: "https://www.amcharts.com/wp-content/uploads/assets/weather/animated/rainy-1.svg"
-        }))
+          src: i==1?"/assets/images/img1.jpeg":i==2?"/assets/images/img2.jpeg":"/assets/images/img3.jpeg"
 
         
        
@@ -233,7 +231,7 @@ export class MapChartComponent implements OnInit, AfterViewInit {
       //       { opacity: 0 }
       //     ]
       //   })
-      // }));
+       }));
        }
       return am5.Bullet.new(root, {
         sprite: container

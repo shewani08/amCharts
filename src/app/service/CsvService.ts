@@ -10,6 +10,9 @@ import { Observable } from 'rxjs';
 })
 export class CsvService {
   constructor(private http: HttpClient) { }
+  getCoordinate(): Observable<any> {
+    return this.http.get('assets/country_longitude_latitude.csv', { responseType: 'text' });
+  }
   getCsvData(): Observable<any> {
     return this.http.get('assets/ctydata.csv', { responseType: 'text' });
   }

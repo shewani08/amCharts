@@ -322,7 +322,7 @@ coordinateDetail():any{
     { name :'Algeira',longitude:-1.659626 , latitude:28.033886 },
     //{ name :'Libya',longitude:13.1913 , latitude:32.8872 },
     { name :this.mediator,latitude: mediatorCountry?.x, longitude: mediatorCountry?.y},
-   { name :'Italy',longitude:12.240456489308606 , latitude:43.08918192577643 },
+    { name :'Italy',longitude:12.240456489308606 , latitude:43.08918192577643 },
     { name :'United Kingdom',latitude: 51.509865, longitude: -0.118092},
     ]
     return cordinate;

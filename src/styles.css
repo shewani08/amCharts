@@ -7,10 +7,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #year-option {
     position: relative;
     top: -18%;
-    right: -18%;
+    right: -2%;
     .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled{
     z-index:9999 !important;
     }
+    
     .mat-mdc-text-field-wrapper {
         width: 82%;
         height: 50px;
@@ -22,6 +23,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
         background-color: #fff;
     }
 }
+
 ::ng-deep .mat-ripple-element {
     display: none !important;
   }
+
+  #migrant-option {
+   /* position: relative; */
+    /* top: -18%;
+    right: -2%; */
+    height:70px;
+    .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled{
+    z-index:9999 !important;
+    background-color: #fff !important;
+    }
+    
+}

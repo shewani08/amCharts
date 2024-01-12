@@ -65,6 +65,8 @@ export class MigrantDetailComponent {
 
  constructor(private dataService: CsvService,  private mapdataService: DataService,private cdr: ChangeDetectorRef,
   private dialog: MatDialog) {}
+  selectedYear= '2030';
+  predicatedVal=97079;
 
   ngOnInit() {
     this.dataService.getCropYieldData().subscribe((rcp) => {
@@ -149,22 +151,22 @@ export class MigrantDetailComponent {
 
   onMigrationPanelOpened() {
     this.migrationPanelOpenState = true;
-    this.summaryPanelOpenState = false; // Close other panels if needed
+    this.summaryPanelOpenState = false; 
     this.regionPanelOpenState = false;
   }
 
   onMigrationPanelClosed() {
-    // Handle any actions when the Migration panel is closed
+    
   }
 
   onSummaryPanelOpened() {
     this.migrationPanelOpenState = false;
     this.summaryPanelOpenState = true;
-    this.regionPanelOpenState = false; // Close other panels if needed
+    this.regionPanelOpenState = false; 
   }
 
   onSummaryPanelClosed() {
-    // Handle any actions when the Summary panel is closed
+ 
   }
 
   onRegionPanelOpened() {
@@ -174,7 +176,7 @@ export class MigrantDetailComponent {
   }
 
   onRegionPanelClosed() {
-    // Handle any actions when the Region panel is closed
+  
   }
   private rcpToJson<T>(data: string): T[] {
     const lines = data.split('\n');
@@ -214,14 +216,12 @@ export class MigrantDetailComponent {
     console.log('opendialog');
     const dialogRef = this.dialog.open(MigrantDialogComponent,{
       data: this.migrantData,
-      width: '800px', // Set the width
-      height: '400px', // Set the height
+      width: '800px', 
+      height: '400px', 
     });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log('Dialog closed:', result);
-    // });
-  }
-
-
 }
+  onYearSelected(e:any){
+    console.log('value of e is',e);
+    if(e.value === '2050')
+    this.predicatedVal=79806;
+  }}

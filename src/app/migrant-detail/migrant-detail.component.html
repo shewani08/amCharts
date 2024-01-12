@@ -14,7 +14,14 @@
             <b>Overall Migration (2018-2023):&nbsp;<a href="#" (click)="openDialog()">{{totalMig}}</a></b>
           </div>
           <div *ngIf="rcpData">
-            <div><h2><b>Predicted Irregular Migration (2030):</b>&nbsp;{{97079}}</h2></div>
+            <div><h2><b>Predicted Irregular Migration  
+              <mat-form-field id="migrant-option" *ngIf="rcpData && dataSource.length">
+              <mat-label>Select a year</mat-label>
+              <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearSelected($event)">
+                <mat-option value="2030" selected>2030</mat-option>
+                <mat-option value="2050">2050</mat-option>
+              </mat-select>
+            </mat-form-field>:</b>&nbsp;{{this.predicatedVal}}</h2></div>
           </div>
             <!-- <div><b>Predicted migration-:</b> &nbsp;{{totalMig}} </div> -->
             

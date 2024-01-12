@@ -4,7 +4,7 @@
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{ health || 'Health' }}
+          {{ selectedHealth || 'Health' }}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
           <a class="dropdown-item" href="#" (click)="selectHealth('Low Health Vulnerability')">Low Health Vulnerability</a>

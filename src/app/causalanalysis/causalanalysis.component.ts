@@ -15,9 +15,7 @@ type DropdownOptions = { [key: string]: string[] };
   styleUrls: ['./causalanalysis.component.css']
 })
 export class CausalAnalysisComponent implements OnInit {
-selectHealth(arg0: string) {
-throw new Error('Method not implemented.');
-}
+
   health: string | undefined;
   circles = [
     "Inflation",
@@ -31,6 +29,7 @@ throw new Error('Method not implemented.');
   selectedValues: SelectedValues = {};
   dropdownOptions: DropdownOptions = {};
   circleColors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+  selectedHealth: string ='';
   ngOnInit(): void {
     //selectHealth(type:string){
      //this.health=type;
@@ -127,8 +126,9 @@ throw new Error('Method not implemented.');
   selectOption(circle: string, option: string): void {
     this.selectedValues[circle] = option;
   }
-}
-  function selectHealth(type: any, string: any) {
-    throw new Error('Function not implemented.');
+
+  selectHealth(val:string) {
+    this.selectedHealth=val;
   }
+}
 

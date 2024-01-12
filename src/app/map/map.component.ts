@@ -88,8 +88,8 @@ export class MapComponent implements OnInit, OnDestroy {
   countryNames = [
     'Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cameroon', 'Central African Republic',
     'Chad', 'Comoros', 'Congo', 'Côte d\'Ivoire', 'Djibouti', 'DR Congo', 'Egypt', 'Equatorial Guinea', 'Eritrea', 'Eswatini',
-    'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Kenya', 'Lesotho', 'Liberia', 'Libya', 'Madagascar',
-    'Malawi', 'Mali', 'Mauritania', 'Mauritius', 'Morocco', 'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda', 'Sao Tome & Principe',
+    'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Kenya', 'Lesotho', 'Liberia', 'Libya', 
+    'Malawi', 'Mali', 'Mauritania',  'Morocco', 'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda', 'Sao Tome & Principe',
     'Senegal', 'Seychelles', 'Sierra Leone', 'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Tanzania', 'Togo', 'Tunisia', 'Uganda',
     'Zambia', 'Zimbabwe'
   ];
@@ -951,8 +951,8 @@ export class MapComponent implements OnInit, OnDestroy {
           let tooltip = `${name}-mean${i}`;
          const circle = am5.Picture.new(root1, {
             dx: 12 * i,
-            width: 12,
-            height: 12,
+            width: 18,
+            height: 18,
             centerX: am5.p50,
             centerY: am5.p50,
             tooltipText:`{name${i}}-{mean${i}}`,

@@ -16,60 +16,60 @@
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{'Inflation'}}
+          {{selectedInflation ||'Inflation'}}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >Negative Inflation</a>
-            <a class="dropdown-item" href="#" >Less than 5% Inflation</a>
-            <a class="dropdown-item" href="#" >Between 5-20% Inflation</a>
-            <a class="dropdown-item" href="#" >Between 20-30% Inflation</a>
-            <a class="dropdown-item" href="#" >More than 30% Inflation</a>
+            <a class="dropdown-item" href="#" (click)="selectInflation('Negative Inflation')">Negative Inflation</a>
+            <a class="dropdown-item" href="#"(click)="selectInflation('Less than 5% Inflation')" >Less than 5% Inflation</a>
+            <a class="dropdown-item" href="#" (click)="selectInflation('Between 5-20% Inflation')">Between 5-20% Inflation</a>
+            <a class="dropdown-item" href="#"(click)="selectInflation('Between 20-30% Inflation')" >Between 20-30% Inflation</a>
+            <a class="dropdown-item" href="#"(click)="selectInflation('More than 30% Inflation')" >More than 30% Inflation</a>
           </div>
       </div>
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{'Economic'}}
+          {{selectedEconomic ||'Economic'}}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >Low Economic Readiness</a>
-            <a class="dropdown-item" href="#" >Medium Economic Readiness</a>
-            <a class="dropdown-item" href="#" >High Economic Readiness</a>
+            <a class="dropdown-item" href="#"(click)="selectEconomic('Low Economic Readiness')">Low Economic Readiness</a>
+            <a class="dropdown-item" href="#"(click)="selectEconomic('Medium Economic Readiness')" >Medium Economic Readiness</a>
+            <a class="dropdown-item" href="#"(click)="selectEconomic('High Economic Readiness')" >High Economic Readiness</a>
             </div>
       </div>
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{'Political'}}
+          {{selectedPolitical ||'Political'}}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >Low Political Stability</a>
-            <a class="dropdown-item" href="#" >Medium Political Stability</a>
-            <a class="dropdown-item" href="#" >High Political Stability</a>
-            </div>
-      </div>
-
-      <div class="dropdown mr-auto show-stress">
-        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          {{'Food & Water'}}
-        </button>
-        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >Low Political Stability</a>
-            <a class="dropdown-item" href="#" >Medium Political Stability</a>
-            <a class="dropdown-item" href="#" >High Political Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectPolitical('Low Political Stability')" >Low Political Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectPolitical('Low Political Stability')" >Medium Political Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectPolitical('Low Political Stability')" >High Political Stability</a>
             </div>
       </div>
 
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{'Social'}}
+          {{selectedFoodwater ||'Food & Water'}}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >Low Social Stability</a>
-            <a class="dropdown-item" href="#" >Medium Social Stability</a>
-            <a class="dropdown-item" href="#" >High Social Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectFoodwater('Limited Access')" >Limited Access</a>
+            <a class="dropdown-item" href="#"(click)="selectFoodwater('Average')" >Average</a>
+            <a class="dropdown-item" href="#"(click)="selectFoodwater('Readily Available')" >Readily Available</a>
+            </div>
+      </div>
+
+      <div class="dropdown mr-auto show-stress">
+        <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{selectedSocial||'Social'}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+            <a class="dropdown-item" href="#"(click)="selectSocial('Low Social Stability')">Low Social Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectSocial('Medium Social Stability')">Medium Social Stability</a>
+            <a class="dropdown-item" href="#"(click)="selectSocial('High Social Stability')">High Social Stability</a>
             </div>
       </div>
       <div class="dropdown mr-auto show-right-country">
@@ -86,11 +86,11 @@
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          {{ 'RCP Senario' }}
+          {{ selectedYear ||'year' }}
         </button>
         <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-            <a class="dropdown-item" href="#" >'2030'</a>
-            <a class="dropdown-item" href="#" >'2050'</a>
+            <a class="dropdown-item" href="#"(click)="selectYear('2030')" >'2030'</a>
+            <a class="dropdown-item" href="#"(click)="selectYear('2050')" >'2050'</a>
           <!-- <a class="dropdown-item" href="#" (click)="selectYear('2030')">'2030'</a> -->
           <!-- <a class="dropdown-item" href="#" (click)="selectYear('2050')">'2050'</a> -->
        
@@ -102,8 +102,8 @@
       <app-causalanalysis-data></app-causalanalysis-data>
     </div>
     </div>
-    <div id="chartdiv1" style="width: 75vw; height: 500px;"></div>
-  
+    <!-- <div id="chartdiv1" style="width: 75vw; height: 500px;"></div>
+   -->
     <!-- <div class="circle-container">
         <div *ngFor="let color of circleColors" class="circle" [style.background-color]="color"></div>
       </div> -->

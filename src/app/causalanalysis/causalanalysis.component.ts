@@ -31,8 +31,15 @@ throw new Error('Method not implemented.');
   ];
   selectedValues: SelectedValues = {};
   dropdownOptions: DropdownOptions = {};
-  circleColors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+  //circleColors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
   selectedHealth: string ='';
+  selectedInflation: string ='';
+  selectedEconomic: string ='';
+  selectedPolitical: string ='';
+  selectedFoodwater:string = '';
+  selectedSocial: string = '';
+  selectedYear: string = '';
+  
 countryNames: any;
   ngOnInit(): void {
     //selectHealth(type:string){
@@ -44,95 +51,116 @@ countryNames: any;
       am5themes_Animated.new(root)
     ]);
 
-    let data: { value: number; children: { name: string; value: number }[] } = {
-      value: 0,
-      children: []
-    };
+    // let data: { value: number; children: { name: string; value: number }[] } = {
+    //   value: 0,
+    //   children: []
+    // };
 
-    for (let i = 0; i < this.circles.length; i++) {
-      data.children.push({ name: this.circles[i], value: Math.random() * 20 + 1 });
-    }
+    // for (let i = 0; i < this.circles.length; i++) {
+    //   data.children.push({ name: this.circles[i], value: Math.random() * 20 + 1 });
+    // }
 
-    let container = root.container.children.push(
-      am5.Container.new(root, {
-        width: am5.percent(100),
-        height: am5.percent(100),
-        layout: root.horizontalLayout,
-      })
-    );
+    // let container = root.container.children.push(
+    //   am5.Container.new(root, {
+    //     width: am5.percent(100),
+    //     height: am5.percent(100),
+    //     layout: root.horizontalLayout,
+    //   })
+    // );
 
-    let series = container.children.push(
-      am5hierarchy.ForceDirected.new(root, {
-        singleBranchOnly: false,
-        downDepth: 2,
-        topDepth: 1,
-        initialDepth: 1,
-        maxRadius: 60,
-        minRadius: 20,
-        valueField: "value",
-        categoryField: "name",
-        childDataField: "children",
-        manyBodyStrength: -13,
-        centerStrength: 0.8
-      })
-    );
+    // let series = container.children.push(
+    //   am5hierarchy.ForceDirected.new(root, {
+    //     singleBranchOnly: false,
+    //     downDepth: 2,
+    //     topDepth: 1,
+    //     initialDepth: 1,
+    //     maxRadius: 60,
+    //     minRadius: 20,
+    //     valueField: "value",
+    //     categoryField: "name",
+    //     childDataField: "children",
+    //     manyBodyStrength: -13,
+    //     centerStrength: 0.8
+    //   })
+    // );
 
-    (series.get("colors") as any).setAll({
-      step: 1
-    });
+    // (series.get("colors") as any).setAll({
+    //   step: 1
+    // });
 
-    series.links.template.setAll({
-      strokeWidth: 2
-    });
+    // series.links.template.setAll({
+    //   strokeWidth: 2
+    // });
 
-    series.nodes.template.setAll({
-      tooltipText: undefined,
-      cursorOverStyle: "pointer",
-    });
+    // series.nodes.template.setAll({
+    //   tooltipText: undefined,
+    //   cursorOverStyle: "pointer",
+    // });
 
-    let selectedDataItem: any | undefined;
+    // let selectedDataItem: any | undefined;
 
-    series.nodes.template.events.on("click", function (e: any) {
-      if (selectedDataItem) {
-        let targetDataItem = e.target?.dataItem;
-        if (targetDataItem && e.target?.dataItem == selectedDataItem) {
-          selectedDataItem.get("outerCircle").setPrivate("visible", false);
-          selectedDataItem = undefined;
-        } else {
-          if (targetDataItem && series.areLinked(selectedDataItem, targetDataItem)) {
-            series.unlinkDataItems(selectedDataItem, targetDataItem);
-          } else {
-            if (targetDataItem) {
-              series.linkDataItems(selectedDataItem, targetDataItem, 0.2);
-            }
-          }
-        }
-      } else {
-        let targetDataItem = e.target?.dataItem;
-        if (targetDataItem) {
-          selectedDataItem = targetDataItem;
-          selectedDataItem.get("outerCircle").setPrivate("visible", true);
-        }
-      }
-    });
+    // series.nodes.template.events.on("click", function (e: any) {
+    //   if (selectedDataItem) {
+    //     let targetDataItem = e.target?.dataItem;
+    //     if (targetDataItem && e.target?.dataItem == selectedDataItem) {
+    //       selectedDataItem.get("outerCircle").setPrivate("visible", false);
+    //       selectedDataItem = undefined;
+    //     } else {
+    //       if (targetDataItem && series.areLinked(selectedDataItem, targetDataItem)) {
+    //         series.unlinkDataItems(selectedDataItem, targetDataItem);
+    //       } else {
+    //         if (targetDataItem) {
+    //           series.linkDataItems(selectedDataItem, targetDataItem, 0.2);
+    //         }
+    //       }
+    //     }
+    //   } else {
+    //     let targetDataItem = e.target?.dataItem;
+    //     if (targetDataItem) {
+    //       selectedDataItem = targetDataItem;
+    //       selectedDataItem.get("outerCircle").setPrivate("visible", true);
+    //     }
+    //   }
+    // });
 
-    series.data.setAll([data]);
-    series.set("selectedDataItem", series.dataItems[0]);
+    // series.data.setAll([data]);
+    // series.set("selectedDataItem", series.dataItems[0]);
 
-    this.circles.forEach((circle: string) => {
-      // this.dropdownOptions[circle] = this.getDropdownOptions(circle);
-      this.selectedValues[circle] = this.dropdownOptions[circle][0];
-    });
+    // this.circles.forEach((circle: string) => {
+    //   // this.dropdownOptions[circle] = this.getDropdownOptions(circle);
+    //   this.selectedValues[circle] = this.dropdownOptions[circle][0];
+    // });
   }
 
   
 
-  selectOption(circle: string, option: string): void {
-    this.selectedValues[circle] = option;
-  }
+  // selectOption(circle: string, option: string): void {
+  //   this.selectedValues[circle] = option;
+  // }
 
   selectHealth(val:string) {
     this.selectedHealth=val;
   }
+  selectInflation(val:string){
+  this.selectedInflation= val;
+}
+selectEconomic(val:string){
+  this.selectedEconomic=val;
+}
+
+selectPolitical(val:string){
+  this.selectedPolitical =val;
+}
+
+selectFoodwater(val:string){
+  this.selectedFoodwater=val;
+}
+
+selectSocial(val:string){
+  this.selectedSocial=val;
+}
+selectYear(val:string){
+  this.selectedYear=val;
+}
 }
 

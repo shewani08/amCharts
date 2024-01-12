@@ -15,6 +15,9 @@ type DropdownOptions = { [key: string]: string[] };
   styleUrls: ['./causalanalysis.component.css']
 })
 export class CausalAnalysisComponent implements OnInit {
+selectCountry(_t44: any) {
+throw new Error('Method not implemented.');
+}
 
   health: string | undefined;
   circles = [
@@ -30,6 +33,7 @@ export class CausalAnalysisComponent implements OnInit {
   dropdownOptions: DropdownOptions = {};
   circleColors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
   selectedHealth: string ='';
+countryNames: any;
   ngOnInit(): void {
     //selectHealth(type:string){
      //this.health=type;

@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./causalanalysis-data.component.css']
 })
 export class CausalanalysisDataComponent {
-
+  showPanel: boolean = false;
+  displayData(){
+    this.showPanel = true;
+  }
 }

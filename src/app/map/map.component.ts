@@ -5,7 +5,6 @@ import { CsvService } from '../service/CsvService';
 import * as am5 from '@amcharts/amcharts5';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5map from '@amcharts/amcharts5/map';
-
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldChinaHigh';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -137,27 +136,17 @@ export class MapComponent implements OnInit, OnDestroy {
   waterIndexData: any=[];
   temperaturData: any=[];
   meansTemparatureByCountry: Result|undefined;
+  means: any;
+  polygonImgSeries: any;
+  map: am5map.MapChart | undefined;
+  mapheatLegend: any;
 
   constructor(private http: HttpClient, private dataService: CsvService, public dialog: MatDialog, public mapService: DataService,
     private yearService: YearService, private previousEvntService: PreviousEvntService,
     private cdr: ChangeDetectorRef) {
-      this.dataService.getCoordinate().subscribe((rcp) => {
-        this.fetchData = this.rcpToJson(rcp);
-       
-      })
-    // this.dataService.getDroughtData().subscribe((rcp) => {
-    //   this.droughtData1 = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansDroughtByCountry1 = this.calculateMeanByCountry(this.droughtData1, property);
-    //  // this.mergedDroughtJSON = this.mergeTwoJson(this.fetchData, this.meansDroughtByCountry1, 'mean1');
-    // })
-    // this.dataService.getAgricultureData().subscribe((rcp) => {
-    //   this.agricultureData1 = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansAgricultureByCountry1 = this.calculateMeanByCountry(this.agricultureData1, property);
-    //   if (this.mergedDroughtJSON && this.meansAgricultureByCountry1){}
-     
-    // })
+    this.dataService.getCoordinate().subscribe((rcp) => {
+      this.fetchData = this.rcpToJson(rcp);
+    })
   }
 
   ngOnInit(): void {
@@ -165,26 +154,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.selectedYear = year;
       this.loadData();
     });
-   
-  }
-  mergeTwoJson(src1: any, src2: { [x: string]: any; }, meanType: string) {
-    const mergedData = [];
-    if (src1 && src2)
-      for (const entry of src1) {
-        const countryName = entry.Country;
-        if (src2[countryName]) {
-          const mergedEntry = { ...src2[countryName], ...entry };
-          for (const prop in src2[countryName]) {
-            if (mergedEntry.hasOwnProperty(prop) && prop !== "Country") {
-              const renamedProp = meanType;
-              mergedEntry[renamedProp] = src2[countryName][prop];
-              delete mergedEntry[prop];
-            }
-          }
-          mergedData.push(mergedEntry);
-        }
-      }
-    return mergedData;
   }
 
   mergeJsonSources(sources: any[]) {
@@ -251,13 +220,10 @@ export class MapComponent implements OnInit, OnDestroy {
         // x:-10,
         y: 60
       }));
-      // console.log('heatLegend', this.heatLegend);
-
       this.heatLegend?.startLabel.setAll({
         fontSize: 12,
         fill: this.heatLegend.get("startColor")
       });
-
       this.heatLegend?.endLabel.setAll({
         fontSize: 12,
         fill: this.heatLegend.get("endColor")
@@ -276,8 +242,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
             } else if (countryEntry?.length && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Crop yield change (Land)' ||
               this.selectedIndicators[0] === 'Agriculture water Stress index (Land)')) {
-              polygon.set("fill", am5.color(getColorForLand(countryEntry[1])));
-              
+              polygon.set("fill", am5.color(getColorForLand(countryEntry[1]))); 
             } 
             else if (countryEntry?.length && this.selectedIndicators?.length == 1 && (this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)')) {
               polygon.set("fill", am5.color(getColorForHeat(countryEntry[1])));
@@ -288,19 +253,8 @@ export class MapComponent implements OnInit, OnDestroy {
         });
       }
     }
-    // this.initChart1();
+  }
 
-  }
-  callGradient() {
-    let gradient = am5.LinearGradient.new(this.root, {
-      stops: [{
-        color: am5.color(0xFF621F)
-      }, {
-        color: am5.color(0x946B49)
-      }]
-    });
-    return gradient;
-  }
   updateHeatLegendEndColor(selectedIndicators: string[]) {
     if (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
@@ -314,14 +268,13 @@ export class MapComponent implements OnInit, OnDestroy {
         return am5.color(0x752201);
       
     }
-    return null;
+    return am5.color("#000000");;
   }
+
   updateHeatLegendStartColor(selectedIndicators: string[]) {
     if (this.selectedIndicators[0] === 'Water index stress (Water)'
       || this.selectedIndicators[0] === 'Drought intensity change (Water)') {
-
       return am5.color(0xB41404);
-
     }
     else if (this.selectedIndicators[0] === 'Crop yield change (Land)' || this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return am5.color(0x752201);
@@ -329,8 +282,9 @@ export class MapComponent implements OnInit, OnDestroy {
     else if (this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return am5.color(0x752201);
     }
-    return null;
+    return am5.color("#000000");;;
   }
+
   private updateDefaultColor(): void {
     if (this.chart && this.chart.series.length > 0) {
       this.heatLegend?.hide();
@@ -341,28 +295,27 @@ export class MapComponent implements OnInit, OnDestroy {
         });
       }
     }
-
   }
 
-  private updateGradientColor(): void {
-    if (this.chart && this.chart.series.length > 0) {
-      this.heatLegend?.hide();
-      const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
-      if (polygonSeries) {
-        this.polygonSeries.mapPolygons.each((polygon: any) => {
-          const gradient = am5.LinearGradient.new(this.root, {
-            stops: [
-              { color: am5.color(0xFF621F) },
-              { color: am5.color(0x946B49) }
-            ]
-          });
+  // private updateGradientColor(): void {
+  //   if (this.chart && this.chart.series.length > 0) {
+  //     this.heatLegend?.hide();
+  //     const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
+  //     if (polygonSeries) {
+  //       this.polygonSeries.mapPolygons.each((polygon: any) => {
+  //         const gradient = am5.LinearGradient.new(this.root, {
+  //           stops: [
+  //             { color: am5.color(0xFF621F) },
+  //             { color: am5.color(0x946B49) }
+  //           ]
+  //         });
 
-          polygon.color = gradient;
-        });
-      }
-    }
+  //         polygon.color = gradient;
+  //       });
+  //     }
+  //   }
 
-  }
+  // }
 
   private calculateMeanByCountry(data: Entry[], property: string,name:string) {
     const result: Result = {};
@@ -384,7 +337,6 @@ export class MapComponent implements OnInit, OnDestroy {
     if (!this.selectedYear) {
       this.dataService?.getMigrantData()?.subscribe((csvData) => {
         this.jsonData = this.csvToJson<CsvData>(csvData);
-        // console.log('default',this.jsonData);
         this.initChart();
         setInterval(() => this.updateData(), 2000);
       });
@@ -394,7 +346,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.previousData = this.jsonData.find((country: { Country: any; }) => country.Country === this.previousEvent.dataContext.name);
         this.previousEvntService.setPreviousEvent(this.previousData);
         this.setDataBubble();
-        // this.openDialog(this.previousData);
       })
 
     } else {
@@ -405,34 +356,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setDataBubble();
       })
     }
-    // this.dataService.getRCPData().subscribe((rcp) => {
-    //   this.waterIndexData = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansByCountry = this.calculateMeanByCountry(this.waterIndexData, property,'Water index stress (Water)');
-    // })
-    // this.dataService.getDroughtData().subscribe((rcp) => {
-    //   this.droughtData = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansDroughtByCountry = this.calculateMeanByCountry(this.droughtData, property,'Drought intensity change (Water)');
-    // })
-    // this.dataService.getCropYieldData().subscribe((rcp) => {
-    //   this.cropYieldData = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansCropYieldByCountry = this.calculateMeanByCountry(this.cropYieldData, property,'Crop yield change (Land)');
-    // })
-    // this.dataService.getAgricultureData().subscribe((rcp) => {
-    //   this.agricultureData = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property,'Agriculture water Stress index (Land)');
-    //    console.log('this.meansAgricultureByCountry ',this.meansAgricultureByCountry );
-    // })
-    // this.dataService.getTemperatureData().subscribe((rcp) => {
-    //   this.temperaturData = this.rcpToJson(rcp);
-    //   const property = 'SSP1_1p5_Score';
-    //   this.meansTemparatureByCountry = this.calculateMeanByCountry(this.temperaturData, property,'Agriculture water Stress index (Land)');
-    //    console.log('this.meansAgricultureByCountry ',this.meansAgricultureByCountry );
-    // })
-   
     forkJoin([
       this.dataService.getRCPData(),
       this.dataService.getDroughtData(),
@@ -446,8 +369,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.cropYieldData = this.rcpToJson(cropYieldData);
       this.agricultureData = this.rcpToJson(agricultureData);
       this.temperaturData = this.rcpToJson(temperaturData);
-    
-      // Now, you can merge the data
+ 
       this.meansByCountry = this.calculateMeanByCountry(this.rcpData, property,'Water index stress (Water)');
       this.meansDroughtByCountry = this.calculateMeanByCountry(this.droughtData, property,'Drought intensity change (Water)');
       this.meansCropYieldByCountry = this.calculateMeanByCountry(this.cropYieldData, property,'Crop yield change (Land)');
@@ -460,19 +382,14 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   initChart(): void {
-
     this.chartdiv = document.getElementById('chartdiv');
-
     if (!this.chartdiv) {
       console.error('Chart container element not found!');
       return;
     }
-
     if (this.chart) {}
-
     if (this.root) {
-      this.root.dispose();}
-
+    this.root.dispose();}
     this.root = am5.Root.new(this.chartdiv);
     this.root.setThemes([am5themes_Animated.new(this.root)]);
     this.chart = this.root.container.children.push(am5map.MapChart.new(this.root, {}));
@@ -498,7 +415,6 @@ export class MapComponent implements OnInit, OnDestroy {
         polygonIdField: 'id'
       })
     );
-
     const circleTemplate = am5.Template.new({});
     let colorset = am5.ColorSet.new(this.root, {});
     if (!this.selectedIndicators.length || this.selectedIndicators.length === 1)
@@ -513,7 +429,6 @@ export class MapComponent implements OnInit, OnDestroy {
               tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
             }, circleTemplate as any)
           );
-
         const countryLabel = container.children.push(
           am5.Label.new(root, {
             text: '{name}',
@@ -526,7 +441,6 @@ export class MapComponent implements OnInit, OnDestroy {
             fontFamily: "segoe ui symbol"
           })
         );
-
         const valueLabel = document.createElement('div');
         valueLabel.style.fontSize = '12px';
         valueLabel.style.position = 'absolute';
@@ -538,9 +452,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
         });
         this.dataClickedEvent();
-        // this.circle.events.on("click", (event:any) => {
-        //   this.openDialog(event.target.dataItem);
-        // });
         return am5.Bullet.new(root, {
           sprite: container,
           dynamic: true
@@ -587,14 +498,59 @@ export class MapComponent implements OnInit, OnDestroy {
     }]);
     this.polygonSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
   }
+  public setupHeatLegendMap(data: any) {
+    this.mapheatLegend =  this.map?.children.push(am5.HeatLegend.new(this.map?.root, {
+      orientation: "vertical",
+      endColor: this.updateHeatLegendStartColor(this.selectedIndicators),
+      startColor: this.updateHeatLegendEndColor(this.selectedIndicators),
+      startText: this.updateHeatLegendStartText(this.selectedIndicators),
+      endText: this.updateHeatLegendEndText(this.selectedIndicators),
+      stepCount: 3
+    }));
+    
+    this.mapheatLegend?.startLabel.setAll({
+      fontSize: 12,
+      fill: this.mapheatLegend.get("startColor")
+    });
+    
+    this.mapheatLegend?.endLabel.setAll({
+      fontSize: 12,
+      fill: this.mapheatLegend.get("endColor")
+    });
+    this.polygonImgSeries.set("heatRules", [{
+      target: this.polygonSeries.mapPolygons.template,
+      dataField: "value",
+      min: am5.color(0xff621f),
+      max: am5.color(0x661f00),
+      key: "fill"
+    }]);
+    this.polygonImgSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
+    
+    
+  }
+  // onMapPolygonPointerOverMap(ev: any) {
+  //   let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
+  
+  //   let countryMeanPairs: any;
+  //   let countryEntry;
+  //   const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
+  //   if (data) {
+  //     countryMeanPairs = Object.entries(data).map(
+  //       ([country, data]) => [country, data.mean || 0]
+  //     );
+  //   }
+  //   if (countryMeanPairs?.length) {
+  //     countryEntry = countryMeanPairs?.find(([country]: [string, number]) => country === countryDetail);
+  //   }
+  //   if (countryEntry !== undefined && countryEntry[1] && countryEntry[1]!== null){ 
+  //     this.mapheatLegend?.showValue(countryEntry[1]);
+  //   }
 
+  // }
   onMapPolygonPointerOver(ev: any) {
     let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
-  
     let countryMeanPairs: any;
     let countryEntry;
-    //const data: { [key: string]: CountryData } | undefined = this.meansByCountry;
-    // const data: { [key: string]: CountryData } | undefined = this.meansDroughtByCountry;
     const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
 
     if (data) {
@@ -608,22 +564,12 @@ export class MapComponent implements OnInit, OnDestroy {
    
     if (countryEntry !== undefined && countryEntry[1] && countryEntry[1]!== null){ 
       this.heatLegend?.showValue(countryEntry[1]);
+      this.mapheatLegend?.showValue(countryEntry[1]);
     }
      
   }
 
   selectedIndicatorData(): any {
-    // if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Water index stress (Water)') {
-    //   return this.meansByCountry;
-    // } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
-    //   return this.meansDroughtByCountry;
-    // } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Crop yield change (Land)') {
-    //   return this.meansCropYieldByCountry;
-    // } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
-    //   return this.meansAgricultureByCountry;
-    // }else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length === 1 && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
-    //   return this.meansTemparatureByCountry;
-    // }
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountry;
     } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
@@ -755,6 +701,7 @@ export class MapComponent implements OnInit, OnDestroy {
       
       this.mergedJSON = this.mergeJsonSources([this.fetchData, ...selectedDataSources]);
       this.cdr.detectChanges();
+      if(this.mergedJSON)
       this.initializeMap();
     // }
      // this.updateShowMap(true);
@@ -874,11 +821,11 @@ export class MapComponent implements OnInit, OnDestroy {
         calculateAggregates: true,
         polygonIdField: 'id'
       })
-      const map = this.root1.container.children.push(
+      this.map = this.root1.container.children.push(
         am5map.MapChart.new(this.root1, {
         })
       );
-      const polygonSeries = map.series.push(
+      this.polygonImgSeries = this.map?.series.push(
         am5map.MapPolygonSeries.new(this.root1, {
           geoJSON: am5geodata_worldLow,
           exclude: ['antarctica'],
@@ -893,12 +840,10 @@ export class MapComponent implements OnInit, OnDestroy {
       );  
       
       setTimeout(() => {
-        polygonSeries?.mapPolygons?.each((polygon: any) => {
+        this.polygonImgSeries?.mapPolygons?.each((polygon: any) => {
           let countryMeanPairs: [string, number][] = [];
           const dataContext = polygon.dataItem?.dataContext;
-        
           const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
-        
           if (data) {
             countryMeanPairs = Object.entries(data).map(
               ([country, data]) => [country, data.mean || 0]
@@ -907,7 +852,6 @@ export class MapComponent implements OnInit, OnDestroy {
               ([country, data]) => ({ id: country, value: data.mean || 0 })
             );
           }
-        
           if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
             const countryName = dataContext.name;
             const countryEntry = countryMeanPairs?.find(([country]) => country === countryName);
@@ -926,62 +870,18 @@ export class MapComponent implements OnInit, OnDestroy {
         });
     }, 100);
    //   this.mapchart?.set("zoomLevel", 1);
-      const pointSeries = map.series.push(
+      const pointSeries = this.map?.series.push(
         am5map.MapPointSeries.new(this.root1, {
           polygonIdField: "id"
         })
       );
-      const colorSet = am5.ColorSet.new(this.root1, { step: 2 });
-      pointSeries.bullets.push( (root1: am5.Root, series: any, dataItem: any) => {
-        // const mean = dataItem.dataContext.mean || 0;
-        // const mean1 = dataItem.dataContext.mean1 || 0;
-        // const mean2 = dataItem.dataContext.mean2 || 0;
-        // const maxMean = Math.max(mean, mean1, mean2);
-        const container = am5.Container.new(root1, {
-        //  polygonIdField: "id"
-        });
-        const color = colorSet.next();
-        const baseRadius = 5;
-        for (let i = 1; i <= this.selectedIndicators.length; i++) {
-          let radius = i * 5;
-          let indicator = this.selectedIndicators[i-1];
-          let words = indicator.split(' ');
-          let lastWord = words[words.length - 1].replace('(','').replace(')', '');
-          let src =`/assets/images/${lastWord.toLowerCase()}.jpeg`;
-          let tooltip = `${name}-mean${i}`;
-         const circle = am5.Picture.new(root1, {
-            dx: 12 * i,
-            width: 12,
-            height: 12,
-            centerX: am5.p50,
-            centerY: am5.p50,
-            tooltipText:`{name${i}}-{mean${i}}`,
-           // tooltipText: i == 1 ? 'Drought-{mean${i}}' : i == 2 ? 'Water-{mean2}' : 'Agriculture-{mean1}',
-            src:src
-          //  src: i == 1 ? "/assets/images/img1.jpeg" : i == 2 ? "/assets/images/img2.jpeg" : "/assets/images/img3.jpeg"
-          });
-          const label =am5.Label.new(root1, {
-            centerX: am5.p50,
-            centerY: am5.p50,
-            text: "{title}",
-            populateText: true
-          })
-          container.set("interactive", true);
-          container.children.push(circle);
-          container.children.push(label);
-        }
-        return am5.Bullet.new(root1, {
-          sprite: container
-        });
-      });
-      
-      console.log('this.mergedJSON',this.mergedJSON);
       if (this.mergedJSON) {
         for (let i = 0; i < this.mergedJSON.length; i++) {
           const d = this.mergedJSON[i];
       
           // Assuming you have an array of mean values in the order you want
           const meanValues = [d.mean1, d.mean2, d.mean3,d.mean4,d.mean5];
+          this.means= meanValues;
           const nameValues=[d.name1,d.name2,d.name3,d.name4,d.name5]
       
           const pointData:any = {
@@ -999,12 +899,88 @@ export class MapComponent implements OnInit, OnDestroy {
             pointData[`name${j + 1}`] = nameValues[j];
           }
       
-          pointSeries.data.push(pointData);
+          pointSeries?.data.push(pointData);
+        }
+      }
+      const colorSet = am5.ColorSet.new(this.root1, { step: 2 });
+ 
+  pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => {
+    const container = am5.Container.new(root1, {});
+    let meanValue;
+    for (let i = 1; i <= this.selectedIndicators.length-1; i++) {
+      // Assuming the mean values are stored in dataItem object
+      if(i==1)
+      meanValue = dataItem?.dataContext?.[`mean${i}`];
+      if (meanValue !== undefined) {
+        let indicator = this.selectedIndicators[i];
+        let words = indicator?.split(' ');
+        let lastWord = words[words?.length - 1].replace('(','').replace(')', '');
+        let src = `/assets/images/${lastWord.toLowerCase()}.jpeg`;
+  
+        let numberOfCircles = 1;
+        if (meanValue > 2) {
+          numberOfCircles = 3;
+        } else if (meanValue > 1 && meanValue < 2) {
+          numberOfCircles = 2;
+        }
+  
+        for (let j = 0; j < numberOfCircles; j++) {
+          const horizontalSpacing = 2; // Adjust this value as needed
+          const verticalSpacing = 2; // Adjust this value as needed
+        // let dx =10;
+          let dx = 10 * (i - 1) + j * (10 + horizontalSpacing);
+          let dy = 10 + j * verticalSpacing;
+  
+          // Additional adjustments for specific values of i
+          if (i === 2) {
+            dy += 15; // Adjust this value as needed
+          }
+          if (i === 3) {
+            dy += 30; // Adjust this value as needed
+          }
+          if (i === 4) {
+            dy += 45; // Adjust this value as needed
+          }
+          if (i === 5) {
+            dy += 60; // Adjust this value as needed
+          }
+          const circle = am5.Picture.new(root1, {
+            dx: dx,
+            dy: dy,
+            width: 12,
+            height: 12,
+            // centerX: am5.p50,
+            // centerY: am5.p50,
+            tooltipText: j === 0 ? `{name${i + 1}}-{mean${i + 1}}` : undefined,
+            src: src
+          });
+  
+          container.children.push(circle);
         }
       }
     }
-     
+  
+    const label = am5.Label.new(root1, {
+      centerX: am5.p50,
+      centerY: am5.p50,
+      text: "{title}",
+      populateText: true
+    });
+  
+    container.set("interactive", true);
+    container.children.push(label);
+  
+    return am5.Bullet.new(root1, {
+      sprite: container
+    });
+  });
+}
+// this.setupHeatLegendMap(1);
+//  this.setHeatLegendValue();
+ 
+
   }
+
   getData() {
     let uniqueCountries: any;
     const t = this.removeDuplicates(this.droughtData1, 'Country');
@@ -1016,5 +992,30 @@ export class MapComponent implements OnInit, OnDestroy {
       index === self.findIndex((el) => el[property] === obj[property])
     );
   }
-}
+  setHeatLegendValue(){
+      this.heatLegend = this.chart?.children.push(am5.HeatLegend.new(this.chart.root, {
+        orientation: "vertical",
+        endColor: this.updateHeatLegendStartColor(this.selectedIndicators),
+        startColor: this.updateHeatLegendEndColor(this.selectedIndicators),
+        startText: this.updateHeatLegendStartText(this.selectedIndicators),
+        endText: this.updateHeatLegendEndText(this.selectedIndicators),
+        stepCount: 3,
+        minHeight: 20, // Set the minimum height of the legend
+        maxHeight: 500,
+        startValue: 0,
+        endValue: 3,
+        pixelHeight: 30,
+        // x:-10,
+        y: 60
+      }));
+      this.heatLegend?.startLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("startColor")
+      });
 
+      this.heatLegend?.endLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("endColor")
+      });
+    
+}}

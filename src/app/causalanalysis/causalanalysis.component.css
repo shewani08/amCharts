@@ -16,3 +16,9 @@
     border-radius: 50%;
     margin: 5px;
   }
+  .app-causal{
+    position:absolute;
+    right:10px;
+    top:104px;
+    width: 23vw;
+  }

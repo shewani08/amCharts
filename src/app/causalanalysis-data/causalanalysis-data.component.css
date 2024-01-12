@@ -22,3 +22,7 @@ table {
   .data-box div {
     margin-bottom: 10px; /* Add margin between individual div elements */
   }
+  .result-panel{
+    position:relative;
+    top:20px;
+  }

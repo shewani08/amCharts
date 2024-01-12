@@ -39,7 +39,7 @@
                
         <tr>
           <td> <b>Total No. Of Irregular Migration:&nbsp;</b> </td>
-          <td><a href="#" >{{20243}}</a></td>
+          <td><a href="#" (click)="displayData()">{{20243}}</a></td>
         </tr>
 
         <tr>
@@ -69,3 +69,26 @@
  
   
 </mat-accordion>
+
+<mat-accordion class="result-panel" *ngIf="showPanel">
+    <mat-expansion-panel expanded="true" >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+              Total Data
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content-container">
+          <div class="data-box">
+         
+       </div>
+          <div>
+           
+          Here we show Data related to particular selected data.
+            </div>
+            </div>
+          
+       
+    </mat-expansion-panel>
+   
+    
+  </mat-accordion>

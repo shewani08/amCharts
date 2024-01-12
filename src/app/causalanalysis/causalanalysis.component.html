@@ -60,6 +60,7 @@
             <a class="dropdown-item" href="#" >High Political Stability</a>
             </div>
       </div>
+
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
@@ -71,7 +72,17 @@
             <a class="dropdown-item" href="#" >High Social Stability</a>
             </div>
       </div>
-
+      <div class="dropdown mr-auto show-right-country">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{'Country' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" *ngFor="let country of countryNames" (click)="selectCountry(country)">
+          {{ country }}
+        </a>
+      </div>
+    </div>
       <div class="dropdown mr-auto show-stress">
         <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">

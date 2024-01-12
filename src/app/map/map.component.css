@@ -107,20 +107,26 @@
   }
   .land-indicator{
     width: 20px;   
-    height: 10px; 
-    background-color: #39753A ;  
+    height: 30px; 
+    background-image: url('/assets/images/land.jpeg');
+    background-size: cover;  
+    /* background-color: #39753A ;   */
     margin-right: 5px;  
   }
   .water-indicator{
     width: 20px;   
-    height: 10px; 
-    background-color: #65BADA ;  
+    height: 30px; 
+    /* background-color: #65BADA ; */
+    background-image: url('/assets/images/water.jpeg');
+     background-size: cover;  
     margin-right: 5px;  
   }
   .heat-indicator{
     width: 20px;   
-    height: 10px; 
-    background-color: #D56651 ;  
+    height: 30px; 
+    background-image: url('/assets/images/energy.jpeg');
+    background-size: cover;  
+    /* background-color: #D56651 ;   */
     margin-right: 5px;  
   }
   .collapsable{

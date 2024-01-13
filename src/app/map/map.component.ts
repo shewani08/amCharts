@@ -505,7 +505,14 @@ export class MapComponent implements OnInit, OnDestroy {
       startColor: this.updateHeatLegendEndColor(this.selectedIndicators),
       startText: this.updateHeatLegendStartText(this.selectedIndicators),
       endText: this.updateHeatLegendEndText(this.selectedIndicators),
-      stepCount: 3
+      stepCount: 3,
+      minHeight: 20,
+      maxHeight: 500,
+      startValue: 0,
+      endValue: 3,
+      pixelHeight: 30,
+
+        y: 60
     }));
     
     this.mapheatLegend?.startLabel.setAll({
@@ -975,7 +982,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   });
 }
-// this.setupHeatLegendMap(1);
+   this.setupHeatLegendMap(1);
 //  this.setHeatLegendValue();
  
 

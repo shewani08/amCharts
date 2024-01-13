@@ -46,4 +46,16 @@ export class CsvService {
   getTemperatureData(){
     return this.http.get('assets/cleaned_temperature_SSP1_score.csv', { responseType: 'text' });
   }
+  getMediumWaterIndex(){
+    return this.http.get('assets/medium/cleaned_water_stress_index_SSP2_score.csv', { responseType: 'text' });
+  }
+  getMediumDroughtData(){
+    return this.http.get('assets/medium/cleaned_drought_intensity_change_SSP2_score.csv', { responseType: 'text' });
+  }
+  getMediumCropYieldData(): Observable<any> {
+    return this.http.get('assets/medium/cleaned_crop_yield_change_SSP2_score', { responseType: 'text' });
+  }
+  getMediumAgricultureData(): Observable<any> {
+    return this.http.get('assets/medium/cleaned_agricultural_water_stress_index_SSP2_score', { responseType: 'text' });
+  }
 }

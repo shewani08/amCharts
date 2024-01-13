@@ -142,3 +142,6 @@
     position:absolute;
     top:70% !important;
   }
+  .heatLegend{
+    height:50px !important;
+  }

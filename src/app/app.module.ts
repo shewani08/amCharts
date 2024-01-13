@@ -58,6 +58,7 @@ import { PieComponent } from './pie/pie.component';
 import { CatalogCardComponent } from './catalog-card/catalog-card.component';
 import { CausalAnalysisComponent } from './causalanalysis/causalanalysis.component';
 import { CausalanalysisDataComponent } from './causalanalysis-data/causalanalysis-data.component';
+import { Card2TestingComponent } from './card2-testing/card2-testing.component';
 
 
 
@@ -93,7 +94,8 @@ import { CausalanalysisDataComponent } from './causalanalysis-data/causalanalysi
  
     CatalogCardComponent,
       CausalAnalysisComponent,
-      CausalanalysisDataComponent
+      CausalanalysisDataComponent,
+      Card2TestingComponent
    
    
   ],

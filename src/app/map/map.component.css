@@ -68,10 +68,8 @@
     margin-bottom: 0; /* Adjust as needed */
   }
   .container {
-    display: flex;
-    justify-content: flex-start; /* Move the row to the right */
-    position: relative;
-    left: 6%;
+    position: absolute;
+    bottom: 18%;
   }
   .row {
     display: flex;
@@ -108,7 +106,7 @@
   .land-indicator{
     width: 20px;   
     height: 30px; 
-    background-image: url('/assets/images/land.jpeg');
+    background-image: url('/assets/images/Crop yield change (Land).png');
     background-size: cover;  
     /* background-color: #39753A ;   */
     margin-right: 5px;  
@@ -117,14 +115,22 @@
     width: 20px;   
     height: 30px; 
     /* background-color: #65BADA ; */
-    background-image: url('/assets/images/water.jpeg');
+    background-image: url('/assets/images/Drought intensity change (Water).png');
+     background-size: cover;  
+    margin-right: 5px;  
+  }
+  .stress-indicator{
+    width: 20px;   
+    height: 30px; 
+    /* background-color: #65BADA ; */
+    background-image: url('/assets/images/Water index stress (Water).png');
      background-size: cover;  
     margin-right: 5px;  
   }
   .heat-indicator{
     width: 20px;   
     height: 30px; 
-    background-image: url('/assets/images/energy.jpeg');
+    background-image: url('/assets/images/Heat Index Event exposure (Energy).png');
     background-size: cover;  
     /* background-color: #D56651 ;   */
     margin-right: 5px;  

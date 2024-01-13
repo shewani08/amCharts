@@ -39,25 +39,11 @@
     </div>
   </div>
   
-    <div class="container" *ngIf="!showMap">
-      <div class="row">
-      <div class="indicator-box">
-        <div class="land-indicator"></div>
-        <span>Land</span>
-      </div>
-      <div class="indicator-box">
-        <div class="water-indicator"></div>
-        <span>Water</span>
-      </div>
-      <div class="indicator-box">
-        <div class="heat-indicator"></div>
-        <span>Energy</span>
-      </div>
-    </div>
-  </div>
+
 </div>
 
 <div id="chartdiv" *ngIf="showMap">
+  
   <div class="disclaimer">
     <p>Note: The scores are relative to the current situation of the country for the different indicators.</p>
     <div class="container" *ngIf="showMap">
@@ -66,9 +52,30 @@
           <div class="box-low"></div>
           <span>No Data</span>
         </div>
+
       </div>
       </div>
   </div>
   
+</div>
+<div class="container" *ngIf="!showMap">
+  <div class="row">
+    <div class="indicator-box">
+      <div class="stress-indicator"></div>
+      <span>Water index stress (Water)</span>
+    </div>
+  <div class="indicator-box">
+    <div class="land-indicator"></div>
+    <span>Crop yield change (Land)</span>
+  </div>
+  <div class="indicator-box">
+    <div class="water-indicator"></div>
+    <span>Drought intensity change (Water)</span>
+  </div>
+  <div class="indicator-box">
+    <div class="heat-indicator"></div>
+    <span>Heat Index Event exposure (Energy)</span>
+  </div>
+</div>
 </div>
 <div id="mapchart" *ngIf="!showMap"></div>

@@ -1035,9 +1035,11 @@ export class MapComponent implements OnInit, OnDestroy {
       meanValue = dataItem?.dataContext?.[`mean${i}`];
       if (meanValue !== undefined) {
         let indicator = this.selectedIndicators[i];
-        let words = indicator?.split(' ');
-        let lastWord = words[words?.length - 1].replace('(','').replace(')', '');
-        let src = `/assets/images/${lastWord.toLowerCase()}.jpeg`;
+        // let words = indicator?.split(' ');
+        // let lastWord = words[words?.length - 1].replace('(','').replace(')', '');
+        // let src = `/assets/images/${lastWord.toLowerCase()}.jpeg`;
+
+        let src = `/assets/images/${indicator}.png`;
   
         let numberOfCircles = 1;
         if (meanValue > 2) {

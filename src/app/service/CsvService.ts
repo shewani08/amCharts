@@ -53,9 +53,21 @@ export class CsvService {
     return this.http.get('assets/medium/cleaned_drought_intensity_change_SSP2_score.csv', { responseType: 'text' });
   }
   getMediumCropYieldData(): Observable<any> {
-    return this.http.get('assets/medium/cleaned_crop_yield_change_SSP2_score', { responseType: 'text' });
+    return this.http.get('assets/medium/cleaned_crop_yield_change_SSP2_score.csv', { responseType: 'text' });
   }
   getMediumAgricultureData(): Observable<any> {
-    return this.http.get('assets/medium/cleaned_agricultural_water_stress_index_SSP2_score', { responseType: 'text' });
+    return this.http.get('assets/medium/cleaned_agricultural_water_stress_index_SSP2_score.csv', { responseType: 'text' });
+  }
+  getHighWaterIndex(){
+    return this.http.get('assets/high/cleaned_water_stress_index_SSP3_score.csv', { responseType: 'text' });
+  }
+  getHighDroughtData(){
+    return this.http.get('assets/high/cleaned_drought_intensity_change_SSP3_score.csv', { responseType: 'text' });
+  }
+  getHighCropYieldData(): Observable<any> {
+    return this.http.get('assets/high/cleaned_crop_yield_change_SSP3_score.csv', { responseType: 'text' });
+  }
+  getHighAgricultureData(): Observable<any> {
+    return this.http.get('assets/high/cleaned_agricultural_water_stress_index_SSP3_score.csv', { responseType: 'text' });
   }
 }

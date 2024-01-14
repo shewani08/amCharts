@@ -32,7 +32,8 @@
               "./node_modules/@syncfusion/ej2-material-theme/styles/material.css"
              
             ],
-            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js"]
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js",
+            "node_modules/vis/dist/vis-network.min.js"]
           },
           "configurations": {
             "production": {

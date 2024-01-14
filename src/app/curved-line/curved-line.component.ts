@@ -72,7 +72,12 @@ cont.children.push(am5.Label.new(root, {
 // Create main polygon series for countries
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
 let polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
-  geoJSON: am5geodata_worldLow
+  geoJSON: am5geodata_worldLow,
+  include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+  "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+  'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+  'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
+  'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
 }));
 
 let graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
@@ -80,6 +85,7 @@ graticuleSeries.mapLines.template.setAll({
   stroke: root.interfaceColors.get("alternativeBackground"),
   strokeOpacity: 0.08
 });
+chart?.set("zoomLevel", 1);
 
 // Create line series for trajectory lines
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
@@ -131,82 +137,44 @@ arrowSeries.bullets.push(function() {
   });
 });
 
-let cities = [
+var cities = [
   {
-    id: "london",
-    title: "London",
-    geometry: { type: "Point", coordinates: [-0.1262, 51.5002] },
+    id: "nigeria",
+    title: "Nigeria",
+    geometry: { type: "Point", coordinates: [8.675277, 9.081999] },
   },
   {
-    id: "brussels",
-    title: "Brussels",
-    geometry: { type: "Point", coordinates: [4.3676, 50.8371] }
-  }, {
-    id: "prague",
-    title: "Prague",
-    geometry: { type: "Point", coordinates: [14.4205, 50.0878] }
-  }, {
-    id: "athens",
-    title: "Athens",
-    geometry: { type: "Point", coordinates: [23.7166, 37.9792] }
-  }, {
-    id: "reykjavik",
-    title: "Reykjavik",
-    geometry: { type: "Point", coordinates: [-21.8952, 64.1353] }
-  }, {
-    id: "dublin",
-    title: "Dublin",
-    geometry: { type: "Point", coordinates: [-6.2675, 53.3441] }
-  }, {
-    id: "oslo",
-    title: "Oslo",
-    geometry: { type: "Point", coordinates: [10.7387, 59.9138] }
-  }, {
-    id: "lisbon",
-    title: "Lisbon",
-    geometry: { type: "Point", coordinates: [-9.1355, 38.7072] }
-  }, {
-    id: "moscow",
-    title: "Moscow",
-    geometry: { type: "Point", coordinates: [37.6176, 55.7558] }
-  }, {
-    id: "belgrade",
-    title: "Belgrade",
-    geometry: { type: "Point", coordinates: [20.4781, 44.8048] }
-  }, {
-    id: "bratislava",
-    title: "Bratislava",
-    geometry: { type: "Point", coordinates: [17.1547, 48.2116] }
-  }, {
-    id: "ljublana",
-    title: "Ljubljana",
-    geometry: { type: "Point", coordinates: [14.5060, 46.0514] }
-  }, {
-    id: "madrid",
-    title: "Madrid",
-    geometry: { type: "Point", coordinates: [-3.7033, 40.4167] }
-  }, {
-    id: "stockholm",
-    title: "Stockholm",
-    geometry: { type: "Point", coordinates: [18.0645, 59.3328] }
-  }, {
-    id: "bern",
-    title: "Bern",
-    geometry: { type: "Point", coordinates: [7.4481, 46.9480] }
-  }, {
-    id: "kiev",
-    title: "Kiev",
-    geometry: { type: "Point", coordinates: [30.5367, 50.4422] }
-  }, {
-    id: "paris",
-    title: "Paris",
-    geometry: { type: "Point", coordinates: [2.3510, 48.8567] }
-  }, {
-    id: "new york",
-    title: "New York",
-    geometry: { type: "Point", coordinates: [-74, 40.43] }
+    id: "niger",
+    title: "Niger",
+    geometry: { type: "Point", coordinates: [8.081666, 17.607789] }
+  }, 
+  {
+    id: "algeria",
+    title: "Algeria",
+    geometry: { type: "Point", coordinates: [1.659626, 28.033886] }
+  }, 
+  {
+    id: "libya",
+    title: "Libya(central Med. Route)",
+    geometry: { type: "Point", coordinates: [17.228331, 26.3351] }
+  }, 
+  {
+    id: "morocco",
+    title: "Morocco(Western Med. Route)",
+    geometry: { type: "Point", coordinates: [-7.09262, 31.791702] }
+  }, 
+    {
+    id: "westsharan",
+    title: "West Sharan(Western Africa Route)",
+    geometry: { type: "Point", coordinates: [ -12.8858, 24.2155] }
+  }, 
+   
+  {
+    id: "unitedKingdom",
+    title: "United Kingdom",
+    geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+    
   }];
-
 citySeries.data.setAll(cities);
 
 // prepare line series data
@@ -215,25 +183,84 @@ let destinations = ["reykjavik", "lisbon", "moscow", "belgrade", "ljublana", "ma
 let originLongitude = -0.1262;
 let originLatitude = 51.5002;
 
-am5.array.each(destinations, function (did) {
+// am5.array.each(destinations, function (did) {
   
-  let destinationDataItem = citySeries.getDataItemById(did);
-  if (destinationDataItem) {
-  let lineDataItem = lineSeries.pushDataItem({ geometry: { type: "LineString", coordinates: [[originLongitude, originLatitude], 
-  [destinationDataItem.get("longitude")?? 0, destinationDataItem.get("latitude")?? 0]] } });
+//   let destinationDataItem = citySeries.getDataItemById(did);
+//   if (destinationDataItem) {
+//   let lineDataItem = lineSeries.pushDataItem({ geometry: { type: "LineString", coordinates: [[originLongitude, originLatitude], 
+//   [destinationDataItem.get("longitude")?? 0, destinationDataItem.get("latitude")?? 0]] } });
 
-  arrowSeries.pushDataItem({
-    lineDataItem: lineDataItem,
-    positionOnLine: 0.5,
-    autoRotate: true
+//   arrowSeries.pushDataItem({
+//     lineDataItem: lineDataItem,
+//     positionOnLine: 0.5,
+//     autoRotate: true
+//   });
+// }
+// })
+
+var origins = [
+  {
+    id: "nigeria",
+    destinations: ["niger", "westsharan"]
+  },
+  {
+    id: "niger",
+    destinations: ["algeria", "libya", "morocco"]
+  },
+  {
+    id: "libya",
+    destinations: ["unitedKingdom"]
+  },
+  {
+    id: "algeria",
+    destinations: ["unitedKingdom"]
+  },
+  {
+    id: "westsharan",
+    destinations: ["unitedKingdom"]
+  },
+  {
+    id: "morocco",
+    destinations: ["unitedKingdom"]
+  }];
+  let lineSeriesData: unknown[] =[];
+am5.array.each(origins, function (originData) {
+  var originDataItem = citySeries.getDataItemById(originData.id);
+
+  am5.array.each(originData.destinations, function (destId) {
+    var destinationDataItem = citySeries.getDataItemById(destId);
+
+    // Create line series data
+    var lineData = {
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [originDataItem?.get("longitude"), originDataItem?.get("latitude")],
+          [destinationDataItem?.get("longitude"), destinationDataItem?.get("latitude")]
+        ]
+      },
+      animationPosition: 0
+    };
+
+    // Add the line data to the line series
+    lineSeriesData.push(lineData);
   });
-}
-})
+});
+
+// Set the line series data
+lineSeries.data.setAll(lineSeriesData);
 
 // polygonSeries.events.on("datavalidated", function () {
 //   chart.zoomToGeoPoint({ longitude: -0.1262, latitude: 51.5002 }, 3);
 // })
-
+am5.array.each(lineSeries.dataItems, function (lineDataItem) {
+  lineDataItem.animate({
+    key: "line",
+    from: 0,
+    to: 1,
+    duration: 1000
+  }as any);
+});
 
 // Make stuff animate on load
 chart.appear(1000, 100);

@@ -4,14 +4,86 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5map from '@amcharts/amcharts5/map';
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldChinaHigh';
 import * as am5percent from "@amcharts/amcharts5/percent";
-
+import { CsvService } from '../service/CsvService';
+interface CsvData {
+  id?: string;
+  Continent?: string;
+  Country: string;
+  value: string;
+  Number_of_immigrants: string;
+  Proportion: string;
+}
 @Component({
   selector: 'app-curved-line',
   templateUrl: './curved-line.component.html',
   styleUrls: ['./curved-line.component.css']
 })
 export class CurvedLineComponent {
-  ngOnInit(){
+  fetchData =[];
+  data: any=[];
+  constructor( private dataService: CsvService){
+    this.dataService.getCoordinate().subscribe((rcp: any) => {
+
+      this.fetchData = this.rcpToJson(rcp);
+      this.loadData();
+    
+      
+    }
+    )
+  
+   
+    
+  }
+  loadData() {
+    if (this.fetchData) {
+      this.data = this.fetchData.map((coord: any) => ({
+        id: coord.Country,
+        title: coord.Country,
+        name: coord.Country,
+        Country: coord.Country,
+        Destination1 :coord.Destination1,
+        Destination2 :coord.Destination2,
+        Destination3 :coord.Destination3,
+        Central: coord.Central,
+        Western: coord.WesternMedi1,
+        WesternMedi: coord.WesternMedi2,
+        WesternAfrica:coord.WesternAfrica,
+        Final:coord.Final,
+       geometry: {
+          type: "Point",
+          coordinates: [parseFloat(coord.longitude),parseFloat(coord.latitude)]
+        }
+      }));
+      this.data.push({
+        Country:"United Kingdom",
+        id: "United Kingdom",
+        title: "United Kingdom",
+        geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+        
+      });
+      console.log('this.data', this.data); // Check if data is correct here
+
+      this.initializeChart();
+    }
+  }
+  private rcpToJson<T>(data: string): T[] {
+    const lines = data.split('\n');
+    const headers = lines[0].split(',');
+    const result: T[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const currentLine = lines[i].split(',');
+      const obj: any = {};
+      for (let j = 0; j < headers.length; j++) {
+                const key = headers[j].trim() as keyof CsvData;
+        const value = currentLine[j] ? currentLine[j].trim() : '';
+        obj[key] = value;
+      }
+      result.push(obj as T);
+    }
+    return result;
+
+  }
+  initializeChart(){
     let root = am5.Root.new("chartcurveddiv");
 
 
@@ -77,7 +149,7 @@ let polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
   "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
   'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
   'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
-  'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ'],
+  'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','UK'],
 }));
 
 let graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
@@ -95,7 +167,7 @@ lineSeries.mapLines.template.setAll({
   strokeOpacity: 0.6
 });
 
-// destination series
+// destinations series
 let citySeries = chart.series.push(
   am5map.MapPointSeries.new(root, {})
 );
@@ -137,6 +209,27 @@ arrowSeries.bullets.push(function() {
   });
 });
 
+
+arrowSeries.bullets.push(function() {
+  let arrow = am5.Graphics.new(root, {
+    fill: am5.color(0x000000),
+    stroke: am5.color(0x000000),
+    draw: function (display) {
+      display.moveTo(0, -3);
+      display.lineTo(8, 0);
+      display.lineTo(0, 3);
+      display.lineTo(0, -3);
+    }
+  });
+
+  return am5.Bullet.new(root, {
+    sprite: arrow
+  });
+});
+
+ 
+
+
 var cities = [
   {
     id: "nigeria",
@@ -170,18 +263,20 @@ var cities = [
   }, 
    
   {
-    id: "unitedKingdom",
+    id: "United Kingdom",
     title: "United Kingdom",
     geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
     
   }];
-citySeries.data.setAll(cities);
+  console.log('this.data',cities);
+  if(this.data)
+citySeries.data.setAll(this.data);
 
 // prepare line series data
 let destinations = ["reykjavik", "lisbon", "moscow", "belgrade", "ljublana", "madrid", "stockholm", "bern", "kiev", "new york"];
 // London coordinates
-let originLongitude = -0.1262;
-let originLatitude = 51.5002;
+let originLongitude = 26.820553;
+let originLatitude = 30.802498;
 
 // am5.array.each(destinations, function (did) {
   
@@ -197,39 +292,33 @@ let originLatitude = 51.5002;
 //   });
 // }
 // })
-
+ var originsVal = this.getOrigin();
 var origins = [
   {
-    id: "nigeria",
-    destinations: ["niger", "westsharan"]
+    id: "Algeria",
+    destinations: ["Congo", "Libya"]
+  },
+  
+    {    id: "Congo",
+    destinations: ["Zimbabwe"]
   },
   {
-    id: "niger",
-    destinations: ["algeria", "libya", "morocco"]
-  },
-  {
-    id: "libya",
-    destinations: ["unitedKingdom"]
-  },
-  {
-    id: "algeria",
-    destinations: ["unitedKingdom"]
-  },
-  {
-    id: "westsharan",
-    destinations: ["unitedKingdom"]
-  },
-  {
-    id: "morocco",
-    destinations: ["unitedKingdom"]
+    id: "Libya",
+    destinations: ["Zimbabwe"]
   }];
   let lineSeriesData: unknown[] =[];
-am5.array.each(origins, function (originData) {
+am5.array.each(originsVal, function (originData) {
   var originDataItem = citySeries.getDataItemById(originData.id);
 
   am5.array.each(originData.destinations, function (destId) {
-    var destinationDataItem = citySeries.getDataItemById(destId);
+    console.log('destId',destId);
+    var destinationDataItem = citySeries.getDataItemById(String(destId));
+    var originLongitude = originDataItem?.get("longitude");
+    var originLatitude = originDataItem?.get("latitude");
+    var destLongitude = destinationDataItem?.get("longitude");
+    var destLatitude = destinationDataItem?.get("latitude");
 
+  
     // Create line series data
     var lineData = {
       geometry: {
@@ -244,27 +333,112 @@ am5.array.each(origins, function (originData) {
 
     // Add the line data to the line series
     lineSeriesData.push(lineData);
-  });
-});
 
+  //   if (originLongitude !== undefined && originLatitude !== undefined &&
+  //     destLongitude !== undefined && destLatitude !== undefined) {
+  //   let arrowLineDataItem = lineSeries.pushDataItem({
+  //     geometry: {
+  //       type: "LineString",
+  //       coordinates: [
+  //         [originLongitude,originLatitude],
+  //         [destLongitude, destLatitude]
+  //       ]
+  //     }
+  //   });
+  
+  //   arrowSeries.pushDataItem({
+  //     lineDataItem: arrowLineDataItem,
+  //     positionOnLine: 0.5,
+  //     autoRotate: true
+  //   });
+  
+  // }
+  });
+
+});
 // Set the line series data
 lineSeries.data.setAll(lineSeriesData);
-
+  
 // polygonSeries.events.on("datavalidated", function () {
 //   chart.zoomToGeoPoint({ longitude: -0.1262, latitude: 51.5002 }, 3);
 // })
-am5.array.each(lineSeries.dataItems, function (lineDataItem) {
-  lineDataItem.animate({
-    key: "line",
-    from: 0,
-    to: 1,
-    duration: 1000
-  }as any);
-});
+
 
 // Make stuff animate on load
 chart.appear(1000, 100);
 
+  }
+  getOrigin() {
+    const transitions: { id: any; destinations: any; }[] = [];
+    const location :any= {
+      Central: "Libya",
+      Country: "Nigeria",
+      Destination1: "Niger",
+      Destination2: undefined,
+      Destination3: undefined,
+      Final: "United Kingdom",
+      Western: "Algeria",
+      WesternAfrica: "",
+      WesternMedi: "Morocco",
+      geometry: { type: 'Point', coordinates: [] },
+      id: "Nigeria",
+      name: "Nigeria",
+      title: "Nigeria"
+    };
+    let lastDestination = location.Country;
+    
+    const order = ["Destination1", "Destination2", "Destination3", "Central", "Western", "WesternMedi", "WesternAfrica", "Final"];
+    
+    for (let i = 0; i < order.length; i++) {
+      const currentKey = order[i];
+    
+      if (location && location[currentKey]) {
+        transitions.push({ id: lastDestination, destinations: [location[currentKey]] });
+        lastDestination = location[currentKey];
+      } else {
+        break; // Break if the current destinations is not available
+      }
+    }
+    if ( location.Destination3) {
+      transitions.push({ id: location.Destination3, destinations:[ location.Central ]});
+      transitions.push({ id: location.Destination3, destinations: [location.Western] });
+      transitions.push({ id: location.Destination3, destinations: [location.WesternMedi] });
+      transitions.push({ id: location.Destination3, destinations: [location.WesternAfrica] });
+    }
+    if ( location.Destination2) {
+      transitions.push({ id: location.Destination2, destinations: [location.Central ]});
+      transitions.push({ id: location.Destination2, destinations: [location.Western] });
+      transitions.push({ id: location.Destination2, destinations: [location.WesternMedi] });
+      transitions.push({ id: location.Destination2, destinations: [location.WesternAfrica] });
+    }
+    if ( location.Destination1) {
+      transitions.push({ id: location.Destination1, destinations: [location.Central] });
+      transitions.push({ id: location.Destination1, destinations: [location.Western ]});
+      transitions.push({ id: location.Destination1, destinations: [location.WesternMedi] });
+      transitions.push({ id: location.Destination1, destinations: [location.WesternAfrica] });
+    }
+    // Add the final destinations (if available)
+    if (location.Central  ) {
+      transitions.push({ id: location.Central, destinations: [location.Final] });
+    }
+    if (location.Western  ) {
+      transitions.push({ id: location.Western, destinations: [location.Final] });
+    }
+    if (location.WesternMedi  ) {
+      transitions.push({ id: location.WesternMedi, destinations:[ location.Final] });
+    }
+    if (location.WesternAfrica  ) {
+      transitions.push({ id: location.WesternAfrica, destinations: [location.Final] });
+    }
+    // If Destination3 is present, connect it to Central, Western, WesternMedi, and WesternAfrica
+    
+
+// Add the final destinations (if available)
+if (location.Final) {
+ // transitions.push({ id: lastDestination, destinations: location.Final });
+}
+return transitions;
+console.log(transitions)
   }
 
 }

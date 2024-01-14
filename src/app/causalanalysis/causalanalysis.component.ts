@@ -8,13 +8,14 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 // Define the types for selectedValues and dropdownOptions
 type SelectedValues = { [key: string]: string };
 type DropdownOptions = { [key: string]: string[] };
-
+declare var vis: any; // Declare Vis.js library
 @Component({
   selector: 'app-causalanalysis',
   templateUrl: './causalanalysis.component.html',
   styleUrls: ['./causalanalysis.component.css']
 })
 export class CausalAnalysisComponent implements OnInit {
+constructor() { }
 selectCountry(_t44: any) {
 throw new Error('Method not implemented.');
 }
@@ -51,94 +52,189 @@ countryNames: any;
       am5themes_Animated.new(root)
     ]);
 
-    // let data: { value: number; children: { name: string; value: number }[] } = {
-    //   value: 0,
-    //   children: []
-    // };
+    const nodes: any[] = [
+      {
+        id: 99,
+        font: { multi: true },
+        widthConstraint: 150,
+        label:
+          "<b>Internal Displacements due to Climate Change</b> \n\n text",
+        x: -1300,
+        y: -680,
+      },
+      {
+        id: 101,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Inflation</b> \n\n Text#",
+        x: -1300,
+        y: -600,
+      },
+      {
+        id: 102,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Economic</b> \n\n Text# ",
+        x: -1300,
+        y: -500,
+      },
+      {
+        id: 103,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Health</b> \n\n Text#",
+        x: -1300,
+        y: -400,
+      },
+      {
+        id: 104,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Social</b> \n\n Text#",
+        x: -1300,
+        y: -300,
+      },
+      
+      {
+        id: 105,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Political</b> \n\n Text#",
+        x: -1300,
+        y: -200,
+      },
+      {
+        id: 106,
+        font: { multi: true },
+        widthConstraint: 150,
+        label: "<b>Food & Water</b> \n\n Text#",
+        x: -1300,
+        y: -100,
+      },
+      
+      {
+        id: 201,
+        font: { multi: true },
+        widthConstraint: { minimum: 120 },
+        label: "<b>Central Mediterranean Route</b> \n\n Text#",
+        x: -550,
+        y: -600,
+      },
+      {
+        id: 202,
+        font: { multi: true },
+        widthConstraint: { minimum: 120 },
+        label: "<b>Western Mediterranean Route</b> \n\n Text#",
+        x: -550,
+        y: -500,
+      },
+      {
+        id: 203,
+        font: { multi: true },
+        widthConstraint: { minimum: 120 },
+        label: "<b>Western Africa Route</b> \n\n Text#",
+        x: -550,
+        y: -400,
+      },
+      {
+        id: 204,
+        font: { multi: true },
+        widthConstraint: { minimum: 120 },
+        label: "<b>Other Route</b> \n\n Text#",
+        x: -550,
+        y: -300,
+      },
+      {
+        id: 220,
+        font: { multi: true },
+        widthConstraint: { maximum: 170 },
+        label:
+          "<b>Total Irregular Migrants</b> \n\ntext",
+        x: -900,
+        y: -500,
+      },
 
-    // for (let i = 0; i < this.circles.length; i++) {
-    //   data.children.push({ name: this.circles[i], value: Math.random() * 20 + 1 });
-    // }
+      {
+        id: 301,
+        font: { multi: true },
+        widthConstraint: { minimum: 400 },
+        label: "<b>Total Irregular Migrants in Europe Via Nothern African Routes</b> \n\n\n Text",
+        x: -100,
+        y: -500,
+      },
 
-    // let container = root.container.children.push(
-    //   am5.Container.new(root, {
-    //     width: am5.percent(100),
-    //     height: am5.percent(100),
-    //     layout: root.horizontalLayout,
-    //   })
-    // );
+      {
+        id: 302,
+        font: { multi: true },
+        widthConstraint: { minimum: 400 },
+        label: "<b>Total Irregular Migrants in UK from Nothern African Routes</b> \n\n\n Text",
+        x: -10,
+        y: -680,
+      },
+      
+      
+      // },
+      // ... (same as in the provided JS code)
+    ];
 
-    // let series = container.children.push(
-    //   am5hierarchy.ForceDirected.new(root, {
-    //     singleBranchOnly: false,
-    //     downDepth: 2,
-    //     topDepth: 1,
-    //     initialDepth: 1,
-    //     maxRadius: 60,
-    //     minRadius: 20,
-    //     valueField: "value",
-    //     categoryField: "name",
-    //     childDataField: "children",
-    //     manyBodyStrength: -13,
-    //     centerStrength: 0.8
-    //   })
-    // );
+    const edges: any[] = [
+      { from: 100, to: 210, label: " " },
+  { from: 99, to: 220,arrows: "to", label: " " },
+  { from: 100, to: 220,arrows: "to", label: " " },
+  { from: 101, to: 220,arrows: "to", label: " " },
+  { from: 102, to: 220,arrows: "to", label: " " },
+  { from: 103, to: 220,arrows: "to", label: " " },
+  { from: 104, to: 220,arrows: "to", label: " " },
+  { from: 105, to: 220,arrows: "to", label: " " },
+  { from: 106, to: 220,arrows: "to", label: " " },
+  { from: 220, to: 201,arrows: "to", label: " " },
+  { from: 220, to: 202,arrows: "to", label: " " },
+  { from: 220, to: 203,arrows: "to", label: " " },
+  { from: 220, to: 204,arrows: "to", label: " " },
+  { from: 220, to: 205,arrows: "to", label: " " },
+  { from: 201, to: 301,arrows: "to", label: " " },
+  { from: 202, to: 301,arrows: "to", label: " " },
+  { from: 203, to: 301,arrows: "to", label: " " },
+  { from: 301, to: 302,arrows: "to", label: " " },
+  {
+    from: 401,
+    to: 402,
+    widthConstraint: { maximum: 150 },
+    label: "middle valign to bottom valign",
+  },
+      // ... (same as in the provided JS code)
+    ];
+    const container = document.getElementById("chartdiv1");
+    const data = {
+      nodes: nodes,
+      edges: edges,
+    };
 
-    // (series.get("colors") as any).setAll({
-    //   step: 1
-    // });
+    const options = {
+      edges: {
+        font: {
+          size: 12,
+        },
+        widthConstraint: {
+          maximum: 90,
+        },
+      },
+      nodes: {
+        shape: "box",
+        margin: 10,
+        widthConstraint: {
+          maximum: 300,
+        },
+      },
+      physics: {
+        enabled: false,
+      },
+    };
 
-    // series.links.template.setAll({
-    //   strokeWidth: 2
-    // });
-
-    // series.nodes.template.setAll({
-    //   tooltipText: undefined,
-    //   cursorOverStyle: "pointer",
-    // });
-
-    // let selectedDataItem: any | undefined;
-
-    // series.nodes.template.events.on("click", function (e: any) {
-    //   if (selectedDataItem) {
-    //     let targetDataItem = e.target?.dataItem;
-    //     if (targetDataItem && e.target?.dataItem == selectedDataItem) {
-    //       selectedDataItem.get("outerCircle").setPrivate("visible", false);
-    //       selectedDataItem = undefined;
-    //     } else {
-    //       if (targetDataItem && series.areLinked(selectedDataItem, targetDataItem)) {
-    //         series.unlinkDataItems(selectedDataItem, targetDataItem);
-    //       } else {
-    //         if (targetDataItem) {
-    //           series.linkDataItems(selectedDataItem, targetDataItem, 0.2);
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     let targetDataItem = e.target?.dataItem;
-    //     if (targetDataItem) {
-    //       selectedDataItem = targetDataItem;
-    //       selectedDataItem.get("outerCircle").setPrivate("visible", true);
-    //     }
-    //   }
-    // });
-
-    // series.data.setAll([data]);
-    // series.set("selectedDataItem", series.dataItems[0]);
-
-    // this.circles.forEach((circle: string) => {
-    //   // this.dropdownOptions[circle] = this.getDropdownOptions(circle);
-    //   this.selectedValues[circle] = this.dropdownOptions[circle][0];
-    // });
+    const network = new vis.Network(container, data, options);
   }
 
-  
-
-  // selectOption(circle: string, option: string): void {
-  //   this.selectedValues[circle] = option;
-  // }
-
-  selectHealth(val:string) {
+    selectHealth(val:string) {
     this.selectedHealth=val;
   }
   selectInflation(val:string){
@@ -162,5 +258,6 @@ selectSocial(val:string){
 selectYear(val:string){
   this.selectedYear=val;
 }
+
 }
 

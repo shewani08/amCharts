@@ -96,6 +96,7 @@ import { Card2TestingComponent } from './card2-testing/card2-testing.component';
       CausalAnalysisComponent,
       CausalanalysisDataComponent,
       Card2TestingComponent
+     
    
    
   ],

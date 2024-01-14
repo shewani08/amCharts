@@ -311,7 +311,7 @@ am5.array.each(originsVal, function (originData) {
   var originDataItem = citySeries.getDataItemById(originData.id);
 
   am5.array.each(originData.destinations, function (destId) {
-    console.log('destId',destId);
+    // console.log('destId',destId);
     var destinationDataItem = citySeries.getDataItemById(String(destId));
     var originLongitude = originDataItem?.get("longitude");
     var originLatitude = originDataItem?.get("latitude");

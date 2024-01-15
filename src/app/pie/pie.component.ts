@@ -12,8 +12,18 @@ import { RouteService } from '../service/central-med';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { HeatWaterService } from '../service/HeatWaterService';
 import { forEach } from 'angular';
-
-
+import { forkJoin } from 'rxjs';
+interface CsvData {
+  id?: string;
+  Continent?: string;
+  Country: string;
+  value: string;
+  Number_of_immigrants: string;
+  Proportion: string;
+}
+interface Result {
+  [country: string]: { count: number; sum: number; mean?: number;name?:string};
+}
 interface ChartData {
   title: string;
   latitude: number;
@@ -31,6 +41,10 @@ interface RegionData {
   SSP1_2p0_Score: number;
   SSP1_3p0_Score: number
 
+}
+interface Entry {
+  Country: string;
+  [key: string]: number | string;
 }
 
 @Component({
@@ -50,7 +64,7 @@ export class PieComponent implements OnInit {
     'Namibia', 'Rwanda'
   ];
 
-  mapType=['Heat','Water']
+  mapType=['Drought intensity change (Water)','Water index stress (Water)','Heat Index Event exposure (Energy)','Crop yield change (Land)'];
   selectedCountryValue: any | null = null;
   circle: any;
   mapData$: any;
@@ -75,12 +89,69 @@ export class PieComponent implements OnInit {
   heatData: any=[];
   waterData: any=[];
   polygonSeries: any;
-  selectedRcpValue: string='';
+  selectedRcpValue: any='';
   selectYearValue:string ='';
   coordinaateandcountry: any;
   pointSeries: any;
+  fetchData: any;
+  data: any;
+  routeData: any;
+  citySeries: any;
+  lineSeriesMap: any;
+  destination1: any;
+  destination2: any;
+  destination3: any;
+  center: any;
+  western: any;
+  westernMed: any;
+  westernAfrica: any;
+  finalMeditor: any=[];
+  selectedIndicator: any;
+  rcpData: any=[];
+  droughtData: any=[];
+  cropYieldData: any=[];
+  agricultureData: any=[];
+  temperaturData: any=[];
+  meansByCountry: any;
+  meansDroughtByCountry: any;
+  meansCropYieldByCountry: any;
+  meansAgricultureByCountry: any;
+  meansTemparatureByCountry: any;
  
-  constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {}
+  constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {
+
+    this.dataService.getCoordinate().subscribe((rcp: any) => {
+
+      this.fetchData = this.rcpToJson(rcp);
+      this.loadData();
+    
+      
+    })
+
+    forkJoin([
+      this.dataService.getRCPData(),
+      this.dataService.getDroughtData(),
+      this.dataService.getCropYieldData(),
+      this.dataService.getAgricultureData(),
+      this.dataService.getTemperatureData()
+    ]).subscribe(([rcpData, droughtData, cropYieldData, agricultureData, temperaturData]) => {
+      const property = 'SSP1_1p5_Score';
+      this.rcpData = this.rcpToJson(rcpData);
+      this.droughtData = this.rcpToJson(droughtData);
+      this.cropYieldData = this.rcpToJson(cropYieldData);
+      this.agricultureData = this.rcpToJson(agricultureData);
+      this.temperaturData = this.rcpToJson(temperaturData);
+
+      this.meansByCountry = this.calculateMeanByCountry(this.rcpData, property, 'Water index stress (Water)');
+      this.meansDroughtByCountry = this.calculateMeanByCountry(this.droughtData, property, 'Drought intensity change (Water)');
+      this.meansCropYieldByCountry = this.calculateMeanByCountry(this.cropYieldData, property, 'Crop yield change (Land)');
+      this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property, 'Agriculture water Stress index (Land)');
+      this.meansTemparatureByCountry = this.calculateMeanByCountry(this.temperaturData, property, 'Heat Index Event exposure (Energy)');
+      setTimeout(() => {
+        // console.log('Merged Data:', mergedData);
+      }, 200);
+    });
+  }
   indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
   { id: 'Water index stress (Water)', name: 'Water index stress (Water)' },
   { id: 'Heat Index Event exposure (Energy)', name: 'Heat Index Event exposure (Energy)' },
@@ -106,23 +177,383 @@ export class PieComponent implements OnInit {
       this.waterData = this.findHighestWaterCountry(this.csvToJson<RegionData>(rcp));
     });
     this.countryNames.sort((a, b) => a.localeCompare(b));
-    this.loadMap();
-  }
+}
+private calculateMeanByCountry(data: Entry[], property: string,name:string) {
+  const result: Result = {};
+  data?.forEach((entry: { [x: string]: any; Country: any; }) => {
+    const country = entry.Country;
+    const score = entry[property];
+    if (!result[country]) {
+      result[country] = { count: 0, sum: 0, mean: 0 ,name:''};
+    }
+    result[country].name=name;
+    result[country].count++;
+    result[country].sum += score * 100 / 100;
+    result[country].mean = result[country].sum / result[country].count;
+  });
+  return result;
+}
+loadData() {
+  if (this.fetchData) {
+    this.data = this.fetchData.map((coord: any) => ({
+      id: coord.Country,
+      title: coord.Country,
+      name: coord.Country,
+      Country: coord.Country,
+      Destination1 :coord.Destination1,
+      Destination2 :coord.Destination2,
+      Destination3 :coord.Destination3,
+      Central: coord.Central,
+      Western: coord.WesternMedi1,
+      WesternMedi: coord.WesternMedi2,
+      WesternAfrica:coord.WesternAfrica,
+      Final:coord.Final,
+     geometry: {
+        type: "Point",
+        coordinates: [parseFloat(coord.longitude),parseFloat(coord.latitude)]
+      }
+    }));
+    this.data.push({
+      Country:"United Kingdom",
+      id: "United Kingdom",
+      title: "United Kingdom",
+      geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+      
+    });
+    console.log('this.data', this.data); // Check if data is correct here
 
+    this.initializeChart();
+  }
+}
+private rcpToJson<T>(data: string): T[] {
+  const lines = data.split('\n');
+  const headers = lines[0].split(',');
+  const result: T[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const currentLine = lines[i].split(',');
+    const obj: any = {};
+    for (let j = 0; j < headers.length; j++) {
+              const key = headers[j].trim() as keyof CsvData;
+      const value = currentLine[j] ? currentLine[j].trim() : '';
+      obj[key] = value;
+    }
+    result.push(obj as T);
+  }
+  return result;
+
+}
+initializeChart(){
+  let root = am5.Root.new("chartdestionation");
+
+
+// Set themes
+// https://www.amcharts.com/docs/v5/concepts/themes/
+root.setThemes([
+am5themes_Animated.new(root)
+]);
+
+
+// Create the map chart
+// https://www.amcharts.com/docs/v5/charts/map-chart/
+let chart = root.container.children.push(am5map.MapChart.new(root, {
+}))
+
+
+// Create main polygon series for countries
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
+let polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+geoJSON: am5geodata_worldLow,
+include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
+"MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
+'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML', 'MW', 'MR', 'MU',
+'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD',
+'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','UK'],
+}));
+
+let graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
+graticuleSeries.mapLines.template.setAll({
+stroke: root.interfaceColors.get("alternativeBackground"),
+strokeOpacity: 0.08
+});
+chart?.set("zoomLevel", 1);
+
+// Create line series for trajectory lines
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
+ this.lineSeriesMap = chart.series.push(am5map.MapLineSeries.new(root, {}));
+this.lineSeriesMap.mapLines.template.setAll({
+stroke: root.interfaceColors.get("alternativeBackground"),
+strokeOpacity: 0.6
+});
+
+// destinations series
+this.citySeries = chart.series.push(
+am5map.MapPointSeries.new(root, {})
+);
+
+this.citySeries.bullets.push(function() {
+let circle = am5.Circle.new(root, {
+  radius: 5,
+  tooltipText: "{title}",
+  tooltipY: 0,
+  fill: am5.color(0xffba00),
+  stroke: root.interfaceColors.get("background"),
+  strokeWidth: 2
+});
+
+return am5.Bullet.new(root, {
+  sprite: circle
+});
+});
+
+// arrow series
+let arrowSeries = chart.series.push(
+am5map.MapPointSeries.new(root, {})
+);
+
+arrowSeries.bullets.push(function() {
+let arrow = am5.Graphics.new(root, {
+  fill: am5.color(0x000000),
+  stroke: am5.color(0x000000),
+  draw: function (display) {
+    display.moveTo(0, -3);
+    display.lineTo(8, 0);
+    display.lineTo(0, 3);
+    display.lineTo(0, -3);
+  }
+});
+
+return am5.Bullet.new(root, {
+  sprite: arrow
+});
+});
+
+
+arrowSeries.bullets.push(function() {
+let arrow = am5.Graphics.new(root, {
+  fill: am5.color(0x000000),
+  stroke: am5.color(0x000000),
+  draw: function (display) {
+    display.moveTo(0, -3);
+    display.lineTo(8, 0);
+    display.lineTo(0, 3);
+    display.lineTo(0, -3);
+  }
+});
+
+return am5.Bullet.new(root, {
+  sprite: arrow
+});
+});
+
+
+const visibleCountries = ["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"];
+
+// Create point series for visible countries
+let visibleCitySeries = chart.series.push(
+am5map.MapPointSeries.new(root, {
+ 
+})
+
+);
+visibleCitySeries.data.setAll(["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"]);
+
+visibleCitySeries.bullets.push(function() {
+let circle = am5.Circle.new(root, {
+  radius: 5,
+  tooltipText: "{title}",
+  tooltipY: 0,
+  fill: am5.color(0xffba00),
+  stroke: root.interfaceColors.get("background"),
+  strokeWidth: 2
+});
+
+return am5.Bullet.new(root, {
+  sprite: circle
+});
+});
+
+
+var cities = [
+{
+  id: "nigeria",
+  title: "Nigeria",
+  geometry: { type: "Point", coordinates: [8.675277, 9.081999] },
+},
+{
+  id: "niger",
+  title: "Niger",
+  geometry: { type: "Point", coordinates: [8.081666, 17.607789] }
+}, 
+{
+  id: "algeria",
+  title: "Algeria",
+  geometry: { type: "Point", coordinates: [1.659626, 28.033886] }
+}, 
+{
+  id: "libya",
+  title: "Libya(central Med. Route)",
+  geometry: { type: "Point", coordinates: [17.228331, 26.3351] }
+}, 
+{
+  id: "morocco",
+  title: "Morocco(Western Med. Route)",
+  geometry: { type: "Point", coordinates: [-7.09262, 31.791702] }
+}, 
+  {
+  id: "westsharan",
+  title: "West Sharan(Western Africa Route)",
+  geometry: { type: "Point", coordinates: [ -12.8858, 24.2155] }
+}, 
+ 
+{
+  id: "United Kingdom",
+  title: "United Kingdom",
+  geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+  
+}];
+console.log('this.data',cities);
+if(this.data)
+this.citySeries.data.setAll(this.data);
+
+// prepare line series data
+// let destinations = ["reykjavik", "lisbon", "moscow", "belgrade", "ljublana", "madrid", "stockholm", "bern", "kiev", "new york"];
+// // London coordinates
+// let originLongitude = 26.820553;
+// let originLatitude = 30.802498;
+
+
+
+// polygonSeries.events.on("datavalidated", function () {
+//   chart.zoomToGeoPoint({ longitude: -0.1262, latitude: 51.5002 }, 3);
+// })
+//this.setConnection();
+
+// Make stuff animate on load
+chart.appear(1000, 100);
+
+}
+setConnection() {
+  const origins = this.getOrigin();
+  const lineSeriesData: any[] = [];
+  origins.forEach((originData: any) => {
+    const originDataItem = this.citySeries.getDataItemById(originData.id);
+    originData.destinations.forEach((destId: any) => {
+      const destinationDataItem = this.citySeries.getDataItemById(String(destId));
+      if (originDataItem && destinationDataItem) {
+        const lineData = {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [originDataItem.get("longitude"), originDataItem.get("latitude")],
+              [destinationDataItem.get("longitude"), destinationDataItem.get("latitude")]
+            ]
+          },
+          animationPosition: 0
+        };
+        lineSeriesData.push(lineData);
+      }
+    });
+  });
+
+  // Set the line series data
+  // this.lineSeriesMap.pushDataItem({
+  //   pointsToConnect: lineSeriesData
+  //  });
+  this.lineSeriesMap.data.setAll(lineSeriesData);
+}
+getOrigin() {
+  const transitions: { id: any; destinations: any; }[] = [];
+  // const location[0] :any= {
+  //   Central: "Libya",
+  //   Country: "Nigeria",
+  //   Destination1: "Niger",
+  //   Destination2: undefined,
+  //   Destination3: undefined,
+  //   Final: "United Kingdom",
+  //   Western: "Algeria",
+  //   WesternAfrica: "",
+  //   WesternMedi: "Morocco",
+  //   geometry: { type: 'Point', coordinates: [] },
+  //   id: "Nigeria",
+  //   name: "Nigeria",
+  //   title: "Nigeria"
+  // };
+  const location:any =this.routeData;
+  this.destination1 = location[0].Destination1;
+  this.destination2 = location[0].Destination2;
+  this.destination3 = location[0].Destination3;
+  this.finalMeditor.push(location[0]?.Central);
+  this.finalMeditor.push(location[0]?.Western);
+  this.finalMeditor.push(location[0]?.WesternMedi);
+  this.finalMeditor.push(location[0]?.WesternAfrica);
+  console.log('finalMeditor',this.finalMeditor);
+  this.center = location[0].Central;
+  this.western = location[0].Western;
+  this.westernMed = location[0].WesternMedi;
+  this.westernAfrica= location[0].WesternAfrica;
+  let lastDestination = location[0].Country;
+  
+  const order = ["Destination1", "Destination2", "Destination3", "Central", "Western", "WesternMedi", "WesternAfrica", "Final"];
+  
+  for (let i = 0; i < order.length; i++) {
+    const currentKey = order[i];
+  
+    if (location[0] && location[0][currentKey]) {
+      transitions.push({ id: lastDestination, destinations: [location[0][currentKey]] });
+      lastDestination = location[0][currentKey];
+    } else {
+      break; // Break if the current destinations is not available
+    }
+  }
+  if ( location[0].Destination3) {
+    transitions.push({ id: location[0].Destination3, destinations:[ location[0].Central ]});
+    transitions.push({ id: location[0].Destination3, destinations: [location[0].Western] });
+    transitions.push({ id: location[0].Destination3, destinations: [location[0].WesternMedi] });
+    transitions.push({ id: location[0].Destination3, destinations: [location[0].WesternAfrica] });
+  }
+  if ( location[0].Destination2) {
+    transitions.push({ id: location[0].Destination2, destinations: [location[0].Central ]});
+    transitions.push({ id: location[0].Destination2, destinations: [location[0].Western] });
+    transitions.push({ id: location[0].Destination2, destinations: [location[0].WesternMedi] });
+    transitions.push({ id: location[0].Destination2, destinations: [location[0].WesternAfrica] });
+  }
+  if ( location[0].Destination1) {
+    transitions.push({ id: location[0].Destination1, destinations: [location[0].Central] });
+    transitions.push({ id: location[0].Destination1, destinations: [location[0].Western ]});
+    transitions.push({ id: location[0].Destination1, destinations: [location[0].WesternMedi] });
+    transitions.push({ id: location[0].Destination1, destinations: [location[0].WesternAfrica] });
+  }
+  // Add the final destinations (if available)
+  if (location[0].Central  ) {
+    transitions.push({ id: location[0].Central, destinations: [location[0].Final] });
+  }
+  if (location[0].Western  ) {
+    transitions.push({ id: location[0].Western, destinations: [location[0].Final] });
+  }
+  if (location[0].WesternMedi  ) {
+    transitions.push({ id: location[0].WesternMedi, destinations:[ location[0].Final] });
+  }
+  if (location[0].WesternAfrica  ) {
+    transitions.push({ id: location[0].WesternAfrica, destinations: [location[0].Final] });
+  }
+  // If Destination3 is present, connect it to Central, Western, WesternMedi, and WesternAfrica
+  
+
+// Add the final destinations (if available)
+if (location[0].Final) {
+// transitions.push({ id: lastDestination, destinations: location[0].Final });
+}
+console.log(transitions);
+return transitions;
+
+}
   loadMap(){
     this.root = am5.Root.new("chartdestionation");
     this.root.setThemes([
       am5themes_Animated.new(this.root)
     ]);
-    // if (this.root) {
-    // this.root.width = am5.percent(100);
-    // this.root.height = am5.percent(100);
-    // }
-    this.chart = this.root.container.children.push(am5map.MapChart.new(this.root, {
-      // panX: "translateX",
-      // panY: "translateY",
-      // projection: am5map.geoMercator()
-    }));
+ 
+    this.chart = this.root.container.children.push(am5map.MapChart.new(this.root, {  }));
    
 
     this.polygonSeries = this.chart.series.push(am5map.MapPolygonSeries.new(this.root, {
@@ -136,14 +567,10 @@ export class PieComponent implements OnInit {
       interactive: true,
       exclude: ["AQ"],
       
-     //fill:am5.color(0xFF621F)
+ 
     }));
     this.chart?.set("zoomLevel", 1);
-    // let graticuleSeries = this.chart.series.push(am5map.GraticuleSeries.new(this.root, {}));
-    // graticuleSeries.mapLines.template.setAll({
-    //   stroke: this.root.interfaceColors.get("alternativeBackground"),
-    //   strokeOpacity: 0.08
-    // });
+   
     
     this.chart.appear(1000, 100);
   }
@@ -226,37 +653,7 @@ this.lineSeries.pushDataItem({
       strokeWidth: 2,
       strokeOpacity: 1
     });
-    console.log('dataItem',points.length);
-//  points.each((lineDataItem: any) => {
-    // for(let i=0;i<points.length-1;i++){
-    //   this.arrowSeries.bullets.push(() => {
-    //     let arrow = am5.Graphics.new(this.root!, {
-    //       fill: am5.color(0x000000),
-    //       stroke: am5.color(0x000000),
-    //       draw: function (display) {
-    //         display.moveTo(0, -3);
-    //         display.lineTo(8, 0);
-    //         display.lineTo(0, 3);
-    //         display.lineTo(0, -3);
-    //       }
-    //     });
     
-    //     return am5.Bullet.new(this.root!, {
-    //       sprite: arrow
-    //     });
-    //   });
-    
-    //   if (this.chart && this.arrowSeries) {
-    //     this.arrowSeries.pushDataItem({
-    //       lineDataItem: lineSeries,
-    //       positionOnLine: 100, // Adjust the position based on the index
-    //       autoRotate: true
-    //     });
-    //   }
-
-    // }
-   // });
-
    for (let i = 0; i < points.length - 1; i++) {
     this.createArrow(points[i], points[i + 1]);
   }
@@ -393,6 +790,18 @@ coordinateDetail():any{
 
   selectCountry(country: any): void {
     this.selectedCountryValue = country;
+    this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+    this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
+      if (this.routeData.length) {
+        console.log('Found country data', this.routeData);
+      } else {
+        console.log('Country data not found for', country);
+      }
+      this.setConnection();
+  }
+
+  selectCountry1(country: any): void {
+    this.selectedCountryValue = country;
     const coordinates = this.findCoordinatesByCountry(this.selectedCountryValue, this.coordinates);
     const mediatorCountry = this.findCenteralCoordinates(this.mediator);
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
@@ -450,18 +859,6 @@ coordinateDetail():any{
     return result;
   }
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   findCoordinatesByCountry(selectedCountryValue: string, coordinates: RegionData[]) {
     for (const item of coordinates) {
       if (item.Country === selectedCountryValue) {
@@ -511,31 +908,16 @@ coordinateDetail():any{
     this.mediator=_e.tab.textLabel;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.selectCountry(this.selectedCountryValue);
-   
-
-   
-    // if (_e.index === 0) {
-    //   this.showCentral = true;
-    //   this.showWestern = false;
-    //   this.showThird = false;
-    // } else if (_e.index === 1) {
-    //   this.showCentral = false;
-    //   this.showWestern = true;
-    //   this.showThird = false;
-    // }
-    // else {
-    //   this.showCentral = false;
-    //   this.showWestern = false;
-    //   this.showThird = true;aqw1 
-    // }
-
   }
   selectMapType(type: any) {
-   this.updateDefaultColor();
-    this.mapTypeData = type;
-    if (type === 'Heat')
-      setTimeout(() => { this.setColor(); }, 200)
-    else setTimeout(() => { this.setWaterColor(); }, 200)
+    this.selectedIndicator=type;
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' ) {
+      if(this.selectedIndicator === 'Drought intensity change (Water)'){
+
+      }
+    
+     
+    }
 
 
   }

@@ -1,35 +1,36 @@
-﻿id,Continent,Country,value,Number_of_immigrants,Proportion 
-DZ, Africa, Algeria,100,133,2.1
-AO, Africa, Angola,100,1,0
-BJ, Africa, Benin,100,11,0.2
-BW, Africa, Botswana,100,2,0
-BF, Africa, Burkina Faso,100,9,0.1
-BI, Africa, Burundi,100,1,0
-CM, Africa, Cameroon,100,95,1.5
-CF, Africa, Central African Republic,100,1233,19.3
-TD, Africa, Chad,100,2020,31.7
-KM, Africa, Comoros,100,530,8.3
-CG, Africa, Congo,100,19,0.3
-CD, Africa, Democratic Republic of the Congo,100,5,0.1
-DJ, Africa, Djibouti,100,27,0.4
-EG, Africa, Egypt,100,1,0
-GQ, Africa, Equatorial Guinea,100,5,0.1
-ER, Africa, Eritrea,100,1,0
-ET, Africa, Ethiopia,100,2,0
-GA, Africa, Gabon,100,133,2.1
-GM, Africa, Gambia,100,10,0.2
-GH, Africa, Ghana,100,3,0
-GN, Africa, Guinea,100,32,0.5
-GW, Africa, Guinea-Bissau,100,50,0.8
-CI, Africa, Ivory Coast,100,6,0.1
-KE, Africa, Kenya,100,11,0.2
-LS, Africa, Lesotho,100,86,1.3
-LR, Africa, Liberia,100,129,2
-LY, Africa, Libya,100,1762,27.6
-MG, Africa, Madagascar,100,12,0.2
-MW, Africa, Malawi,100,50,0.8
+﻿id,Continent,Country ,value ,Number of Immigrant,Proportion 
+DZ, Africa, Algeria,200,133,2.1
+AO, Africa, Angola,1000,1,0
+BJ, Africa, Benin,1500,11,0.2
+BW, Africa, Botswana,1800,2,0
+BF, Africa, Burkina Faso,1005,9,0.1
+BI, Africa, Burundi,1006,1,0
+CM, Africa, Cameroon,1007,95,1.5
+CV, Africa, Cape Verde,1008,1233,19.3
+CF, Africa, Central African Republic,100,2020,31.7
+TD, Africa, Chad,100,530,8.3
+KM, Africa, Comoros,100,19,0.3
+CG, Africa, Congo,100,5,0.1
+CD, Africa, Democratic Republic of the Congo,100,27,0.4
+DJ, Africa, Djibouti,100,1,0
+EG, Africa, Egypt,100,5,0.1
+GQ, Africa, Equatorial Guinea,100,1,0
+ER, Africa, Eritrea,100,2,0
+ET, Africa, Ethiopia,100,133,2.1
+GA, Africa, Gabon,100,10,0.2
+GM, Africa, Gambia,100,3,0
+GH, Africa, Ghana,100,32,0.5
+GN, Africa, Guinea,100,50,0.8
+GW, Africa, Guinea-Bissau,100,6,0.1
+CI, Africa, Ivory Coast,100,11,0.2
+KE, Africa, Kenya,100,86,1.3
+LS, Africa, Lesotho,100,129,2
+LR, Africa, Liberia,100,1762,27.6
+LY, Africa, Libya,100,12,0.2
+MG, Africa, Madagascar,100,50,0.8
+MW, Africa, Malawi,100,1,0
 ML, Africa, Mali,100,1,0
-MR, Africa, Mauritania,100,1,0
+MR, Africa, Mauritania,100,0,0
 MU, Africa, Mauritius,100,0,0
 MA, Africa, Morocco,100,0,0
 MZ, Africa, Mozambique,100,0,0

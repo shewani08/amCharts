@@ -484,7 +484,7 @@ export class MapComponent implements OnInit, OnDestroy {
               radius: 4,
               fillOpacity: 0.7,
               fill: colorset.next(),
-              tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/]\nProportion: [bold]{Proportion}[/]'
+              tooltipText: '{name}: [bold]{value}[/]\nNumber of Irregular migrants: [bold]{Number_of_immigrants}[/] \nUK Irregular Migrants(%): [bold]{Proportion }[/]'
             }, circleTemplate as any)
           );
         const countryLabel = container.children.push(
@@ -1088,7 +1088,10 @@ export class MapComponent implements OnInit, OnDestroy {
       centerX: am5.p50,
       centerY: am5.p50,
       text: "{title}",
-      populateText: true
+      populateText: true,
+      fontSize: 13,
+      fontWeight: "bold",
+      fontFamily: "segoe ui symbol"
     });
   
     container.set("interactive", true);

@@ -1,10 +1,8 @@
-
 import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
 import { Component } from "@angular/core";
 import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldChinaHigh';
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-
 interface ChartData {
   title: string;
   latitude: number;
@@ -21,15 +19,12 @@ interface RegionData {
   SSP1_1p5_Score: number;
   SSP1_2p0_Score: number;
   SSP1_3p0_Score: number
-
 }
-
 @Component({
   selector: 'app-card2-testing',
   templateUrl: './card2-testing.component.html',
   styleUrls: ['./card2-testing.component.css']
 })
-
 
 export class Card2TestingComponent {
  ngOnInit(){
@@ -46,27 +41,23 @@ polygonSeries.mapPolygons.template.setAll({
   tooltipText: "{name}",
   interactive: true
 });
-
 polygonSeries.mapPolygons.template.states.create("hover", {
   fill: am5.color(0x677935)
 });
 // Create point series
 // Create line series for trajectory lines
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
-
 // this will be invisible line (note strokeOpacity = 0) along which invisible points will animate
 var lineSeries = chart.series.push(am5map.MapLineSeries.new(root, {}));
 lineSeries.mapLines.template.setAll({
   stroke: root.interfaceColors.get("alternativeBackground"),
-  strokeOpacity: 0
+  strokeOpacity:1.0
 });
-
 // this will be visible line. Lines will connectg animating points so they will look like animated
 var animatedLineSeries = chart.series.push(am5map.MapLineSeries.new(root, {}));
 animatedLineSeries.mapLines.template.setAll({
   stroke: root.interfaceColors.get("alternativeBackground"),
   strokeOpacity: 1.0});
-
 
 
   let originSeries = chart.series.push(
@@ -90,9 +81,7 @@ animatedLineSeries.mapLines.template.setAll({
     });
   });
 
-
   let destinationSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
-
 destinationSeries.bullets.push(function () {
   let circle = am5.Circle.new(root, {
     radius: 5,
@@ -102,7 +91,6 @@ destinationSeries.bullets.push(function () {
     stroke: root.interfaceColors.get("background"),
     strokeWidth: 2
   });
-
   return am5.Bullet.new(root, {
     sprite: circle
   });
@@ -111,7 +99,6 @@ destinationSeries.bullets.push(function () {
 let  citySeries = chart.series.push(
   am5map.MapPointSeries.new(root, {})
 );
-
 // visible city circles
 citySeries.bullets.push(function() {
   var circle = am5.Circle.new(root, {
@@ -122,27 +109,22 @@ citySeries.bullets.push(function() {
     stroke: root.interfaceColors.get("background"),
     strokeWidth: 2
   });
-
   return am5.Bullet.new(root, {
     sprite: circle
   });
 });
-
 // invisible series which will animate along invisible lines
 var animatedBulletSeries = chart.series.push(
   am5map.MapPointSeries.new(root, {})
 );
-
 animatedBulletSeries.bullets.push(function() {
   var circle = am5.Circle.new(root, {
     radius: 0
   });
-
   return am5.Bullet.new(root, {
     sprite: circle
   });
 });
-
 let originCities = [
   {
     id: "london",
@@ -184,7 +166,6 @@ let originCities = [
     zoomPoint: { longitude: 15.4492, latitude: 50.2631 }
   }
 ];
-
 let destinationCities = [
   {
     id: "brussels",
@@ -272,10 +253,8 @@ let destinationCities = [
     geometry: { type: "Point", coordinates: [-74, 40.43] }
   }
 ];
-
 originSeries.data.setAll(originCities);
 destinationSeries.data.setAll(destinationCities);
-
 var cities = [
   {
     id: "nigeria",
@@ -314,9 +293,7 @@ var cities = [
     geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
     
   }];
-
 citySeries.data.setAll(cities);
-
 // Prepare line series data
 var origins = [
   {
@@ -354,10 +331,8 @@ var origins = [
     id: "morocco",
     destinations: ["unitedKingdom"]
   }];
-
 am5.array.each(origins, function(originData) {
   var originDataItem = citySeries.getDataItemById(originData.id);
-
   am5.array.each(originData.destinations, function(destId) {
     var destinationDataItem;
     if (destId === "unitedKingdom") {
@@ -365,37 +340,30 @@ am5.array.each(origins, function(originData) {
     } else {
       destinationDataItem = citySeries.getDataItemById(destId);
     }
-
     var lineDataItem = lineSeries.pushDataItem({});
     if(originDataItem && destinationDataItem)
     lineDataItem.set("pointsToConnect", [originDataItem, destinationDataItem])
-
     var startDataItem = animatedBulletSeries.pushDataItem({});
     startDataItem.setAll({
       lineDataItem: lineDataItem,
       positionOnLine: 0
     });
-
     var endDataItem = animatedBulletSeries.pushDataItem({});
     endDataItem.setAll({
       lineDataItem: lineDataItem,
       positionOnLine: 1
     });
-
     var animatedLineDataItem = animatedLineSeries.pushDataItem({});
     animatedLineDataItem.set("pointsToConnect", [startDataItem, endDataItem])
-
     var lon0 = originDataItem?.get("longitude");
     var lat0 = originDataItem?.get("latitude");
-
     var lon1 = destinationDataItem?.get("longitude");
     var lat1 = destinationDataItem?.get("latitude");
-  if(lon0 && lon1 && lat0 && lat1){
+    if(lon0 && lon1 && lat0 && lat1){
     var distance = Math.hypot(lon1 - lon0, lat1 - lat0);
     var duration = distance * 100;
   
-
-   // animateStart(startDataItem, endDataItem, duration);
+    animateStart(startDataItem, endDataItem, duration);
   }
   });
 });
@@ -406,12 +374,10 @@ function animateStart(startDataItem: am5.DataItem<am5map.IMapPointSeriesDataItem
     to: 1,
     duration: duration
   });
-
   startAnimation.events.on("stopped", function() {
     //animateEnd(startDataItem, endDataItem, duration);
   });
 }
-
 function animateEnd(startDataItem: { set: (arg0: string, arg1: number) => void; }, endDataItem: { animate: (arg0: { key: string; from: number; to: number; duration: any; }) => any; }, duration: any) {
   startDataItem.set("positionOnLine", 0)
   var endAnimation = endDataItem.animate({
@@ -420,7 +386,6 @@ function animateEnd(startDataItem: { set: (arg0: string, arg1: number) => void; 
     to: 1,
     duration: duration
   })
-
   endAnimation.events.on("stopped", function() {
     //return animateStart(startDataItem, endDataItem, duration);
   });
@@ -435,12 +400,10 @@ function selectOrigin(id:any) {
 //   currentId = id;
 //   let dataItem = originSeries.getDataItemById(id);
 //   let dataContext = dataItem?.dataContext!;
-
 //    let destinations = dataContext.destinations;
 //   let lineSeriesData: unknown[] = [];
 //   let originLongitude = dataItem?.get("longitude");
 //   let originLatitude = dataItem?.get("latitude");
-
 //   am5.array.each(destinations, function (did) {
 //     let destinationDataItem = destinationSeries.getDataItemById(did);
 //     if (!destinationDataItem) {
@@ -461,14 +424,11 @@ function selectOrigin(id:any) {
 //   });
 //   lineSeries.data.setAll(lineSeriesData);
 // }
-
 // let currentId = "london";
-
 // destinationSeries.events.on("datavalidated", function () {
 //   selectOrigin(currentId);
  }
 // Make stuff animate on load
 chart.appear(1000, 100);
 }
-
 }

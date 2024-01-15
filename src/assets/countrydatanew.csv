@@ -1,0 +1,55 @@
+﻿id,Continent,Country ,Number of Immigrant,Proportion 
+AG,Africa,Algeria,133,2.1
+AN,Africa,Benin,1,0
+BN,Africa,Burkina,11,0.2
+BO,Africa,Cameroon,2,0
+BU,Africa,Central African Republic,9,0.1
+BR,Africa,Chad,1,0
+CM,Africa,Egypt,95,1.5
+CP,Africa,Eritrea,1233,19.3
+CAR,Africa,Ethiopia,2020,31.7
+CH,Africa,Gambia,530,8.3
+CO,Africa,Guinea,19,0.3
+CN,Africa,Guinea-Bissau,5,0.1
+CDR,Africa,Ivory Coast,27,0.4
+DB,Africa,Kenya,1,0
+ET,Africa,Liberia,5,0.1
+EG,Africa,Libya,1,0
+ER,Africa,Mali,2,0
+EH,Africa,Mauritania,133,2.1
+GA,Africa,Morocco,10,0.2
+GM,Africa,Nigeria,3,0
+GH,Africa,Senegal,32,0.5
+GU,Africa,Sierra Leone,50,0.8
+GB,Africa,Somalia,6,0.1
+IC,Africa,South Sudan,11,0.2
+KY,Africa,Tanzania,86,1.3
+LH,Africa,Tunisia,129,2
+LB,Africa,Uganda,1762,27.6
+LY,Africa,Zimbabwe,12,0.2
+MG,Africa,Angola,50,0.8
+MW,Africa,Botswana,1,0
+ML,Africa,Burundi,1,0
+MT,Africa,Cape Verde,0,0
+MR,Africa,Comoros,0,0
+MC,Africa,Congo,0,0
+MZ,Africa,"Congo, Democratic Republic of",0,0
+NB,Africa,Djibouti,0,0
+NG,Africa,Equatorial Guinea,0,0
+NR,Africa,Gabon,0,0
+RW,Africa,Ghana,0,0
+TP,Africa,Lesotho,0,0
+SG,Africa,Madagascar,0,0
+SY,Africa,Malawi,0,0
+SL,Africa,Mauritius,0,0
+SM,Africa,Mozambique,0,0
+SA,Africa,Namibia,0,0
+SS,Africa,Niger,0,0
+SD,Africa,Rwanda,0,0
+SW,Africa,Sao Tome and Principe,0,0
+TZ,Africa,Seychelles,0,0
+TO,Africa,South Africa,0,0
+TU,Africa,Sudan,0,0
+UG,Africa,Swaziland,0,0
+ZB,Africa,Togo,0,0
+ZM,Africa,Zambia,0,0

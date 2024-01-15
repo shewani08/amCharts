@@ -95,7 +95,7 @@ export class MapComponent implements OnInit, OnDestroy {
   indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
   { id: 'Water index stress (Water)', name: 'Water index stress (Water)' },
   { id: 'Heat Index Event exposure (Energy)', name: 'Heat Index Event exposure (Energy)' },
-  { id: 'Agriculture water Stress index (Land)', name: 'Agriculture water Stress index (Land)' },
+  // { id: 'Agriculture water Stress index (Land)', name: 'Agriculture water Stress index (Land)' },
   { id: 'Crop yield change (Land)', name: 'Crop yield change (Land)' }];
   mergedJSON: any;
   indicatorName: string[] = [];
@@ -617,37 +617,37 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   selectedIndicatorData(): any {
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountry;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
       return this.meansDroughtByCountry;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountry;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountry;
-    }else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountry;
     }
-    else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
       return this.meansDroughtByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountryMed;
-    }else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountryMed;
     }
-    else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
       return this.meansDroughtByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountryHigh;
-    }else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountryHigh;
     }
 
@@ -728,7 +728,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   updateIndicatorName(): void {
     //console.log('selectedIndicators',this.selectedIndicators);
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length == 1 ) {
+    if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators?.length == 1 ) {
       // this.updateBubbleColor();
       this.showHeatLegend = true;
       this.showMap = true;
@@ -736,7 +736,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.initChart();
       setTimeout(() => this.updateBubbleColor(), 200)
     }
-    else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length > 1) {
+    else if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators?.length > 1) {
       this.showMap = false;
       const property = 'SSP1_1p5_Score';
       //this.mergedJSON = this.mergeJsonSources([this.fetchData, this.calculateMeanByCountry(this.droughtData,property), this.calculateMeanByCountry(this.cropYieldData,property) ]);
@@ -771,7 +771,7 @@ export class MapComponent implements OnInit, OnDestroy {
     
     }
   
-    else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators?.length == 1 ) {
+    else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators?.length == 1 ) {
       // this.updateBubbleColor();
       this.showHeatLegend = true;
       this.showMap = true;
@@ -779,7 +779,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.initChart();
       setTimeout(() => this.updateBubbleColor(), 200)
     }
-    else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators?.length > 1) {
+    else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators?.length > 1) {
       this.showMap = false;
       const property = 'SSP2_1p5_Score';
       //this.mergedJSON = this.mergeJsonSources([this.fetchData, this.calculateMeanByCountry(this.droughtData,property), this.calculateMeanByCountry(this.cropYieldData,property) ]);
@@ -810,7 +810,7 @@ export class MapComponent implements OnInit, OnDestroy {
       if(this.mergedJSON)
       this.initializeMap();  
     }
-    else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators?.length == 1 ) {
+    else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators?.length == 1 ) {
       // this.updateBubbleColor();
       this.showHeatLegend = true;
       this.showMap = true;
@@ -818,7 +818,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.initChart();
       setTimeout(() => this.updateBubbleColor(), 200)
     }
-    else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators?.length > 1) {
+    else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators?.length > 1) {
       this.showMap = false;
       const property = 'SSP3_1p5_Score';
       //this.mergedJSON = this.mergeJsonSources([this.fetchData, this.calculateMeanByCountry(this.droughtData,property), this.calculateMeanByCountry(this.cropYieldData,property) ]);

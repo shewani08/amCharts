@@ -460,6 +460,7 @@ setConnection() {
   //   pointsToConnect: lineSeriesData
   //  });
   this.lineSeriesMap.data.setAll(lineSeriesData);
+  
 }
 getOrigin() {
   const transitions: { id: any; destinations: any; }[] = [];

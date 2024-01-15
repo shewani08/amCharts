@@ -14,6 +14,17 @@
     <div class="dropdown mr-auto show-stress">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
+        {{ selectedRcpValue || 'RCP Scenario' }}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(LOW)')">RCP 2.6 (LOW)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 4.5(MEDIUM)')">RCP 4.5 (MEDIUM)</a>
+        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 8.5(HIGH)')"> RCP 8.5 (HIGH)</a>
+      </div>
+    </div>
+    <div class="dropdown mr-auto show-stress">
+      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
         {{ mapTypeData || 'Select Indicator' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
@@ -23,17 +34,7 @@
       </div>
     </div>
 
-    <div class="dropdown mr-auto show-stress">
-      <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        {{ selectedRcpValue || 'RCP Scenario' }}
-      </button>
-      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 2.6(LOW)')">RCP 2.6 (LOW)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 4.5(MEDIUM)')">RCP 4.5 (MEDIUM)</a>
-        <a class="dropdown-item" href="#" (click)="selectRcp('RCP 8.5(HIGH)')"> RCP 8.5 (HIGH)</a>
-      </div>
-    </div>
+   
 
     <div class="dropdown mr-auto show-stress">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
@@ -51,11 +52,11 @@
 
 
 </div>
-<mat-tab-group (selectedTabChange)="onTabChange($event)">
+<!-- <mat-tab-group (selectedTabChange)="onTabChange($event)">
   <mat-tab label="Central Mediterranean Route"> </mat-tab>
   <mat-tab label="Western Mediterranean Route"> </mat-tab>
   <mat-tab label="Western Africa Route"> </mat-tab>
-</mat-tab-group>
+</mat-tab-group> -->
 
 <div class="d-flex">
   <div class="" id="chartdestionation"></div>
@@ -71,13 +72,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          
+        <ng-container *ngFor="let mediator of finalMeditor; let i = index">
+          <tr *ngIf="mediator">
           <td>{{selectedCountryValue}}</td>
           <td>United Kingdom</td>
-          <td>{{mediator}}</td>
+          <td *ngIf="i === 0"> Central Mediterranean Route - {{mediator}}</td>
+          <td *ngIf="i === 1"> Western Mediterranean Route - {{mediator}}</td>
+          <td *ngIf="i === 2"> Western Mediterranean Route - {{mediator}}</td>
+          <td *ngIf="i === 3"> Western Africa Route - {{mediator}}</td>
           <td scope="row">{{totalMigration}}</td>
         </tr>
+      </ng-container>
       </tbody>
     </table>
 

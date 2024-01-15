@@ -228,6 +228,31 @@ arrowSeries.bullets.push(function() {
 });
 
  
+const visibleCountries = ["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"];
+
+// Create point series for visible countries
+let visibleCitySeries = chart.series.push(
+  am5map.MapPointSeries.new(root, {
+   
+  })
+  
+);
+visibleCitySeries.data.setAll(["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"]);
+
+visibleCitySeries.bullets.push(function() {
+  let circle = am5.Circle.new(root, {
+    radius: 5,
+    tooltipText: "{title}",
+    tooltipY: 0,
+    fill: am5.color(0xffba00),
+    stroke: root.interfaceColors.get("background"),
+    strokeWidth: 2
+  });
+
+  return am5.Bullet.new(root, {
+    sprite: circle
+  });
+});
 
 
 var cities = [
@@ -333,7 +358,8 @@ am5.array.each(originsVal, function (originData) {
 
     // Add the line data to the line series
     lineSeriesData.push(lineData);
-
+    
+     
   //   if (originLongitude !== undefined && originLatitude !== undefined &&
   //     destLongitude !== undefined && destLatitude !== undefined) {
   //   let arrowLineDataItem = lineSeries.pushDataItem({

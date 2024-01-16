@@ -389,7 +389,7 @@ include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR'
 'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','UK'],
 }));
 
-this.chartRoute?.set("zoomLevel", 1);
+this.chartRoute?.set("zoomLevel", 1.3);
  this.lineSeriesMap = this.chartRoute.series.push(am5map.MapLineSeries.new(this.rootRoute, {}));
 this.citySeries = this.chartRoute.series.push(
 am5map.MapPointSeries.new(this.rootRoute, {})

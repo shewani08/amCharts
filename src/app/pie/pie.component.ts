@@ -13,6 +13,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { HeatWaterService } from '../service/HeatWaterService';
 import { forEach } from 'angular';
 import { forkJoin } from 'rxjs';
+import { MigrantYearService } from '../service/MigrantYearService';
 interface CsvData {
   id?: string;
   Continent?: string;
@@ -153,16 +154,54 @@ export class PieComponent implements OnInit {
   meansTemparatureByCountry: any;
   countryMeanIdPairs: { id: string; value: any; }[] | undefined;
   polygonRouteSeries: any;
+  rcpMediumData: any=[];
+  droughtMedData: any=[];
+  cropYieldMedData: any=[];
+  agricultureMedData: any=[];
+  temperaturMedData: any=[];
+  meansByCountryMed: Result | undefined;
+  meansDroughtByCountryMed: Result | undefined;
+  meansCropYieldByCountryMed: Result | undefined;
+  meansAgricultureByCountryMed: Result | undefined;
+  meansTemparatureByCountryMed: Result | undefined;
+  rcpHighData: any=[];
+  droughtHighData: any=[];
+  cropYieldHighData: any=[];
+  agricultureHighData: any=[];
+  temperaturHighData: any=[];
+  meansDroughtByCountryHigh: Result | undefined;
+  meansByCountryHigh: Result | undefined;
+  meansCropYieldByCountryHigh: Result | undefined;
+  meansAgricultureByCountryHigh: Result | undefined;
+  meansTemparatureByCountryHigh: Result | undefined;
+  private rootRoute:any;
+  chartRoute: any;
+  mapheatLegend: any;
+  heatLegend: any;
+  waterYearMigrant:any;
+  droughtYearMigrant: any;
+  cropYieldYearMigrant: any;
+  heatYearMigrant: any;
  
-  constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {
+  constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService,private migrantYearService:MigrantYearService) {
 
     this.dataService.getCoordinate().subscribe((rcp: any) => {
-
       this.fetchData = this.rcpToJson(rcp);
       this.loadData();
-    
-      
     })
+    this.migrantYearService.getWaterStress().subscribe((rcp: any) => {
+      this.waterYearMigrant = this.rcpToJson(rcp);
+    })
+    this.migrantYearService.getDroughtMigrantData().subscribe((rcp: any) => {
+      this.droughtYearMigrant = this.rcpToJson(rcp);
+    })
+    this.migrantYearService.getCropYieldMigrantData().subscribe((rcp: any) => {
+      this.cropYieldYearMigrant = this.rcpToJson(rcp);
+    })
+    this.migrantYearService.getHeatMigrantData().subscribe((rcp: any) => {
+      this.heatYearMigrant = this.rcpToJson(rcp);
+    })
+
 
     forkJoin([
       this.dataService.getRCPData(),
@@ -184,9 +223,66 @@ export class PieComponent implements OnInit {
       this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property, 'Agriculture water Stress index (Land)');
       this.meansTemparatureByCountry = this.calculateMeanByCountry(this.temperaturData, property, 'Heat Index Event exposure (Energy)');
       setTimeout(() => {
-         console.log('Merged Data:',  this.meansDroughtByCountry );
+      
       }, 200);
     });
+    // For RCP MEDIUM
+
+    forkJoin([
+
+      this.dataService.getMediumWaterIndex(),
+      this.dataService.getMediumDroughtData(),
+      this.dataService.getMediumCropYieldData(),
+      this.dataService.getMediumAgricultureData(),
+      this.dataService.getTemperatureData()]).subscribe(([rcpMediumData, droughtMedData, cropYieldMedData, agricultureMedData, temperaturMedData]) => {
+
+        const property = 'SSP2_1p5_Score';
+
+        this.rcpMediumData = this.rcpToJson(rcpMediumData);
+        this.droughtMedData = this.rcpToJson(droughtMedData);
+        this.cropYieldMedData = this.rcpToJson(cropYieldMedData);
+        this.agricultureMedData = this.rcpToJson(agricultureMedData);
+        this.temperaturMedData = this.rcpToJson(temperaturMedData);
+        this.meansByCountryMed = this.calculateMeanByCountry(this.rcpMediumData, property, 'Water index stress (Water)');
+        this.meansDroughtByCountryMed = this.calculateMeanByCountry(this.droughtMedData, property, 'Drought intensity change (Water)');
+        this.meansCropYieldByCountryMed = this.calculateMeanByCountry(this.cropYieldMedData, property, 'Crop yield change (Land)');
+        this.meansAgricultureByCountryMed = this.calculateMeanByCountry(this.agricultureMedData, property, 'Agriculture water Stress index (Land)');
+        this.meansTemparatureByCountryMed = this.calculateMeanByCountry(this.temperaturMedData, property, 'Heat Index Event exposure (Energy)');
+
+        setTimeout(() => {
+          // console.log('Merged Data:', mergedData);
+
+        }, 200);
+      });
+
+       // For RCP HIGH
+
+    forkJoin([
+
+      this.dataService.getHighWaterIndex(),
+      this.dataService.getHighDroughtData(),
+      this.dataService.getHighCropYieldData(),
+      this.dataService.getHighAgricultureData(),
+      this.dataService.getTemperatureData()]).subscribe(([rcpHighData, droughtHighData, cropYieldHighData, agricultureHighData, temperaturHighData]) => {
+
+        const property = 'SSP3_1p5_Score';
+
+        this.rcpHighData = this.rcpToJson(rcpHighData);
+        this.droughtHighData = this.rcpToJson(droughtHighData);
+        this.cropYieldHighData = this.rcpToJson(cropYieldHighData);
+        this.agricultureHighData = this.rcpToJson(agricultureHighData);
+        this.temperaturHighData = this.rcpToJson(temperaturHighData);
+        this.meansByCountryHigh = this.calculateMeanByCountry(this.rcpHighData, property, 'Water index stress (Water)');
+        this.meansDroughtByCountryHigh= this.calculateMeanByCountry(this.droughtHighData, property, 'Drought intensity change (Water)');
+        this.meansCropYieldByCountryHigh = this.calculateMeanByCountry(this.cropYieldHighData, property, 'Crop yield change (Land)');
+        this.meansAgricultureByCountryHigh= this.calculateMeanByCountry(this.agricultureHighData, property, 'Agriculture water Stress index (Land)');
+        this.meansTemparatureByCountryHigh = this.calculateMeanByCountry(this.temperaturHighData, property, 'Heat Index Event exposure (Energy)');
+
+        setTimeout(() => {
+          // console.log('Merged Data:', mergedData);
+
+        }, 200);
+      });
   }
   indicators = [{ id: 'Drought intensity change (Water)', name: 'Drought intensity change (Water)' },
   { id: 'Water index stress (Water)', name: 'Water index stress (Water)' },
@@ -227,7 +323,6 @@ private calculateMeanByCountry(data: Entry[], property: string,name:string) {
     result[country].sum += score * 100 / 100;
     result[country].mean = result[country].sum / result[country].count;
   });
-  console.log('result',result);
   return result;
 }
 loadData() {
@@ -257,8 +352,6 @@ loadData() {
       geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
       
     });
-    console.log('this.data', this.data); // Check if data is correct here
-
     this.initializeChart();
   }
 }
@@ -280,25 +373,25 @@ private rcpToJson<T>(data: string): T[] {
 
 }
 initializeChart(){
-  let root = am5.Root.new("chartdestionation");
+  this.rootRoute = am5.Root.new("chartdestionation");
 
 
 // Set themes
 // https://www.amcharts.com/docs/v5/concepts/themes/
-root.setThemes([
-am5themes_Animated.new(root)
+this.rootRoute.setThemes([
+am5themes_Animated.new(this.rootRoute)
 ]);
 
 
 // Create the map chart
 // https://www.amcharts.com/docs/v5/charts/map-chart/
-let chart = root.container.children.push(am5map.MapChart.new(root, {
+this.chartRoute = this.rootRoute.container.children.push(am5map.MapChart.new(this.rootRoute, {
 }))
 
 
 // Create main polygon series for countries
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
-this.polygonRouteSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+this.polygonRouteSeries = this.chartRoute?.series.push(am5map.MapPolygonSeries.new(this.rootRoute, {
 geoJSON: am5geodata_worldLow,
 include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
 "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
@@ -308,32 +401,32 @@ include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR'
 }));
 
 
-chart?.set("zoomLevel", 1);
+this.chartRoute?.set("zoomLevel", 1);
 
 // Create line series for trajectory lines
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
- this.lineSeriesMap = chart.series.push(am5map.MapLineSeries.new(root, {}));
+ this.lineSeriesMap = this.chartRoute.series.push(am5map.MapLineSeries.new(this.rootRoute, {}));
 // this.lineSeriesMap.mapLines.template.setAll({
 // stroke: root.interfaceColors.get("alternativeBackground"),
 // strokeOpacity: 0.6
 // });
 
 // destinations series
-this.citySeries = chart.series.push(
-am5map.MapPointSeries.new(root, {})
+this.citySeries = this.chartRoute.series.push(
+am5map.MapPointSeries.new(this.rootRoute, {})
 );
 
-this.citySeries.bullets.push(function() {
-let circle = am5.Circle.new(root, {
+this.citySeries.bullets.push(() => {
+let circle = am5.Circle.new(this.rootRoute!, {
   radius: 5,
   tooltipText: "{title}",
   tooltipY: 0,
   fill: am5.color(0xffba00),
-  stroke: root.interfaceColors.get("background"),
+  stroke: this.rootRoute?.interfaceColors.get("background"),
   strokeWidth: 2
 });
 
-return am5.Bullet.new(root, {
+return am5.Bullet.new(this.rootRoute!, {
   sprite: circle
 });
 });
@@ -382,28 +475,28 @@ return am5.Bullet.new(root, {
 //const visibleCountries = ["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"];
 
 // Create point series for visible countries
-let visibleCitySeries = chart.series.push(
-am5map.MapPointSeries.new(root, {
+// let visibleCitySeries = this.chartRoute.series.push(
+// am5map.MapPointSeries.new(this.rootRoute, {
  
-})
+// })
 
-);
-visibleCitySeries.data.setAll(["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"]);
+// );
+// visibleCitySeries.data.setAll(["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"]);
 
-visibleCitySeries.bullets.push(function() {
-let circle = am5.Circle.new(root, {
-  radius: 5,
-  tooltipText: "{title}",
-  tooltipY: 0,
-  fill: am5.color(0xffba00),
-  stroke: root.interfaceColors.get("background"),
-  strokeWidth: 2
-});
+// visibleCitySeries.bullets.push(() => {
+// let circle = am5.Circle.new(this.chartRoute, {
+//   radius: 5,
+//   tooltipText: "{title}",
+//   tooltipY: 0,
+//   fill: am5.color(0xffba00),
+//   //stroke: this.chartRoute.interfaceColors.get("background"),
+//   strokeWidth: 2
+// });
 
-return am5.Bullet.new(root, {
-  sprite: circle
-});
-});
+// return am5.Bullet.new(this.chartRoute, {
+//   sprite: circle
+// });
+// });
 
 
 if(this.data)
@@ -423,9 +516,40 @@ this.citySeries.data.setAll(this.data);
 //this.setConnection();
 
 // Make stuff animate on load
-chart.appear(1000, 100);
+this.polygonRouteSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
+this.chartRoute.appear(1000, 100);
 
 }
+public setupHeatLegend(data: any) {
+  this.polygonRouteSeries.set("heatRules", [{
+    target: this.polygonRouteSeries.mapPolygons.template,
+    dataField: "value",
+    min: am5.color(0xff621f),
+    max: am5.color(0x661f00),
+    key: "fill"
+  }]);
+}
+onMapPolygonPointerOver(ev: any) {
+
+  let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
+  let countryMeanPairs: any;
+  let countryEntry;
+  const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
+  if (data) {
+    countryMeanPairs = Object.entries(data).map(
+      ([country, data]) => [country, data.mean || 0]
+    );
+  }
+  if (countryMeanPairs?.length) {
+    countryEntry = countryMeanPairs?.find(([country]: [string, number]) => country === countryDetail);
+  }
+ 
+  if (countryEntry !== undefined && countryEntry[1] && countryEntry[1]!== null){ 
+    this.heatLegend?.showValue(countryEntry[1]);
+  }
+   
+}
+
 setConnection() {
   const origins = this.getOrigin();
   const lineSeriesData: any[] = [];
@@ -444,7 +568,6 @@ setConnection() {
           },
           animationPosition: 0
         };
-        console.log('lineData',lineData);
         lineSeriesData.push(lineData);
       }
     });
@@ -452,7 +575,6 @@ setConnection() {
   });
 
   var points: any[] = [];
-  console.log(lineSeriesData);
   // Loop to push data items to pointSeries
   // lineSeriesData.forEach((item: any) => {
   //   points.push(this.citySeries.pushDataItem(item));
@@ -767,7 +889,6 @@ coordinateDetail():any{
       this.polygonSeries.mapPolygons.each((polygon: any) => {
         const countryId = polygon.dataItem.dataContext.name;
         if (countryId === this.heatData['Country']) { 
-          console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
           polygon.set("fill", am5.color(0xFF621F));
          // polygon.fill.set(am5.color(0xFF621F));
          polygon.set("tooltipText", `{name}: Heat Color`);
@@ -781,7 +902,6 @@ coordinateDetail():any{
     this.polygonSeries.mapPolygons.each((polygon: any) => {
       const countryId = polygon.dataItem.dataContext.name;
       if (countryId === this.waterData['Country']) { 
-        console.log('comiing heere'); // Assuming 'EG' is the ISO code for Egypt
         polygon.set("fill", am5.color(0x4169e1));
        // polygon.fill.set(am5.color(0xFF621F));
        polygon.set("tooltipText", `{name}: Waterstress`);
@@ -799,7 +919,7 @@ coordinateDetail():any{
   selectCountry(country: any): void {
     this.finalMeditor=[];
     this.selectedCountryValue = country;
-    this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+   // this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
       if (this.routeData.length) {
         console.log('Found country data', this.routeData);
@@ -889,8 +1009,7 @@ coordinateDetail():any{
   }
 
   findCenteralCoordinates(selectedCountryValue: string) {
-    console.log('selectedCountryValue',selectedCountryValue);
-    let data =[ {name: 'Central Mediterranean Route', y:22.218457547733337,x:36.30904040702372 },
+     let data =[ {name: 'Central Mediterranean Route', y:22.218457547733337,x:36.30904040702372 },
     {name: 'Western Mediterranean', x:-5.291307397436539,y:36.34444502849807},
     {name: 'Western Africa Route', y:-14.226280416672568,x:24.53051872073307}]
     
@@ -922,9 +1041,8 @@ coordinateDetail():any{
   }
   selectMapType(type: any) {
     this.selectedIndicator=type;
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' ) {
-     
-         this.showPolygonColors();
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' || this.selectedRcpValue === 'RCP 4.5(MEDIUM)' || this.selectedRcpValue === 'RCP 8.5(HIGH)') {
+      this.showPolygonColors();
       
     
      
@@ -933,6 +1051,7 @@ coordinateDetail():any{
 
   }
   showPolygonColors() {
+ 
    //this.polygonRouteSeries const polygonSeries = this.polygonRouteSeries.series.getIndex(0) as am5map.MapPolygonSeries;
       this.polygonRouteSeries?.mapPolygons?.each((polygon: any) => {
         let countryMeanPairs: [string, number][] = [];
@@ -950,10 +1069,9 @@ coordinateDetail():any{
         if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
           const countryName = dataContext.name;
           const countryEntry = countryMeanPairs?.find(([country]) => country === countryName);
-      console.log(countryEntry);
           if (countryEntry?.length && (this.selectedIndicator === 'Water index stress (Water)'
             || this.selectedIndicator === 'Drought intensity change (Water)')) {
-            polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
+              polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
           }else if (countryEntry?.length && (this.selectedIndicator === 'Crop yield change (Land)' ||
           this.selectedIndicator === 'Agriculture water Stress index (Land)')) {
            polygon.set("fill", am5.color(getColorForLand(countryEntry[1]))); 
@@ -963,7 +1081,97 @@ coordinateDetail():any{
         }
         }
       });
+      this.setupHeatLegend(1);
+      this.heatLegend = this.chartRoute.children.push(am5.HeatLegend.new(this.rootRoute!, {
+        orientation: "vertical",
+        endColor: this.updateHeatLegendStartColor(this.selectedIndicator),
+        startColor: this.updateHeatLegendEndColor(this.selectedIndicator),
+        startText: this.updateHeatLegendStartText(this.selectedIndicator),
+        endText: this.updateHeatLegendEndText(this.selectedIndicator),
+        stepCount: 3,
+        minHeight: 20,
+        maxHeight: 500,
+        startValue: 0,
+        endValue: 3,
+        pixelHeight: 30,
+  
+          y: 90
+      }));
+      
+      this.heatLegend.startLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("startColor")
+      });
+      
+      this.heatLegend.endLabel.setAll({
+        fontSize: 12,
+        fill: this.heatLegend.get("endColor")
+      });
    
+  }
+  updateHeatLegendStartText(selectedCategory: string[]): string {
+  
+      if (this.selectedIndicator === 'Water index stress (Water)' || this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+
+        return 'Least reduction in \n available water';
+      } else if (this.selectedIndicator=== 'Crop yield change (Land)') {
+        return 'Least reduction in \n crops';
+      } else if (this.selectedIndicator=== 'Heat Index Event exposure (Energy)') {
+        return 'Least increase in heat stress';
+      } else if (this.selectedIndicator === 'Drought intensity change (Water)') {
+        return 'Least increase drought intensity';
+      }
+      else {
+        return 'Default start text';
+      }
+    
+    return '';
+  }
+
+  updateHeatLegendEndText(selectedCategory: string[]): string {
+  
+      if (this.selectedIndicator === 'Water index stress (Water)' || this.selectedIndicator=== 'Agriculture water Stress index (Land)') {
+        return 'Most reduction in \n available water';
+      } else if (this.selectedIndicator === 'Crop yield change (Land)') {
+        return 'Most reduction in \n crops';
+      } else if (this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+        return 'Most increase in heat stress';
+      } else if (this.selectedIndicator === 'Drought intensity change (Water)') {
+        return 'Most increase drought intensity';
+      } else {
+        return 'Default end text';
+      }
+    
+    return '';
+  }
+  updateHeatLegendEndColor(selectedIndicators: string[]) {
+    if (this.selectedIndicator=== 'Water index stress (Water)'
+      || this.selectedIndicator === 'Drought intensity change (Water)') {
+      return am5.color(0xCFCD9D);
+    }
+    else if (this.selectedIndicator=== 'Crop yield change (Land)' ||
+      this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+      return am5.color(0xf0b7a1);
+      }
+      else if (this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+        return am5.color(0xf0b7a1);
+      
+    }
+    return am5.color("#000000");;
+  }
+
+  updateHeatLegendStartColor(selectedIndicators: string[]) {
+    if (this.selectedIndicator === 'Water index stress (Water)'
+      || this.selectedIndicator === 'Drought intensity change (Water)') {
+      return am5.color(0xB41404);
+    }
+    else if (this.selectedIndicator === 'Crop yield change (Land)' || this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+      return am5.color(0x752201);
+    }
+    else if (this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+      return am5.color(0x752201);
+    }
+    return am5.color("#000000");;;
   }
   selectedIndicatorData(): any {
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicator === 'Water index stress (Water)') {
@@ -978,28 +1186,28 @@ coordinateDetail():any{
     }else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountry;
     }
-    // else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicator === 'Water index stress (Water)') {
-    //   return this.meansByCountryMed;
-    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
-    //   return this.meansDroughtByCountryMed;
-    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicator === 'Crop yield change (Land)') {
-    //   return this.meansCropYieldByCountryMed;
-    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
-    //   return this.meansAgricultureByCountryMed;
-    // }else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
-    //   return this.meansTemparatureByCountryMed;
-    // }
-    // else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicator === 'Water index stress (Water)') {
-    //   return this.meansByCountryHigh;
-    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
-    //   return this.meansDroughtByCountryHigh;
-    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicator === 'Crop yield change (Land)') {
-    //   return this.meansCropYieldByCountryHigh;
-    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
-    //   return this.meansAgricultureByCountryHigh;
-    // }else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
-    //   return this.meansTemparatureByCountryHigh;
-    // }
+    else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicator === 'Water index stress (Water)') {
+      return this.meansByCountryMed;
+    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
+      return this.meansDroughtByCountryMed;
+    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicator === 'Crop yield change (Land)') {
+      return this.meansCropYieldByCountryMed;
+    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+      return this.meansAgricultureByCountryMed;
+    }else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+      return this.meansTemparatureByCountryMed;
+    }
+    else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicator === 'Water index stress (Water)') {
+      return this.meansByCountryHigh;
+    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
+      return this.meansDroughtByCountryHigh;
+    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicator === 'Crop yield change (Land)') {
+      return this.meansCropYieldByCountryHigh;
+    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+      return this.meansAgricultureByCountryHigh;
+    }else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+      return this.meansTemparatureByCountryHigh;
+    }
 
     // Add a default return statement (could be null, an empty object, or another appropriate value)
     return null;
@@ -1017,13 +1225,31 @@ coordinateDetail():any{
 
   }
   selectRcp(value: any): void {
-
-    console.log('value is',value);
     this.selectedRcpValue=value;
-   
   }
   selectYear(value:string){
     this.selectYearValue=value;
+    const countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
+    this.totalMigration = countryYearData?.Value;
+
+  }
+  filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {
+    let filteredData:any ={};
+    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicator =='Water index stress (Water)')
+    filteredData = this.waterYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
+    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicator =='Drought intensity change (Water)')
+    filteredData = this.droughtYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
+    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicator =='Crop yield change (Land)')
+    filteredData = this.cropYieldYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
+    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicator =='Heat Index Event exposure (Energy)')
+    filteredData = this.heatYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
+   
+    return filteredData ? {
+      Country: filteredData.Country,
+      Scenario: filteredData.Scenario,
+      Variable: filteredData.Variable,
+      Value: filteredData[year]
+    } : null;
   }
   ngOnDestroy() {
     if (this.chart) {

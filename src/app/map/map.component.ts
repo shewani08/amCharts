@@ -557,7 +557,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.polygonSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
   }
   public setupHeatLegendMap(data: any) {
-    this.mapheatLegend =  this.map?.children.push(am5.HeatLegend.new(this.map?.root, {
+    this.heatLegend =  this.map?.children.push(am5.HeatLegend.new(this.map?.root, {
       orientation: "vertical",
       endColor: this.updateHeatLegendStartColor(this.selectedIndicators),
       startColor: this.updateHeatLegendEndColor(this.selectedIndicators),
@@ -573,14 +573,14 @@ export class MapComponent implements OnInit, OnDestroy {
         y: 60
     }));
     
-    this.mapheatLegend?.startLabel.setAll({
+    this.heatLegend?.startLabel.setAll({
       fontSize: 12,
       fill: this.mapheatLegend.get("startColor")
     });
     
-    this.mapheatLegend?.endLabel.setAll({
+    this.heatLegend?.endLabel.setAll({
       fontSize: 12,
-      fill: this.mapheatLegend.get("endColor")
+      fill: this.heatLegend.get("endColor")
     });
     this.polygonImgSeries.set("heatRules", [{
       target: this.polygonSeries.mapPolygons.template,
@@ -595,6 +595,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   
   onMapPolygonPointerOver(ev: any) {
+
     let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
     let countryMeanPairs: any;
     let countryEntry;

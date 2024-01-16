@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c8235a2f5ff5d9cf4b2f0327c2710bcf31b7db03
 ﻿id,Country,latitude,longitude,Destination1,Destination 2,Destination 3,Central ,WesternMedi1,WesternMedi2,WesternAfrica,Final
 DZ,Algeria,28.033886,1.659626,,,,,,,,
 AO,Angola,-11.202692,17.873887,,,,,,,,
@@ -53,6 +56,7 @@ TN,Tunisia,33.886917,9.537499,,,,,,,,
 UG,Uganda,1.373333,32.290275,,,,,,,,
 ZM,Zambia,-13.133897,27.849332,,,,,,,,
 ZW,Zimbabwe,-19.015438,29.154857,,,,,,,,
+<<<<<<< HEAD
 =======
 ﻿id,Country,latitude,longitude,,,Western Mediterranean route,Central Mediterranean route,Western African route
 DZ,Algeria,28.033886,1.659626,,,,,
@@ -109,3 +113,5 @@ UG,Uganda,1.373333,32.290275,,,,,
 ZM,Zambia,-13.133897,27.849332,,,,,
 ZW,Zimbabwe,-19.015438,29.154857,,,,,
 >>>>>>> 3407400344337673fe8d0ce94c7f698281bfd8db
+=======
+>>>>>>> c8235a2f5ff5d9cf4b2f0327c2710bcf31b7db03

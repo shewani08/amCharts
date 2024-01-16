@@ -460,6 +460,7 @@ setConnection() {
   //   pointsToConnect: lineSeriesData
   //  });
   this.lineSeriesMap.data.setAll(lineSeriesData);
+  
 }
 getOrigin() {
   const transitions: { id: any; destinations: any; }[] = [];
@@ -800,6 +801,8 @@ coordinateDetail():any{
       }
       this.setConnection();
   }
+
+ 
 
   selectCountry1(country: any): void {
     this.selectedCountryValue = country;

@@ -744,37 +744,37 @@ return transitions;
     return am5.color("#000000");;;
   }
   selectedIndicatorData(): any {
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountry;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0]=== 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0]=== 'Drought intensity change (Water)') {
       return this.meansDroughtByCountry ;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountry;
-    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountry;
-    }else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-1(LOW)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountry;
     }
-    else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
       return this.meansDroughtByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountryMed;
-    } else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountryMed;
-    }else if (this.selectedRcpValue === 'RCP 4.5(MEDIUM)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountryMed;
     }
-    else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
+    else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators[0] === 'Water index stress (Water)') {
       return this.meansByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Drought intensity change (Water)') {
       return this.meansDroughtByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicators[0] === 'Crop yield change (Land)') {
       return this.meansCropYieldByCountryHigh;
-    } else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
+    } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Agriculture water Stress index (Land)') {
       return this.meansAgricultureByCountryHigh;
-    }else if (this.selectedRcpValue === 'RCP 8.5(HIGH)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
+    }else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicators[0] === 'Heat Index Event exposure (Energy)') {
       return this.meansTemparatureByCountryHigh;
     }
 
@@ -804,13 +804,13 @@ return transitions;
 
   filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {
     let filteredData:any ={};
-    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicators[0] =='Water index stress (Water)')
+    if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Water index stress (Water)')
     filteredData = this.waterYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicators[0] =='Drought intensity change (Water)')
+    if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Drought intensity change (Water)')
     filteredData = this.droughtYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicators[0] =='Crop yield change (Land)')
+    if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Crop yield change (Land)')
     filteredData = this.cropYieldYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='RCP 2.6(LOW)' && this.selectedIndicators[0] =='Heat Index Event exposure (Energy)')
+    if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Heat Index Event exposure (Energy)')
     filteredData = this.heatYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
     return filteredData ? {
       Country: filteredData.Country,
@@ -849,7 +849,7 @@ return transitions;
     }
   }
   showIcons(){
-    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicators?.length > 1) {
+    if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators?.length > 1) {
       const property = 'SSP1_1p5_Score';
       //this.mergedJSON = this.mergeJsonSources([this.fetchData, this.calculateMeanByCountry(this.droughtData,property), this.calculateMeanByCountry(this.cropYieldData,property) ]);
       const selectedDataSources = [];

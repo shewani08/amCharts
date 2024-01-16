@@ -42,10 +42,44 @@ interface RegionData {
   SSP1_3p0_Score: number
 
 }
+interface CountryData {
+  count: number;
+  sum: number;
+  mean?: number;
+  name?:string
+}
 interface Entry {
   Country: string;
   [key: string]: number | string;
 }
+const getColorForValue = (value: number): string => {
+  if (value >= 0 && value < 1) {
+    return "#CFCD9D";
+  } else if (value >= 1 && value < 2) {
+    return "#CA9485";
+  } else {
+    return "#B41404";
+  }
+};
+
+const getColorForLand = (value: number): string => {
+  if (value >= 0 && value < 1) {
+    return "#f0b7a1";
+  } else if (value >= 1 && value < 2) {
+    return "#c7856b";
+  } else {
+    return "#9e5336";
+  }
+};
+const getColorForHeat = (value: number): string => {
+  if (value >= 0 && value < 1) {
+    return "#f0b7a1";
+  } else if (value >= 1 && value < 2) {
+    return "#c7856b";
+  } else {
+    return "#9e5336";
+  }
+};
 
 @Component({
   selector: 'app-pie',
@@ -117,6 +151,8 @@ export class PieComponent implements OnInit {
   meansCropYieldByCountry: any;
   meansAgricultureByCountry: any;
   meansTemparatureByCountry: any;
+  countryMeanIdPairs: { id: string; value: any; }[] | undefined;
+  polygonRouteSeries: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService) {
 
@@ -148,7 +184,7 @@ export class PieComponent implements OnInit {
       this.meansAgricultureByCountry = this.calculateMeanByCountry(this.agricultureData, property, 'Agriculture water Stress index (Land)');
       this.meansTemparatureByCountry = this.calculateMeanByCountry(this.temperaturData, property, 'Heat Index Event exposure (Energy)');
       setTimeout(() => {
-        // console.log('Merged Data:', mergedData);
+         console.log('Merged Data:',  this.meansDroughtByCountry );
       }, 200);
     });
   }
@@ -191,6 +227,7 @@ private calculateMeanByCountry(data: Entry[], property: string,name:string) {
     result[country].sum += score * 100 / 100;
     result[country].mean = result[country].sum / result[country].count;
   });
+  console.log('result',result);
   return result;
 }
 loadData() {
@@ -261,7 +298,7 @@ let chart = root.container.children.push(am5map.MapChart.new(root, {
 
 // Create main polygon series for countries
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
-let polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+this.polygonRouteSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
 geoJSON: am5geodata_worldLow,
 include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU',
 "MT", 'NL', "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ',
@@ -270,20 +307,16 @@ include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR'
 'SZ', 'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW', 'DZ','UK'],
 }));
 
-let graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
-graticuleSeries.mapLines.template.setAll({
-stroke: root.interfaceColors.get("alternativeBackground"),
-strokeOpacity: 0.08
-});
+
 chart?.set("zoomLevel", 1);
 
 // Create line series for trajectory lines
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
  this.lineSeriesMap = chart.series.push(am5map.MapLineSeries.new(root, {}));
-this.lineSeriesMap.mapLines.template.setAll({
-stroke: root.interfaceColors.get("alternativeBackground"),
-strokeOpacity: 0.6
-});
+// this.lineSeriesMap.mapLines.template.setAll({
+// stroke: root.interfaceColors.get("alternativeBackground"),
+// strokeOpacity: 0.6
+// });
 
 // destinations series
 this.citySeries = chart.series.push(
@@ -306,47 +339,47 @@ return am5.Bullet.new(root, {
 });
 
 // arrow series
-let arrowSeries = chart.series.push(
-am5map.MapPointSeries.new(root, {})
-);
+// let arrowSeries = chart.series.push(
+// am5map.MapPointSeries.new(root, {})
+// );
 
-arrowSeries.bullets.push(function() {
-let arrow = am5.Graphics.new(root, {
-  fill: am5.color(0x000000),
-  stroke: am5.color(0x000000),
-  draw: function (display) {
-    display.moveTo(0, -3);
-    display.lineTo(8, 0);
-    display.lineTo(0, 3);
-    display.lineTo(0, -3);
-  }
-});
+// arrowSeries.bullets.push(function() {
+// let arrow = am5.Graphics.new(root, {
+//   fill: am5.color(0x000000),
+//   stroke: am5.color(0x000000),
+//   draw: function (display) {
+//     display.moveTo(0, -3);
+//     display.lineTo(8, 0);
+//     display.lineTo(0, 3);
+//     display.lineTo(0, -3);
+//   }
+// });
 
-return am5.Bullet.new(root, {
-  sprite: arrow
-});
-});
-
-
-arrowSeries.bullets.push(function() {
-let arrow = am5.Graphics.new(root, {
-  fill: am5.color(0x000000),
-  stroke: am5.color(0x000000),
-  draw: function (display) {
-    display.moveTo(0, -3);
-    display.lineTo(8, 0);
-    display.lineTo(0, 3);
-    display.lineTo(0, -3);
-  }
-});
-
-return am5.Bullet.new(root, {
-  sprite: arrow
-});
-});
+// return am5.Bullet.new(root, {
+//   sprite: arrow
+// });
+// });
 
 
-const visibleCountries = ["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"];
+// arrowSeries.bullets.push(function() {
+// let arrow = am5.Graphics.new(root, {
+//   fill: am5.color(0x000000),
+//   stroke: am5.color(0x000000),
+//   draw: function (display) {
+//     display.moveTo(0, -3);
+//     display.lineTo(8, 0);
+//     display.lineTo(0, 3);
+//     display.lineTo(0, -3);
+//   }
+// });
+
+// return am5.Bullet.new(root, {
+//   sprite: arrow
+// });
+////});
+
+
+//const visibleCountries = ["Nigeria", "Niger", "Algeria", "Libya", "Morocco", "West Sharan", "United Kingdom"];
 
 // Create point series for visible countries
 let visibleCitySeries = chart.series.push(
@@ -373,45 +406,6 @@ return am5.Bullet.new(root, {
 });
 
 
-var cities = [
-{
-  id: "nigeria",
-  title: "Nigeria",
-  geometry: { type: "Point", coordinates: [8.675277, 9.081999] },
-},
-{
-  id: "niger",
-  title: "Niger",
-  geometry: { type: "Point", coordinates: [8.081666, 17.607789] }
-}, 
-{
-  id: "algeria",
-  title: "Algeria",
-  geometry: { type: "Point", coordinates: [1.659626, 28.033886] }
-}, 
-{
-  id: "libya",
-  title: "Libya(central Med. Route)",
-  geometry: { type: "Point", coordinates: [17.228331, 26.3351] }
-}, 
-{
-  id: "morocco",
-  title: "Morocco(Western Med. Route)",
-  geometry: { type: "Point", coordinates: [-7.09262, 31.791702] }
-}, 
-  {
-  id: "westsharan",
-  title: "West Sharan(Western Africa Route)",
-  geometry: { type: "Point", coordinates: [ -12.8858, 24.2155] }
-}, 
- 
-{
-  id: "United Kingdom",
-  title: "United Kingdom",
-  geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
-  
-}];
-console.log('this.data',cities);
 if(this.data)
 this.citySeries.data.setAll(this.data);
 
@@ -450,16 +444,29 @@ setConnection() {
           },
           animationPosition: 0
         };
+        console.log('lineData',lineData);
         lineSeriesData.push(lineData);
       }
     });
+ 
   });
 
+  var points: any[] = [];
+  console.log(lineSeriesData);
+  // Loop to push data items to pointSeries
+  // lineSeriesData.forEach((item: any) => {
+  //   points.push(this.citySeries.pushDataItem(item));
+  // });
+  
+  // this.lineSeriesMap.pushDataItem({
+  //  pointsToConnect: points
+  // });
+ 
   // Set the line series data
   // this.lineSeriesMap.pushDataItem({
   //   pointsToConnect: lineSeriesData
   //  });
-  this.lineSeriesMap.data.setAll(lineSeriesData);
+ this.lineSeriesMap.data.setAll(lineSeriesData);
   
 }
 getOrigin() {
@@ -916,14 +923,86 @@ coordinateDetail():any{
   selectMapType(type: any) {
     this.selectedIndicator=type;
     if (this.selectedRcpValue === 'RCP 2.6(LOW)' ) {
-      if(this.selectedIndicator === 'Drought intensity change (Water)'){
-
-      }
+     
+         this.showPolygonColors();
+      
     
      
     }
 
 
+  }
+  showPolygonColors() {
+   //this.polygonRouteSeries const polygonSeries = this.polygonRouteSeries.series.getIndex(0) as am5map.MapPolygonSeries;
+      this.polygonRouteSeries?.mapPolygons?.each((polygon: any) => {
+        let countryMeanPairs: [string, number][] = [];
+        const dataContext = polygon.dataItem?.dataContext;
+        const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
+        if (data) {
+          countryMeanPairs = Object.entries(data).map(
+            ([country, data]) => [country, data.mean || 0]
+          );
+          this.countryMeanIdPairs = Object.entries(data).map(
+            ([country, data]) => ({ id: country, value: data.mean || 0 })
+          );
+        }
+
+        if (dataContext && typeof dataContext === 'object' && 'name' in dataContext) {
+          const countryName = dataContext.name;
+          const countryEntry = countryMeanPairs?.find(([country]) => country === countryName);
+      console.log(countryEntry);
+          if (countryEntry?.length && (this.selectedIndicator === 'Water index stress (Water)'
+            || this.selectedIndicator === 'Drought intensity change (Water)')) {
+            polygon.set("fill", am5.color(getColorForValue(countryEntry[1])));
+          }else if (countryEntry?.length && (this.selectedIndicator === 'Crop yield change (Land)' ||
+          this.selectedIndicator === 'Agriculture water Stress index (Land)')) {
+           polygon.set("fill", am5.color(getColorForLand(countryEntry[1]))); 
+        } 
+        else if (countryEntry?.length && (this.selectedIndicator=== 'Heat Index Event exposure (Energy)')) {
+          polygon.set("fill", am5.color(getColorForHeat(countryEntry[1])));
+        }
+        }
+      });
+   
+  }
+  selectedIndicatorData(): any {
+    if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicator === 'Water index stress (Water)') {
+      return this.meansByCountry;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
+     
+      return this.meansDroughtByCountry ;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)' && this.selectedIndicator === 'Crop yield change (Land)') {
+      return this.meansCropYieldByCountry;
+    } else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+      return this.meansAgricultureByCountry;
+    }else if (this.selectedRcpValue === 'RCP 2.6(LOW)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+      return this.meansTemparatureByCountry;
+    }
+    // else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicator === 'Water index stress (Water)') {
+    //   return this.meansByCountryMed;
+    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
+    //   return this.meansDroughtByCountryMed;
+    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)' && this.selectedIndicator === 'Crop yield change (Land)') {
+    //   return this.meansCropYieldByCountryMed;
+    // } else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+    //   return this.meansAgricultureByCountryMed;
+    // }else if (this.selectedRcpValue === 'SSP-2(MEDIUM)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+    //   return this.meansTemparatureByCountryMed;
+    // }
+    // else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicator === 'Water index stress (Water)') {
+    //   return this.meansByCountryHigh;
+    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Drought intensity change (Water)') {
+    //   return this.meansDroughtByCountryHigh;
+    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)' && this.selectedIndicator === 'Crop yield change (Land)') {
+    //   return this.meansCropYieldByCountryHigh;
+    // } else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Agriculture water Stress index (Land)') {
+    //   return this.meansAgricultureByCountryHigh;
+    // }else if (this.selectedRcpValue === 'SSP-3(HIGH)'  && this.selectedIndicator === 'Heat Index Event exposure (Energy)') {
+    //   return this.meansTemparatureByCountryHigh;
+    // }
+
+    // Add a default return statement (could be null, an empty object, or another appropriate value)
+    return null;
   }
   private updateDefaultColor(): void {
     if (this.chart && this.chart.series.length > 0) {
@@ -937,7 +1016,9 @@ coordinateDetail():any{
     }
 
   }
-  selectRcp(value: string): void {
+  selectRcp(value: any): void {
+
+    console.log('value is',value);
     this.selectedRcpValue=value;
    
   }

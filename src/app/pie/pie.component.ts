@@ -789,6 +789,7 @@ coordinateDetail():any{
   }
 
   selectCountry(country: any): void {
+    this.finalMeditor=[];
     this.selectedCountryValue = country;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);

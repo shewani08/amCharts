@@ -25,15 +25,22 @@
     <div class="dropdown mr-auto show-stress">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        {{ selectedIndicator || 'Select Indicator' }}
+        {{ selectedIndicators.length > 0 ? selectedIndicators.join(', ') : 'Indicator category' }}
       </button>
-      <div class="dropdown-menu" aria-labelledby="rcpDropdown">
+      <div class="dropdown-menu" aria-labelledby="indicatorDropdown">
+        <div *ngFor="let indicator of indicators" class="dropdown-item custom-checkbox">
+          <input type="checkbox" [id]="indicator.id" (change)="selectIndicator(indicator.name)" />
+          <label [for]="indicator.id">{{ indicator.name }}</label>
+        </div>
+      </div>
+  
+      <!-- <div class="dropdown-menu" aria-labelledby="rcpDropdown">
         <a class="dropdown-item" href="#" *ngFor="let map of mapType" (click)="selectMapType(map)">
           {{ map }}
         </a>
-      </div>
+      </div> -->
     </div>
-
+    
    
 
     <div class="dropdown mr-auto show-stress">

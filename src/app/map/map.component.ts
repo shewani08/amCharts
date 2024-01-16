@@ -595,12 +595,10 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   
   onMapPolygonPointerOver(ev: any) {
-
     let countryDetail = (ev.target.dataItem?.dataContext as { name: string }).name;
     let countryMeanPairs: any;
     let countryEntry;
     const data: { [key: string]: CountryData } | undefined = this.selectedIndicatorData();
-
     if (data) {
       countryMeanPairs = Object.entries(data).map(
         ([country, data]) => [country, data.mean || 0]
@@ -609,12 +607,10 @@ export class MapComponent implements OnInit, OnDestroy {
     if (countryMeanPairs?.length) {
       countryEntry = countryMeanPairs?.find(([country]: [string, number]) => country === countryDetail);
     }
-   
     if (countryEntry !== undefined && countryEntry[1] && countryEntry[1]!== null){ 
       this.heatLegend?.showValue(countryEntry[1]);
       this.mapheatLegend?.showValue(countryEntry[1]);
-    }
-     
+    } 
   }
 
   selectedIndicatorData(): any {

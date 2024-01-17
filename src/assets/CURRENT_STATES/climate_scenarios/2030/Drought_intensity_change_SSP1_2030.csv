@@ -1,46 +1,46 @@
-Country,No. of Irregular Migrants,Central Mediterranean Route,Western Mediterranean Route,Western African Route,Other Routes,No. of Irregular Migrants from Northern African Route,No. of Irregular Migrants in UK
-Libya,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Uganda,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Mali,7812.0,5882.0,117.0,1640.0,171.0,7639.0,2.0
-Cape Verde,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Djibouti,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Malawi,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Liberia,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Namibia,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-South Africa,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Angola,6.0,0.0,0.0,0.0,5.0,0.0,0.0
-Kenya,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Seychelles,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Gambia,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Comoros,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Morocco,44045.0,924.0,20436.0,14534.0,8148.0,35894.0,26.0
-Niger,12.0,10.0,0.0,0.0,0.0,10.0,4.0
-Burundi,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Egypt,1393.0,1323.0,0.0,0.0,69.0,1323.0,49.0
-Mauritius,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Algeria,24572.0,2825.0,21402.0,0.0,344.0,24227.0,9.0
-Sierra Leone,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Nigeria,359.0,217.0,2.0,8.0,130.0,227.0,1.0
-Mozambique,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Central African Republic,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Zambia,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Tunisia,4181.0,4164.0,0.0,0.0,16.0,4164.0,4.0
-Gabon,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Lesotho,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Mauritania,12.0,3.0,0.0,8.0,0.0,11.0,4.0
-Congo,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Botswana,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Ghana,218.0,145.0,2.0,45.0,24.0,192.0,0.0
-Guinea,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Madagascar,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Togo,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Sudan,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Cameroon,999.0,817.0,0.0,17.0,162.0,834.0,3.0
-Eritrea,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Senegal,1501.0,405.0,21.0,1064.0,10.0,1490.0,0.0
-Rwanda,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Ethiopia,11.0,9.0,0.0,0.0,1.0,9.0,0.0
-Zimbabwe,53.0,0.0,0.0,0.0,53.0,0.0,0.0
-Chad,29.0,26.0,0.0,0.0,2.0,26.0,2.0
-Somalia,213.0,23.0,0.0,0.0,189.0,23.0,1.0
-Benin,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Country,Total_Irregular_Migrants,Central_Mediterranean_Route,Western_Mediterranean_Route,Western_African_Route,Other Routes,No. of Irregular Migrants from Northern African Route,No. of Irregular Migrants in UK
+Libya,0,0,0,0,0,0,0
+Uganda,0,0,0,0,0,0,0
+Mali,7812,5882,117,1640,171,7639,2
+Cape Verde,0,0,0,0,0,0,0
+Djibouti,0,0,0,0,0,0,0
+Malawi,0,0,0,0,0,0,0
+Liberia,0,0,0,0,0,0,0
+Namibia,0,0,0,0,0,0,0
+South Africa,0,0,0,0,0,0,0
+Angola,6,0,0,0,5,0,0
+Kenya,0,0,0,0,0,0,0
+Seychelles,0,0,0,0,0,0,0
+Gambia,0,0,0,0,0,0,0
+Comoros,0,0,0,0,0,0,0
+Morocco,44045,924,20436,14534,8148,35894,26
+Niger,12,10,0,0,0,10,4
+Burundi,0,0,0,0,0,0,0
+Egypt,1393,1323,0,0,69,1323,49
+Mauritius,0,0,0,0,0,0,0
+Algeria,24572,2825,21402,0,344,24227,9
+Sierra Leone,0,0,0,0,0,0,0
+Nigeria,359,217,2,8,130,227,1
+Mozambique,0,0,0,0,0,0,0
+Central African Republic,0,0,0,0,0,0,0
+Zambia,0,0,0,0,0,0,0
+Tunisia,4181,4164,0,0,16,4164,4
+Gabon,0,0,0,0,0,0,0
+Lesotho,0,0,0,0,0,0,0
+Mauritania,12,3,0,8,0,11,4
+Congo,0,0,0,0,0,0,0
+Botswana,0,0,0,0,0,0,0
+Ghana,218,145,2,45,24,192,0
+Guinea,0,0,0,0,0,0,0
+Madagascar,0,0,0,0,0,0,0
+Togo,0,0,0,0,0,0,0
+Sudan,0,0,0,0,0,0,0
+Cameroon,999,817,0,17,162,834,3
+Eritrea,0,0,0,0,0,0,0
+Senegal,1501,405,21,1064,10,1490,0
+Rwanda,0,0,0,0,0,0,0
+Ethiopia,11,9,0,0,1,9,0
+Zimbabwe,53,0,0,0,53,0,0
+Chad,29,26,0,0,2,26,2
+Somalia,213,23,0,0,189,23,1
+Benin,0,0,0,0,0,0,0

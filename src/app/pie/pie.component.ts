@@ -718,9 +718,9 @@ return transitions;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
 //change table value
-if(this.selectYearValue === '2030' || this.selectYearValue === '2050')
-  this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
-
+   if(this.selectedCountryValue && this.selectYearValue  && this.selectedRcpValue && this.selectedIndicators[0])
+   this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
+   this.displayFilterData();
     console.log(' this.routeData', this.routeData);
       if (this.routeData.length) {
         console.log('Found country data', this.routeData);
@@ -956,6 +956,9 @@ if(this.selectYearValue === '2030' || this.selectYearValue === '2050')
 
   selectRcp(value: any): void {
     this.selectedRcpValue=value;
+    if(this.selectedCountryValue && this.selectYearValue  && this.selectedRcpValue && this.selectedIndicators[0])
+    this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
+    this.displayFilterData();
   }
 
   selectYear(value:string){
@@ -964,15 +967,17 @@ if(this.selectYearValue === '2030' || this.selectYearValue === '2050')
     if(value === '2030' || value === '2050'){
     this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicators[0]);
     console.log('countryYearData',this.countryYearData);
-    this.totalMigration = this.countryYearData?.totalMigration;
-    this.centralRoute=this.countryYearData?.Central;
-    this.westernRoute=this.countryYearData?.Western;
-    this.westernAfricaRoute=this.countryYearData?.WesternAfrica;
+   this.displayFilterData();
     }else{
       this.totalMigration=this.sumCountryData(this.selectedCountryValue);
     }
   }
-
+  displayFilterData(){
+    this.totalMigration = this.countryYearData?.totalMigration;
+    this.centralRoute=this.countryYearData?.Central;
+    this.westernRoute=this.countryYearData?.Western;
+    this.westernAfricaRoute=this.countryYearData?.WesternAfrica;
+  }
   filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {
     let filteredData:any ={};
     if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Water index stress (Water)' ){
@@ -1104,6 +1109,9 @@ if(this.selectYearValue === '2030' || this.selectYearValue === '2050')
       this.selectedIndicators.splice(index, 1);
     } 
     this.pointSeries?.data.clear();
+    if(this.selectedCountryValue && this.selectYearValue  && this.selectedRcpValue && this.selectedIndicators[0])
+    this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
+    this.displayFilterData();
       this.updateMap();
     
   }

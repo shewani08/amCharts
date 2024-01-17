@@ -83,19 +83,23 @@
           <th scope="col">From</th>
           <th scope="col">To</th>
           <th scope="col">Route</th>
+          <th scope="col">Migrant</th>
           <!-- <th scope="col">Total No. Of Irregular Migrants - ({{selectYearValue}})</th> -->
         </tr>
       </thead>
       <tbody>
         <ng-container *ngFor="let mediator of finalMeditor; let i = index">
-          <tr *ngIf="mediator">
+          <tr >
           <td>{{selectedCountryValue}}</td>
           <td>United Kingdom</td>
           <td *ngIf="i === 0"> Central Mediterranean Route - {{mediator}}</td>
           <td *ngIf="i === 1"> Western Mediterranean Route - {{mediator}}</td>
           <td *ngIf="i === 2"> Western Mediterranean Route - {{mediator}}</td>
           <td *ngIf="i === 3"> Western Africa Route - {{mediator}}</td>
-          <!-- <td scope="row">{{totalMigration}}</td> -->
+          <td *ngIf="i === 0">{{centralRoute}}</td> 
+          <td *ngIf="i === 1"> {{westernRoute}}</td>
+          <td *ngIf="i === 2"> {{westernRoute}}</td>
+          <td *ngIf="i === 3"> {{westernAfricaRoute}}</td>
         </tr>
       </ng-container>
       </tbody>

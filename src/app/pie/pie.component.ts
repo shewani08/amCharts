@@ -14,6 +14,7 @@ import { HeatWaterService } from '../service/HeatWaterService';
 import { forEach } from 'angular';
 import { forkJoin } from 'rxjs';
 import { MigrantYearService } from '../service/MigrantYearService';
+import { MigrantYear2030Service } from '../service/MigrantYearService2030';
 interface CsvData {
   id?: string;
   Continent?: string;
@@ -191,9 +192,13 @@ export class PieComponent implements OnInit {
   selectedIndicatos: any;
   mergedJSON: any;
   means: any;
+  waterYear2030Migrant: any;
+  centralRoute: any;
+  westernRoute: any;
+  westernAfricaRoute: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService,
-    private migrantYearService:MigrantYearService, private cd: ChangeDetectorRef) {
+    private migrantYearService:MigrantYearService, private cd: ChangeDetectorRef,private migrantYear2030Service:MigrantYear2030Service) {
 
     this.dataService.getCoordinate().subscribe((rcp: any) => {
       this.fetchData = this.rcpToJson(rcp);
@@ -212,7 +217,7 @@ export class PieComponent implements OnInit {
         "latitude": 51.5002
       })
       this.fetchData.splice(this.fetchData.length - 2 ,1);
-      console.log('this.fetchData',this.fetchData);
+    
       this.loadData();
     })
     this.migrantYearService.getWaterStress().subscribe((rcp: any) => {
@@ -226,6 +231,11 @@ export class PieComponent implements OnInit {
     })
     this.migrantYearService.getHeatMigrantData().subscribe((rcp: any) => {
       this.heatYearMigrant = this.rcpToJson(rcp);
+    })
+
+    this.migrantYear2030Service.getWaterStress().subscribe((rcp: any) => {
+      this.waterYear2030Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
     })
 
 
@@ -344,6 +354,13 @@ private calculateMeanByCountry(data: Entry[], property: string,name:string) {
 }
 loadData() {
   if (this.fetchData) {
+    this.fetchData.push({
+      Country:"United Kingdom",
+      id: "Uk",
+      title: "United Kingdom",
+      geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+      
+    })
     this.data = this.fetchData.map((coord: any) =>
       
       (
@@ -365,15 +382,16 @@ loadData() {
         coordinates: [parseFloat(coord.longitude),parseFloat(coord.latitude)]
       }
     }));
-    console.log('this.data is',this.data);
-    // this.data.push({
-    //   Country:"United Kingdom",
-    //   id: "United Kingdom",
-    //   title: "United Kingdom",
-    //   geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+  
+    this.data.push({
+      Country:"United Kingdom",
+      id: "United Kingdom",
+      title: "United Kingdom",
+      geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
       
-    // });
+    });
     this.data.splice(this.data.length - 3, 1);
+    this.data.splice(this.data.length - 2, 1);
     this.initializeChart();
   }
 }
@@ -415,6 +433,7 @@ this.chartRoute?.set("zoomLevel", 1.3);
 this.citySeries = this.chartRoute.series.push(
 am5map.MapPointSeries.new(this.rootRoute, {})
 );
+console.log('this.data',this.data);
 this.citySeries.data.setAll(this.data);
 this.citySeries.bullets.push(() => {
 let circle = am5.Circle.new(this.rootRoute!, {
@@ -466,53 +485,34 @@ onMapPolygonPointerOver(ev: any) {
 setConnection() {
    const origins = this.getOrigin();
   const lineSeriesData: any[] = [];
-//   origins.forEach((originData: any) => {
-//     console.log('originData.id',originData.id);
-//     const originDataItem = this.citySeries.getDataItemById(originData.id);
-//     originData.destinations.forEach((destId: any) => {
-     
-//       const destinationDataItem = this.citySeries.getDataItemById(String(destId?destId:'United Kingdom'));
-//       if (originDataItem && destinationDataItem) {
-//         const lineData = {
-//           geometry: {
-//             type: "LineString",
-//             coordinates: [
-//               [originDataItem.get("longitude"), originDataItem.get("latitude")],
-//               [destinationDataItem.get("longitude"), destinationDataItem.get("latitude")]
-//             ]
-//           },
-//           animationPosition: 0
-//         };
-//         console.log('lineData is',lineData);
-//         lineSeriesData.push(lineData);
-//       }
-//     });
- 
-//   });
+  origins.forEach((originData: any) => {
+  
+    const originDataItem = this.citySeries.getDataItemById(originData.id);
+    originData.destinations.forEach((destId: any) => {
 
-//   var points: any[] = [];
-//  this.lineSeriesMap.data.setAll(lineSeriesData);
-origins.forEach((originData: any) => {
-  const originDataItem = this.citySeries.getDataItemById(originData.id);
-  originData.destinations.forEach((destId: any) => {
-      const destinationDataItem = this.citySeries.getDataItemById(String(destId));
+      const destinationDataItem = this.citySeries.getDataItemById(String(destId?destId:'United Kingdom'));
+    
       if (originDataItem && destinationDataItem) {
-          const lineData = {
-              multiGeoLine: [
-                  [
-                      { latitude: originDataItem.get("latitude"), longitude: originDataItem.get("longitude") },
-                      { latitude: destinationDataItem.get("latitude"), longitude: destinationDataItem.get("longitude") }
-                  ]
-              ],
-              animationPosition: 0
-          };
-          lineSeriesData.push(lineData);
+        const lineData = {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [originDataItem.get("longitude"), originDataItem.get("latitude")],
+              [destinationDataItem.get("longitude"), destinationDataItem.get("latitude")]
+            ]
+          },
+          animationPosition: 0
+        };
+        console.log('lineData is',lineData);
+        lineSeriesData.push(lineData);
       }
+    });
+ 
   });
-});
 
-// Set the line data to the series
-this.lineSeriesMap.data.setAll(lineSeriesData);
+  var points: any[] = [];
+ this.lineSeriesMap.data.setAll(lineSeriesData);
+
   
 }
 getOrigin() {
@@ -605,6 +605,7 @@ return transitions;
     this.selectedCountryValue = country;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
+    console.log(' this.routeData', this.routeData);
       if (this.routeData.length) {
         console.log('Found country data', this.routeData);
       } else {
@@ -845,8 +846,12 @@ return transitions;
     this.selectYearValue=value;
      let countryYearData;
     if(value === '2030' || value === '2050'){
-    countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
-    this.totalMigration = countryYearData?.Value;
+    countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicators[0]);
+    console.log('countryYearData',countryYearData);
+    this.totalMigration = countryYearData?.totalMigration;
+    this.centralRoute=countryYearData?.Central;
+    this.westernRoute=countryYearData?.Western;
+    this.westernAfricaRoute=countryYearData?.WesternAfrica;
     }else{
       this.totalMigration=this.sumCountryData(this.selectedCountryValue);
     }
@@ -854,8 +859,11 @@ return transitions;
 
   filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {
     let filteredData:any ={};
-    if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Water index stress (Water)')
-    filteredData = this.waterYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
+    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Water index stress (Water)'){
+      filteredData = this.waterYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      console.log('filtereddata',filteredData);
+    }
+
     if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Drought intensity change (Water)')
     filteredData = this.droughtYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
     if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Crop yield change (Land)')
@@ -863,11 +871,16 @@ return transitions;
     if(this.selectedRcpValue=='SSP-1(LOW)' && this.selectedIndicators[0] =='Heat Index Event exposure (Energy)')
     filteredData = this.heatYearMigrant.find((entry: { Country: any; }) => entry.Country === country);
     return filteredData ? {
-      Country: filteredData.Country,
-      Scenario: filteredData.Scenario,
-      Variable: filteredData.Variable,
-      Value: filteredData[year]
+      // Country: filteredData.Country,
+      // Scenario: filteredData.Scenario,
+      // Variable: filteredData.Variable,
+      // Value: filteredData[year]
+     totalMigration:filteredData.Total_Irregular_Migrants,
+     Central:filteredData.Central_Mediterranean_Route,
+     Western:filteredData.Western_Mediterranean_Route,
+     WesternAfrica:filteredData.Western_African_Route
     } : null;
+
   }
 
   ngOnDestroy() {
@@ -925,7 +938,7 @@ return transitions;
       }
 //this.pointSeries.data.clear();
       this.mergedJSON = this.mergeJsonSources([this.fetchData, ...selectedDataSources]);
-      console.log('mergedJson',this.mergedJSON);
+    
       this.cd.detectChanges();
       //this.setIconsMap();
   //    this.cd.detectChanges();
@@ -968,7 +981,8 @@ return transitions;
           
           pointData[`name${j + 1}`] = nameValues[j];
         }
-
+console.log('pointData',pointData);
+      if(pointData.id !== 'UK')
         this.pointSeries?.data.push(pointData);
      // }
       }
@@ -995,11 +1009,6 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
 
       for (let j = 0; j < numberOfCircles; j++) {
         const countryName = dataItem?.dataContext?.Country;
-
-        // Skip creating circles for the United Kingdom
-        if (countryName && countryName.toLowerCase() === 'united kingdom') {
-          continue;
-        }
         const horizontalSpacing = 2; // Adjust this value as needed
         const verticalSpacing = 2; // Adjust this value as needed
       // let dx =10;
@@ -1027,7 +1036,7 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
           // centerX: am5.p50,
           // centerY: am5.p50,
           tooltipText: j === 0 ? `{name${i + 1}}-{mean${i + 1}}` : undefined,
-          src: src
+          src: this.pointSeries.data.id !== 'UK' ? src  : ''
         });
         container.children.push(circle);
       }

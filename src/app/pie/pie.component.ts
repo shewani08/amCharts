@@ -782,6 +782,7 @@ return transitions;
     return null;
   }
   private updateDefaultColor(): void {
+    this.heatLegend?.hide();
     if (this.chartRoute && this.chartRoute.series.length > 0) {
      // const polygonSeries = this.chart.series.getIndex(0) as am5map.MapPolygonSeries;
       if (this.polygonRouteSeries) {
@@ -798,10 +799,13 @@ return transitions;
 
   selectYear(value:string){
     this.selectYearValue=value;
-    // let countryYearData =0
-   // if(value === '2030' || value === '2050')
-   let countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
+     let countryYearData;
+    if(value === '2030' || value === '2050'){
+    countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
     this.totalMigration = countryYearData?.Value;
+    }else{
+      this.totalMigration=this.sumCountryData(this.selectedCountryValue);
+    }
   }
 
   filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {

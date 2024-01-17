@@ -40,6 +40,9 @@
     display: flex;
     align-items: center;
     margin-right: 20px; /* Adjust the margin as needed */
+    position: absolute;
+    top: 73%;
+    left: 4%;
   }
   .box-low {
     width: 20px;  

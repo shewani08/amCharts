@@ -1,9 +1,9 @@
 ﻿id,Country,latitude,longitude,Destination1,Destination 2,Destination 3,Central ,WesternMedi1,WesternMedi2,WesternAfrica,Final
-DZ,Algeria,28.033886,1.659626,,,,,,,,United Kingdom
+DZ,Algeria,28.033886,1.659626,Libya,,,Libya,Algeria,,,United Kingdom
 AO,Angola,-11.202692,17.873887,,,,,,,,
 BJ,Benin,9.30769,2.315834,,,,,,,,
 BW,Botswana,-22.328474,24.684866,,,,,,,,
-BF,Burkina,12.238333,-1.561593,,,,,,,,
+BF,Burkina,12.238333,-1.561593,Libya,,,Libya,Algeria,,,United Kingdom
 BI,Burundi,-3.373056,29.918886,,,,,,,,
 CM,Cameroon,7.369722,12.354722,,,,,,,,
 CV,Cape Verde,16.002082,-24.013197,,,,,,,,
@@ -14,10 +14,10 @@ KM,Comoros,-11.875001,43.872219,,,,,,,,
 CG,Congo,-4.038333,21.758664,,,,,,,,
 CD,"Congo, Democratic Republic of",-0.228021,15.827659,,,,,,,,
 DJ,Djibouti,11.825138,42.590275,,,,,,,,
-EG,Egypt,26.820553,30.802498,,,,,,,,
+EG,Egypt,26.820553,30.802498,Libya,,,Libya,,,,United Kingdom
 GQ,Equatorial Guinea,1.650801,10.267895,,,,,,,,
 ER,Eritrea,15.179384,39.782334,Sudan,Egypt,,Libya,,,,United Kingdom
-ET,Ethiopia,9.145,40.489673,,,,,,,,
+ET,Ethiopia,9.145,40.489673,Libya,,,Libya,,,,United Kingdom
 GA,Gabon,,,,,,,,,,
 GM,Gambia,13.443182,-15.310139,Mali,,,,Algeria ,Morocco,,United Kingdom
 GH,Ghana,7.946527,-1.023194,,,,,,,,
@@ -26,7 +26,7 @@ GW,Guinea-Bissau,11.803749,-15.180413,,,,,,,,
 CI,Ivory Coast,,,,,,,,,,
 KE,Kenya,-0.023559,37.906193,Ethiopia,Eritrea,Sudan,Libya,,,,United Kingdom
 LS,Lesotho,-29.609988,28.233608,,,,,,,,
-LR,Liberia,6.428055,-9.429499,,,,,,,,
+LR,Liberia,6.428055,-9.429499,Burkina,,,Libya,Algeria ,,Mauritania,United Kingdom
 LR,Libya,26.3351,17.228331,,,,,,,,
 MW,Malawi,-13.254308,34.301525,,,,,,,,
 ML,Mali,17.570692,-3.996166,Algeria,,,,Algeria,,,United Kingdom

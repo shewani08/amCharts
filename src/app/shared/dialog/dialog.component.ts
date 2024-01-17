@@ -12,6 +12,7 @@ import { DataService } from 'src/app/service/dataService';
 import { YearService } from 'src/app/service/yearService';
 import { PreviousEvntService } from 'src/app/service/previousEvent';
 import { MigrantYear2030Service } from 'src/app/service/MigrantYearService2030';
+import { MigrantYear2050Service } from 'src/app/service/MigrantYearService2050';
 
 interface CsvData {
   id: string;
@@ -50,13 +51,126 @@ export class DialogComponent implements OnChanges {
   rcpSubscription: any;
   rcpData: any;
   waterYear2030Migrant: any;
+  droughtYear2030Migrant: any;
+  cropYear2030Migrant: any;
+  heatYear2030Migrant: any;
+  waterYearSSP2Migrant: any;
+  heatYearSSP2Migrant: any;
+  cropYearSSP2Migrant: any;
+  droughtYearSSP2Migrant: any;
+  waterYearSSP3Migrant: any;
+  heatYearSSP3Migrant: any;
+  droughtYearSSP3Migrant: any;
+  cropYearSSP3Migrant: any;
+  waterYear2050Migrant: any;
+  droughtYear2050Migrant: any;
+  cropYear2050Migrant: any;
+  heatYear2050Migrant: any;
+  waterYear2050SSP2Migrant: any;
+  heatYear2050SSP2Migrant: any;
+  cropYear2050SSP2Migrant: any;
+  droughtYear2050SSP2Migrant: any;
+  waterYear2050SSP3Migrant: any;
+  heatYear2050SSP3Migrant: any;
+  droughtYear2050SSP3Migrant: any;
+  cropYear2050SSP3Migrant: any;
 
 
 
   constructor(private cdr: ChangeDetectorRef, private dataService: DataService,private yearService: YearService,
-    private previousEvntService:PreviousEvntService,private migrantYear2030Service:MigrantYear2030Service) {
+    private previousEvntService:PreviousEvntService,private migrantYear2030Service:MigrantYear2030Service,private migrantYear2050Service:MigrantYear2050Service) {
       this.migrantYear2030Service.getWaterStress().subscribe((rcp: any) => {
         this.waterYear2030Migrant = this.rcpToJson(rcp);
+      
+      // 2030 Year Data 
+    this.migrantYear2030Service.getWaterStress().subscribe((rcp: any) => {
+      this.waterYear2030Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getDroughtMigrantData().subscribe((rcp: any) => {
+      this.droughtYear2030Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getCropYieldMigrantData().subscribe((rcp: any) => {
+      this.cropYear2030Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getHeatMigrantData().subscribe((rcp: any) => {
+      this.heatYear2030Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getWaterStressSSP2().subscribe((rcp: any) => {
+      this.waterYearSSP2Migrant = this.rcpToJson(rcp);
+      
+    })
+    this.migrantYear2030Service.getHeatMigrantDataSSP2().subscribe((rcp: any) => {
+      this.heatYearSSP2Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2030Service.getCropYieldMigrantDataSSP2().subscribe((rcp: any) => {
+      this.cropYearSSP2Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2030Service.getDroughtMigrantDataSSP2().subscribe((rcp: any) => {
+      this.droughtYearSSP2Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getWaterStressSSP3().subscribe((rcp: any) => {
+      this.waterYearSSP3Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2030Service.getHeatMigrantDataSSP3().subscribe((rcp: any) => {
+      this.heatYearSSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2030Service.getDroughtMigrantDataSSP3().subscribe((rcp: any) => {
+      this.droughtYearSSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2030Service.getCropYieldMigrantDataSSp3().subscribe((rcp: any) => {
+      this.cropYearSSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    // Year 2050 Service
+    this.migrantYear2050Service.getWaterStress().subscribe((rcp: any) => {
+      this.waterYear2050Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2050Service.getDroughtMigrantData().subscribe((rcp: any) => {
+      this.droughtYear2050Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2050Service.getCropYieldMigrantData().subscribe((rcp: any) => {
+      this.cropYear2050Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2050Service.getHeatMigrantData().subscribe((rcp: any) => {
+      this.heatYear2050Migrant = this.rcpToJson(rcp);
+    })
+    this.migrantYear2050Service.getWaterStressSSP2().subscribe((rcp: any) => {
+      this.waterYear2050SSP2Migrant = this.rcpToJson(rcp);
+      
+    })
+    this.migrantYear2050Service.getHeatMigrantDataSSP2().subscribe((rcp: any) => {
+      this.heatYear2050SSP2Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getCropYieldMigrantDataSSP2().subscribe((rcp: any) => {
+      this.cropYear2050SSP2Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getDroughtMigrantDataSSP2().subscribe((rcp: any) => {
+      this.droughtYear2050SSP2Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getWaterStressSSP3().subscribe((rcp: any) => {
+      this.waterYear2050SSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getHeatMigrantDataSSP3().subscribe((rcp: any) => {
+      this.heatYear2050SSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getDroughtMigrantDataSSP3().subscribe((rcp: any) => {
+      this.droughtYear2050SSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+    this.migrantYear2050Service.getCropYieldMigrantDataSSp3().subscribe((rcp: any) => {
+      this.cropYear2050SSP3Migrant = this.rcpToJson(rcp);
+      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
+    })
+      
       })
 
   }

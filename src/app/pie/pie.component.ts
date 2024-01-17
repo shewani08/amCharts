@@ -222,6 +222,7 @@ export class PieComponent implements OnInit {
   heatYear2050SSP3Migrant: any;
   droughtYear2050SSP3Migrant: any;
   cropYear2050SSP3Migrant: any;
+  countryYearData: any | null;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService,
     private migrantYearService:MigrantYearService, private cd: ChangeDetectorRef,private migrantYear2030Service:MigrantYear2030Service,
@@ -259,7 +260,7 @@ export class PieComponent implements OnInit {
     this.migrantYearService.getHeatMigrantData().subscribe((rcp: any) => {
       this.heatYearMigrant = this.rcpToJson(rcp);
     })
-
+// 2030 Year Data 
     this.migrantYear2030Service.getWaterStress().subscribe((rcp: any) => {
       this.waterYear2030Migrant = this.rcpToJson(rcp);
     })
@@ -286,11 +287,9 @@ export class PieComponent implements OnInit {
     })
     this.migrantYear2030Service.getDroughtMigrantDataSSP2().subscribe((rcp: any) => {
       this.droughtYearSSP2Migrant = this.rcpToJson(rcp);
-      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
     })
     this.migrantYear2030Service.getWaterStressSSP3().subscribe((rcp: any) => {
       this.waterYearSSP3Migrant = this.rcpToJson(rcp);
-      console.log('waterYear2030Migrant',this.waterYear2030Migrant);
     })
     this.migrantYear2030Service.getHeatMigrantDataSSP3().subscribe((rcp: any) => {
       this.heatYearSSP3Migrant = this.rcpToJson(rcp);
@@ -718,6 +717,10 @@ return transitions;
     this.selectedCountryValue = country;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
+//change table value
+if(this.selectYearValue === '2030' || this.selectYearValue === '2050')
+  this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
+
     console.log(' this.routeData', this.routeData);
       if (this.routeData.length) {
         console.log('Found country data', this.routeData);
@@ -957,14 +960,14 @@ return transitions;
 
   selectYear(value:string){
     this.selectYearValue=value;
-     let countryYearData;
+    // let countryYearData;
     if(value === '2030' || value === '2050'){
-    countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicators[0]);
-    console.log('countryYearData',countryYearData);
-    this.totalMigration = countryYearData?.totalMigration;
-    this.centralRoute=countryYearData?.Central;
-    this.westernRoute=countryYearData?.Western;
-    this.westernAfricaRoute=countryYearData?.WesternAfrica;
+    this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicators[0]);
+    console.log('countryYearData',this.countryYearData);
+    this.totalMigration = this.countryYearData?.totalMigration;
+    this.centralRoute=this.countryYearData?.Central;
+    this.westernRoute=this.countryYearData?.Western;
+    this.westernAfricaRoute=this.countryYearData?.WesternAfrica;
     }else{
       this.totalMigration=this.sumCountryData(this.selectedCountryValue);
     }
@@ -1012,7 +1015,8 @@ return transitions;
       if( year == '2030')
       filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
-      filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      filteredData = this.waterYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+     
     }
     if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Drought intensity change (Water)'){
       if( year == '2030')
@@ -1021,26 +1025,60 @@ return transitions;
       filteredData = this.droughtYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Crop yield change (Land)')
-    filteredData = this.cropYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Heat Index Event exposure (Energy)' )
-    filteredData = this.heatYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Crop yield change (Land)'){
+      if( year == '2030')
+      filteredData = this.cropYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.cropYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    }
+    
+    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Heat Index Event exposure (Energy)' ){
+      if( year == '2030')
+      filteredData = this.heatYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.heatYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    }
+   
     if(this.selectedRcpValue=='SSP-2(MEDIUM))' && indicators =='Water index stress (Water)' ){
+      if( year == '2030')
       filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.waterYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
 
     if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
-      filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
-    }
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Drought intensity change (Water)')
-    filteredData = this.droughtYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Crop yield change (Land)')
-    filteredData = this.cropYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Heat Index Event exposure (Energy)')
-    filteredData = this.heatYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
+      if( year == '2030')
       filteredData = this.waterYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
-      console.log('filtereddata',filteredData);
+      if( year == '2050')
+      filteredData = this.waterYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+
+    }
+    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Drought intensity change (Water)'){
+      if( year == '2030')
+      filteredData = this.droughtYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.droughtYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    }
+   
+    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Crop yield change (Land)'){
+      if( year == '2030')
+      filteredData = this.cropYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.cropYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    }
+   
+    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Heat Index Event exposure (Energy)'){
+      if( year == '2030')
+      filteredData = this.heatYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.heatYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+    }
+    
+    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
+      if( year == '2030')
+      filteredData = this.waterYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
+      if( year == '2050')
+      filteredData = this.waterYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
 
     return filteredData ? {

@@ -11,6 +11,7 @@ import { any } from '@amcharts/amcharts5/.internal/core/util/Array';
 import { DataService } from 'src/app/service/dataService';
 import { YearService } from 'src/app/service/yearService';
 import { PreviousEvntService } from 'src/app/service/previousEvent';
+import { MigrantYear2030Service } from 'src/app/service/MigrantYearService2030';
 
 interface CsvData {
   id: string;
@@ -48,16 +49,36 @@ export class DialogComponent implements OnChanges {
   rcpData$: any;
   rcpSubscription: any;
   rcpData: any;
+  waterYear2030Migrant: any;
 
 
 
   constructor(private cdr: ChangeDetectorRef, private dataService: DataService,private yearService: YearService,
-    private previousEvntService:PreviousEvntService) {
-
+    private previousEvntService:PreviousEvntService,private migrantYear2030Service:MigrantYear2030Service) {
+      this.migrantYear2030Service.getWaterStress().subscribe((rcp: any) => {
+        this.waterYear2030Migrant = this.rcpToJson(rcp);
+      })
 
   }
   
   ngOnChanges(changes: SimpleChanges): void {
+  }
+  private rcpToJson<T>(data: string): T[] {
+    const lines = data.split('\n');
+    const headers = lines[0].split(',');
+    const result: T[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const currentLine = lines[i].split(',');
+      const obj: any = {};
+      for (let j = 0; j < headers.length; j++) {
+                const key = headers[j].trim() as keyof CsvData;
+        const value = currentLine[j] ? currentLine[j].trim() : '';
+        obj[key] = value;
+      }
+      result.push(obj as T);
+    }
+    return result;
+  
   }
 
   ngOnInit() {

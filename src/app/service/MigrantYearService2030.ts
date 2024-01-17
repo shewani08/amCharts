@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class MigrantYearService {
+export class MigrantYear2030Service {
   constructor(private http: HttpClient) { }
  
   getWaterStress(){

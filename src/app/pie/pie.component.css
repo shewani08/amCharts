@@ -36,3 +36,16 @@
     background-color: #e68301;
     border-color: #e68301;
   }
+  .indicator-box {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* Adjust the margin as needed */
+  }
+  .box-low {
+    width: 20px;  
+    height: 10px;  
+
+    /* background-color: #ff621f ;   */
+    background-color: #6794dc;
+    /* margin-right: 5px;   */
+  }

@@ -16,6 +16,7 @@ import { forkJoin } from 'rxjs';
 import { MigrantYearService } from '../service/MigrantYearService';
 import { MigrantYear2030Service } from '../service/MigrantYearService2030';
 import { MigrantYear2050Service } from '../service/MigrantYearService2050';
+import { MigrantNoScenarioService } from '../service/MigrantYearServicenosenario';
 interface CsvData {
   id?: string;
   Continent?: string;
@@ -223,10 +224,11 @@ export class PieComponent implements OnInit {
   droughtYear2050SSP3Migrant: any;
   cropYear2050SSP3Migrant: any;
   countryYearData: any | null;
+  noMigrantData: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService,
     private migrantYearService:MigrantYearService, private cd: ChangeDetectorRef,private migrantYear2030Service:MigrantYear2030Service,
-    private migrantYear2050Service:MigrantYear2050Service) {
+    private migrantYear2050Service:MigrantYear2050Service,private migrantNoScenarioService:MigrantNoScenarioService) {
 
     this.dataService.getCoordinate().subscribe((rcp: any) => {
       this.fetchData = this.rcpToJson(rcp);
@@ -349,6 +351,12 @@ export class PieComponent implements OnInit {
       this.cropYear2050SSP3Migrant = this.rcpToJson(rcp);
       console.log('waterYear2030Migrant',this.waterYear2030Migrant);
     })
+ //no scenario
+
+ this.migrantNoScenarioService.getSspNoSenario().subscribe((rcp: any) => {
+  this.noMigrantData = this.rcpToJson(rcp);
+  
+})
 
 
     forkJoin([
@@ -635,7 +643,7 @@ getOrigin() {
   this.destination3 = location[0].Destination3;
   this.finalMeditor.push(location[0]?.Central);
   this.finalMeditor.push(location[0]?.Western);
-  this.finalMeditor.push(location[0]?.WesternMedi);
+  // this.finalMeditor.push(location[0]?.WesternMedi);
   this.finalMeditor.push(location[0]?.WesternAfrica);
   console.log('finalMeditor',this.finalMeditor);
   this.center = location[0].Central;
@@ -720,6 +728,8 @@ return transitions;
 //change table value
    if(this.selectedCountryValue && this.selectYearValue  && this.selectedRcpValue && this.selectedIndicators[0])
    this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
+  else 
+  this.countryYearData = this.displayNoMigrantData(country);
    this.displayFilterData();
     console.log(' this.routeData', this.routeData);
       if (this.routeData.length) {
@@ -729,6 +739,17 @@ return transitions;
       }
       this.setConnection();
   }
+  displayNoMigrantData(country: any) {
+    let filteredData= this.noMigrantData.find((entry: { Country: any; }) => entry.Country === country);
+    return filteredData ? {
+      totalMigration:filteredData.Total_Irregular_Migrants,
+      Central:filteredData.Central_Mediterranean_Route,
+      Western:filteredData.Western_Mediterranean_Route,
+      WesternAfrica:filteredData.Western_African_Route
+     } : null;
+ 
+   }
+  
 
  
 
@@ -963,14 +984,14 @@ return transitions;
 
   selectYear(value:string){
     this.selectYearValue=value;
-    // let countryYearData;
-    if(value === '2030' || value === '2050'){
+    if((value === '2030' || value === '2050') &&  this.selectedCountryValue  || (value === '2030' || value === '2050'))
     this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicators[0]);
-    console.log('countryYearData',this.countryYearData);
-   this.displayFilterData();
-    }else{
-      this.totalMigration=this.sumCountryData(this.selectedCountryValue);
-    }
+   else if(value === 'No scenario')
+   this.countryYearData = this.displayNoMigrantData(this.selectedCountryValue);
+     this.displayFilterData();
+    // }else{
+    //   this.totalMigration=this.sumCountryData(this.selectedCountryValue);
+    // }
   }
   displayFilterData(){
     this.totalMigration = this.countryYearData?.totalMigration;

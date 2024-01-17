@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class MigrantYear2050Service {
+export class MigrantNoScenarioService {
   constructor(private http: HttpClient) { }
  
   getSspNoSenario(){

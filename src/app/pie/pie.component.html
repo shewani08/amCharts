@@ -69,14 +69,21 @@
 <div class="d-flex">
   <div class="" id="chartdestionation"></div>
   <div class="mgrt-table" *ngIf="selectedCountryValue">
+    <div>
+      
+    </div>
     <table class="table table-sm">
       <thead>
+        <tr >
+          <h2>Total No. Of Irregular Migrants-({{selectYearValue}}) :&nbsp;<a href="#" >{{totalMigration}}</a></h2>
+        </tr>
+        <tr></tr>
         <tr>
           
           <th scope="col">From</th>
           <th scope="col">To</th>
           <th scope="col">Route</th>
-          <th scope="col">Total No. Of Irregular Migrants - ({{selectYearValue}})</th>
+          <!-- <th scope="col">Total No. Of Irregular Migrants - ({{selectYearValue}})</th> -->
         </tr>
       </thead>
       <tbody>
@@ -88,7 +95,7 @@
           <td *ngIf="i === 1"> Western Mediterranean Route - {{mediator}}</td>
           <td *ngIf="i === 2"> Western Mediterranean Route - {{mediator}}</td>
           <td *ngIf="i === 3"> Western Africa Route - {{mediator}}</td>
-          <td scope="row">{{totalMigration}}</td>
+          <!-- <td scope="row">{{totalMigration}}</td> -->
         </tr>
       </ng-container>
       </tbody>

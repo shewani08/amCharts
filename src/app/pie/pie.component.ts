@@ -643,7 +643,7 @@ getOrigin() {
   this.destination3 = location[0].Destination3;
   this.finalMeditor.push(location[0]?.Central);
   this.finalMeditor.push(location[0]?.Western);
-  this.finalMeditor.push(location[0]?.WesternMedi);
+  // this.finalMeditor.push(location[0]?.WesternMedi);
   this.finalMeditor.push(location[0]?.WesternAfrica);
   console.log('finalMeditor',this.finalMeditor);
   this.center = location[0].Central;

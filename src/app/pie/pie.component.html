@@ -46,11 +46,12 @@
     <div class="dropdown mr-auto show-stress">
       <button class="btn btn-primary dropdown-toggle rcp" type="button" id="rcpDropdown" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        {{ 'Year' }}
+        {{ selectYearValue ||  'Year' }}
       </button>
       <div class="dropdown-menu" aria-labelledby="rcpDropdown">
         <a class="dropdown-item" href="#" (click)="selectYear('2030')">2030</a>
         <a class="dropdown-item" href="#" (click)="selectYear('2050')">2050</a>
+        <a class="dropdown-item" href="#" (click)="selectYear('No scenario')">No scenario</a>
      
       </div>
     </div>
@@ -75,7 +76,7 @@
           <th scope="col">From</th>
           <th scope="col">To</th>
           <th scope="col">Route</th>
-          <th scope="col">Total No. Of Irregular Migrants</th>
+          <th scope="col">Total No. Of Irregular Migrants - ({{selectYearValue}})</th>
         </tr>
       </thead>
       <tbody>

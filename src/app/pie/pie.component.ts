@@ -131,7 +131,7 @@ export class PieComponent implements OnInit {
   waterData: any=[];
   polygonSeries: any;
   selectedRcpValue: any='';
-  selectYearValue:string ='';
+  selectYearValue:any ='No scenario';
   coordinaateandcountry: any;
   pointSeries: any;
   fetchData: any;
@@ -559,7 +559,7 @@ return transitions;
   selectCountry(country: any): void {
     this.finalMeditor=[];
     this.selectedCountryValue = country;
-   // this.totalMigration = this.sumCountryData(this.selectedCountryValue);
+    this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
       if (this.routeData.length) {
         console.log('Found country data', this.routeData);
@@ -798,7 +798,9 @@ return transitions;
 
   selectYear(value:string){
     this.selectYearValue=value;
-    const countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
+    // let countryYearData =0
+   // if(value === '2030' || value === '2050')
+   let countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, value,this.selectedRcpValue,this.selectedIndicator);
     this.totalMigration = countryYearData?.Value;
   }
 

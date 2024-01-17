@@ -398,7 +398,7 @@ am5map.MapPointSeries.new(this.rootRoute, {})
 this.citySeries.bullets.push(() => {
 let circle = am5.Circle.new(this.rootRoute!, {
   radius: 5,
- tooltipText: "{title}",
+  tooltipText: "{title}",
   tooltipY: 0,
   fill: am5.color(0xffba00),
   stroke: this.rootRoute?.interfaceColors.get("background"),
@@ -892,7 +892,7 @@ return transitions;
  
 }
   setIconsMap() {
-    
+   
    //this.initializeChart();
    this.pointSeries = this.chartRoute?.series.push(
       am5map.MapPointSeries.new(this.rootRoute, {
@@ -949,6 +949,7 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
       }
 
       for (let j = 0; j < numberOfCircles; j++) {
+
         const horizontalSpacing = 2; // Adjust this value as needed
         const verticalSpacing = 2; // Adjust this value as needed
       // let dx =10;
@@ -987,7 +988,8 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
   const label = am5.Label.new(root1, {
     centerX: am5.p50,
     centerY: am5.p50,
-    //text: "{title}",
+   // text: "{title}",
+   
     populateText: true,
     fontSize: 13,
     fontWeight: "bold",

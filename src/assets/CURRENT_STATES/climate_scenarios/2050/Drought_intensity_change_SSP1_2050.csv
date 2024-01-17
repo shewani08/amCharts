@@ -1,46 +1,46 @@
-Country,No. of Irregular Migrants,Central Mediterranean Route,Western Mediterranean Route,Western African Route,Other Routes,No. of Irregular Migrants from Northern African Route,No. of Irregular Migrants in UK
-Libya,0.0,0.0,0.0,0.0,0.0,0.0,0
-Uganda,0.0,0.0,0.0,0.0,0.0,0.0,0
-Mali,39.0,29.0,0.0,8.0,0.0,37.0,0
-Cape Verde,0.0,0.0,0.0,0.0,0.0,0.0,0
-Djibouti,0.0,0.0,0.0,0.0,0.0,0.0,0
-Malawi,0.0,0.0,0.0,0.0,0.0,0.0,0
-Liberia,0.0,0.0,0.0,0.0,0.0,0.0,0
-Namibia,0.0,0.0,0.0,0.0,0.0,0.0,0
-South Africa,0.0,0.0,0.0,0.0,0.0,0.0,0
-Angola,0.0,0.0,0.0,0.0,0.0,0.0,0
-Kenya,0.0,0.0,0.0,0.0,0.0,0.0,0
-Seychelles,0.0,0.0,0.0,0.0,0.0,0.0,0
-Gambia,0.0,0.0,0.0,0.0,0.0,0.0,0
-Comoros,0.0,0.0,0.0,0.0,0.0,0.0,0
-Morocco,501.0,10.0,232.0,165.0,92.0,407.0,0
-Niger,0.0,0.0,0.0,0.0,0.0,0.0,0
-Burundi,0.0,0.0,0.0,0.0,0.0,0.0,0
-Egypt,2.0,1.0,0.0,0.0,0.0,1.0,0
-Mauritius,0.0,0.0,0.0,0.0,0.0,0.0,0
-Algeria,874.0,100.0,761.0,0.0,12.0,861.0,0
-Sierra Leone,0.0,0.0,0.0,0.0,0.0,0.0,0
-Nigeria,12.0,7.0,0.0,0.0,4.0,7.0,0
-Mozambique,0.0,0.0,0.0,0.0,0.0,0.0,0
-Central African Republic,0.0,0.0,0.0,0.0,0.0,0.0,0
-Zambia,0.0,0.0,0.0,0.0,0.0,0.0,0
-Tunisia,206.0,205.0,0.0,0.0,0.0,205.0,0
-Gabon,0.0,0.0,0.0,0.0,0.0,0.0,0
-Lesotho,0.0,0.0,0.0,0.0,0.0,0.0,0
-Mauritania,0.0,0.0,0.0,0.0,0.0,0.0,0
-Congo,0.0,0.0,0.0,0.0,0.0,0.0,0
-Botswana,0.0,0.0,0.0,0.0,0.0,0.0,0
-Ghana,18.0,12.0,0.0,3.0,1.0,15.0,0
-Guinea,0.0,0.0,0.0,0.0,0.0,0.0,0
-Madagascar,0.0,0.0,0.0,0.0,0.0,0.0,0
-Togo,0.0,0.0,0.0,0.0,0.0,0.0,0
-Sudan,0.0,0.0,0.0,0.0,0.0,0.0,0
-Cameroon,46.0,37.0,0.0,0.0,7.0,37.0,0
-Eritrea,0.0,0.0,0.0,0.0,0.0,0.0,0
-Senegal,47.0,12.0,0.0,33.0,0.0,45.0,0
-Rwanda,0.0,0.0,0.0,0.0,0.0,0.0,0
-Ethiopia,0.0,0.0,0.0,0.0,0.0,0.0,0
-Zimbabwe,2.0,0.0,0.0,0.0,2.0,0.0,0
-Chad,2.0,1.0,0.0,0.0,0.0,1.0,0
-Somalia,176.0,19.0,0.0,0.0,156.0,19.0,0
-Benin,0.0,0.0,0.0,0.0,0.0,0.0,0
+Country,Total_Irregular_Migrants,Central_Mediterranean_Route,Western_Mediterranean_Route,Western_African_Route,Other Routes,No. of Irregular Migrants from Northern African Route,No. of Irregular Migrants in UK
+Libya,0,0,0,0,0,0,0
+Uganda,0,0,0,0,0,0,0
+Mali,39,29,0,8,0,37,0
+Cape Verde,0,0,0,0,0,0,0
+Djibouti,0,0,0,0,0,0,0
+Malawi,0,0,0,0,0,0,0
+Liberia,0,0,0,0,0,0,0
+Namibia,0,0,0,0,0,0,0
+South Africa,0,0,0,0,0,0,0
+Angola,0,0,0,0,0,0,0
+Kenya,0,0,0,0,0,0,0
+Seychelles,0,0,0,0,0,0,0
+Gambia,0,0,0,0,0,0,0
+Comoros,0,0,0,0,0,0,0
+Morocco,501,10,232,165,92,407,0
+Niger,0,0,0,0,0,0,0
+Burundi,0,0,0,0,0,0,0
+Egypt,2,1,0,0,0,1,0
+Mauritius,0,0,0,0,0,0,0
+Algeria,874,100,761,0,12,861,0
+Sierra Leone,0,0,0,0,0,0,0
+Nigeria,12,7,0,0,4,7,0
+Mozambique,0,0,0,0,0,0,0
+Central African Republic,0,0,0,0,0,0,0
+Zambia,0,0,0,0,0,0,0
+Tunisia,206,205,0,0,0,205,0
+Gabon,0,0,0,0,0,0,0
+Lesotho,0,0,0,0,0,0,0
+Mauritania,0,0,0,0,0,0,0
+Congo,0,0,0,0,0,0,0
+Botswana,0,0,0,0,0,0,0
+Ghana,18,12,0,3,1,15,0
+Guinea,0,0,0,0,0,0,0
+Madagascar,0,0,0,0,0,0,0
+Togo,0,0,0,0,0,0,0
+Sudan,0,0,0,0,0,0,0
+Cameroon,46,37,0,0,7,37,0
+Eritrea,0,0,0,0,0,0,0
+Senegal,47,12,0,33,0,45,0
+Rwanda,0,0,0,0,0,0,0
+Ethiopia,0,0,0,0,0,0,0
+Zimbabwe,2,0,0,0,2,0,0
+Chad,2,1,0,0,0,1,0
+Somalia,176,19,0,0,156,19,0
+Benin,0,0,0,0,0,0,0

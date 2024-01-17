@@ -892,7 +892,7 @@ return transitions;
  
 }
   setIconsMap() {
-    
+   
    //this.initializeChart();
    this.pointSeries = this.chartRoute?.series.push(
       am5map.MapPointSeries.new(this.rootRoute, {
@@ -933,9 +933,7 @@ return transitions;
 this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => {
   const container = am5.Container.new(this.rootRoute, {});
   let meanValue;
-  const countryName = dataItem?.dataContext?.value;
-  console.log('countryName',countryName);
-   if(countryName.length)  
+
   for (let i = 1; i <= this.selectedIndicators.length-1; i++) {
     // Assuming the mean values are stored in dataItem object
     if(i==1)
@@ -991,6 +989,7 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
     centerX: am5.p50,
     centerY: am5.p50,
    // text: "{title}",
+   
     populateText: true,
     fontSize: 13,
     fontWeight: "bold",

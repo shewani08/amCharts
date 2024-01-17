@@ -197,6 +197,22 @@ export class PieComponent implements OnInit {
 
     this.dataService.getCoordinate().subscribe((rcp: any) => {
       this.fetchData = this.rcpToJson(rcp);
+      this.fetchData.push({
+        "Central": "",
+        "Country": "United Kingdom ",
+        "Destination1": "",
+        "Destination2": "",
+        "Destination3": "",
+        "Final": "",
+        "WesternAfrica": "",
+        "WesternMedi1": "",
+        "WesternMedi2": "",
+        "id": "UK",
+        "longitude": -0.1262,
+        "latitude": 51.5002
+      })
+      this.fetchData.splice(this.fetchData.length - 2 ,1);
+      console.log('this.fetchData',this.fetchData);
       this.loadData();
     })
     this.migrantYearService.getWaterStress().subscribe((rcp: any) => {
@@ -328,7 +344,10 @@ private calculateMeanByCountry(data: Entry[], property: string,name:string) {
 }
 loadData() {
   if (this.fetchData) {
-    this.data = this.fetchData.map((coord: any) => ({
+    this.data = this.fetchData.map((coord: any) =>
+      
+      (
+      {
       id: coord.Country,
       title: coord.Country,
       name: coord.Country,
@@ -346,13 +365,15 @@ loadData() {
         coordinates: [parseFloat(coord.longitude),parseFloat(coord.latitude)]
       }
     }));
-    this.data.push({
-      Country:"United Kingdom",
-      id: "United Kingdom",
-      title: "United Kingdom",
-      geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
+    console.log('this.data is',this.data);
+    // this.data.push({
+    //   Country:"United Kingdom",
+    //   id: "United Kingdom",
+    //   title: "United Kingdom",
+    //   geometry: { type: "Point", coordinates: [-0.1262, 51.5002] }
       
-    });
+    // });
+    this.data.splice(this.data.length - 3, 1);
     this.initializeChart();
   }
 }
@@ -394,7 +415,7 @@ this.chartRoute?.set("zoomLevel", 1.3);
 this.citySeries = this.chartRoute.series.push(
 am5map.MapPointSeries.new(this.rootRoute, {})
 );
-
+this.citySeries.data.setAll(this.data);
 this.citySeries.bullets.push(() => {
 let circle = am5.Circle.new(this.rootRoute!, {
   radius: 5,
@@ -408,8 +429,7 @@ return am5.Bullet.new(this.rootRoute!, {
   sprite: circle
 });
 });
-if(this.data)
-this.citySeries.data.setAll(this.data);
+
 this.polygonRouteSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
 this.chartRoute.appear(1000, 100);
 
@@ -444,31 +464,55 @@ onMapPolygonPointerOver(ev: any) {
 }
 
 setConnection() {
-  const origins = this.getOrigin();
+   const origins = this.getOrigin();
   const lineSeriesData: any[] = [];
-  origins.forEach((originData: any) => {
-    const originDataItem = this.citySeries.getDataItemById(originData.id);
-    originData.destinations.forEach((destId: any) => {
+//   origins.forEach((originData: any) => {
+//     console.log('originData.id',originData.id);
+//     const originDataItem = this.citySeries.getDataItemById(originData.id);
+//     originData.destinations.forEach((destId: any) => {
+     
+//       const destinationDataItem = this.citySeries.getDataItemById(String(destId?destId:'United Kingdom'));
+//       if (originDataItem && destinationDataItem) {
+//         const lineData = {
+//           geometry: {
+//             type: "LineString",
+//             coordinates: [
+//               [originDataItem.get("longitude"), originDataItem.get("latitude")],
+//               [destinationDataItem.get("longitude"), destinationDataItem.get("latitude")]
+//             ]
+//           },
+//           animationPosition: 0
+//         };
+//         console.log('lineData is',lineData);
+//         lineSeriesData.push(lineData);
+//       }
+//     });
+ 
+//   });
+
+//   var points: any[] = [];
+//  this.lineSeriesMap.data.setAll(lineSeriesData);
+origins.forEach((originData: any) => {
+  const originDataItem = this.citySeries.getDataItemById(originData.id);
+  originData.destinations.forEach((destId: any) => {
       const destinationDataItem = this.citySeries.getDataItemById(String(destId));
       if (originDataItem && destinationDataItem) {
-        const lineData = {
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [originDataItem.get("longitude"), originDataItem.get("latitude")],
-              [destinationDataItem.get("longitude"), destinationDataItem.get("latitude")]
-            ]
-          },
-          animationPosition: 0
-        };
-        lineSeriesData.push(lineData);
+          const lineData = {
+              multiGeoLine: [
+                  [
+                      { latitude: originDataItem.get("latitude"), longitude: originDataItem.get("longitude") },
+                      { latitude: destinationDataItem.get("latitude"), longitude: destinationDataItem.get("longitude") }
+                  ]
+              ],
+              animationPosition: 0
+          };
+          lineSeriesData.push(lineData);
       }
-    });
- 
   });
+});
 
-  var points: any[] = [];
- this.lineSeriesMap.data.setAll(lineSeriesData);
+// Set the line data to the series
+this.lineSeriesMap.data.setAll(lineSeriesData);
   
 }
 getOrigin() {
@@ -500,7 +544,7 @@ getOrigin() {
       break; // Break if the current destinations is not available
     }
   }
-  if ( location[0].Destination3) {
+  if ( location[0].Destination3 ) {
     transitions.push({ id: location[0].Destination3, destinations:[ location[0].Central ]});
     transitions.push({ id: location[0].Destination3, destinations: [location[0].Western] });
     transitions.push({ id: location[0].Destination3, destinations: [location[0].WesternMedi] });
@@ -881,6 +925,7 @@ return transitions;
       }
 //this.pointSeries.data.clear();
       this.mergedJSON = this.mergeJsonSources([this.fetchData, ...selectedDataSources]);
+      console.log('mergedJson',this.mergedJSON);
       this.cd.detectChanges();
       //this.setIconsMap();
   //    this.cd.detectChanges();
@@ -949,7 +994,12 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
       }
 
       for (let j = 0; j < numberOfCircles; j++) {
+        const countryName = dataItem?.dataContext?.Country;
 
+        // Skip creating circles for the United Kingdom
+        if (countryName && countryName.toLowerCase() === 'united kingdom') {
+          continue;
+        }
         const horizontalSpacing = 2; // Adjust this value as needed
         const verticalSpacing = 2; // Adjust this value as needed
       // let dx =10;
@@ -979,7 +1029,6 @@ this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => 
           tooltipText: j === 0 ? `{name${i + 1}}-{mean${i + 1}}` : undefined,
           src: src
         });
-
         container.children.push(circle);
       }
     }

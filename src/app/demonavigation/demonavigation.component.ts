@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-demonavigation',
@@ -17,11 +18,11 @@ export class DemonavigationComponent {
       shareReplay()
     );
   showDashboard: boolean = true;
-    ngOnInit(){
-     // this.showDashboard = !window.opener;
-    }
-    // hideDemo(e:boolean){
-    //   this.showDashboard= false;
 
-    // }
+  constructor(private router: Router) {}
+
+  // Function to navigate to the "User Guide" page
+    onUserGuideClick() {
+    window.open('/user-guide', '_blank');
+  }
 }

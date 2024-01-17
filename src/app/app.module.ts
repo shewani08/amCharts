@@ -59,6 +59,7 @@ import { CatalogCardComponent } from './catalog-card/catalog-card.component';
 import { CausalAnalysisComponent } from './causalanalysis/causalanalysis.component';
 import { CausalanalysisDataComponent } from './causalanalysis-data/causalanalysis-data.component';
 import { Card2TestingComponent } from './card2-testing/card2-testing.component';
+import { UserGuideComponent } from './user-guide/user-guide.component';
 
 
 
@@ -95,7 +96,8 @@ import { Card2TestingComponent } from './card2-testing/card2-testing.component';
     CatalogCardComponent,
       CausalAnalysisComponent,
       CausalanalysisDataComponent,
-      Card2TestingComponent
+      Card2TestingComponent,
+      UserGuideComponent
      
    
    

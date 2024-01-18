@@ -10,6 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./demonavigation.component.css']
 })
 export class DemonavigationComponent {
+hideDemo($event: boolean) {
+throw new Error('Method not implemented.');
+}
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)

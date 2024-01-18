@@ -5,13 +5,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { DemonavigationComponent } from './demonavigation/demonavigation.component';
 import { UserGuideComponent } from './user-guide/user-guide.component';
+import { AppComponent } from './app.component';
 const routes: Routes = [
   //{ path: 'dashboard', component: DashboardComponent },
+  { path: '', component: DemonavigationComponent }, // Redirect to home if no path specified
+  // { path: '**',  component: AppComponent }
   { path: 'user-guide', component: UserGuideComponent },
   // Your existing routes
   //{ path: 'demo', component: DemonavigationComponent},
-  // { path: '', component: LoginComponent, pathMatch: 'full' }, // Redirect to home if no path specified
-  // { path: '**',  component: LoginComponent }
+ 
 ];
 
 @NgModule({

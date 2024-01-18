@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { filter, map, shareReplay } from 'rxjs/operators';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-demonavigation',
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./demonavigation.component.css']
 })
 export class DemonavigationComponent {
+  shouldShowDashboard: boolean=true;
 hideDemo($event: boolean) {
 throw new Error('Method not implemented.');
 }
@@ -22,10 +23,14 @@ throw new Error('Method not implemented.');
     );
   showDashboard: boolean = true;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+    // Subscribe to route changes and update shouldShowDashboard accordingly
+   
+  }
 
   // Function to navigate to the "User Guide" page
-    onUserGuideClick() {
+  openUserGuideInNewTab() {
     window.open('/user-guide', '_blank');
   }
+ 
 }

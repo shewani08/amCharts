@@ -6,10 +6,10 @@ import { LoginComponent } from './login/login.component';
 import { DemonavigationComponent } from './demonavigation/demonavigation.component';
 import { UserGuideComponent } from './user-guide/user-guide.component';
 const routes: Routes = [
-  { path: 'user-guide', 
-  component: UserGuideComponent },
+  //{ path: 'dashboard', component: DashboardComponent },
+  { path: 'user-guide', component: UserGuideComponent },
   // Your existing routes
-  // { path: 'demo', component: DemonavigationComponent},
+  //{ path: 'demo', component: DemonavigationComponent},
   // { path: '', component: LoginComponent, pathMatch: 'full' }, // Redirect to home if no path specified
   // { path: '**',  component: LoginComponent }
 ];

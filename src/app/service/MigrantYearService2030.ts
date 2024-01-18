@@ -39,7 +39,7 @@ export class MigrantYear2030Service {
     return this.http.get('assets/CURRENT_STATES/climate_scenarios/2030/Drought_intensity_change_SSP1_2030.csv', { responseType: 'text' });
   }
   getDroughtMigrantDataSSP2(){
-    return this.http.get('assets/CURRENT_STATES/climate_scenarios/2030/Drought intensity change_SSP2_2030.csv', { responseType: 'text' });
+    return this.http.get('assets/CURRENT_STATES/climate_scenarios/2030/Drought_intensity_change_SSP2_2030.csv', { responseType: 'text' });
   }
   getDroughtMigrantDataSSP3(){
     return this.http.get('assets/CURRENT_STATES/climate_scenarios/2030/Drought_intensity_change_SSP3_2030.csv', { responseType: 'text' });

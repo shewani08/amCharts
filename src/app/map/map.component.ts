@@ -17,6 +17,7 @@ import { DataService } from '../service/dataService';
 import { Subscription, forkJoin } from 'rxjs';
 import { YearService } from '../service/yearService';
 import { PreviousEvntService } from '../service/previousEvent';
+import { IMapPointSeriesDataItem } from '@amcharts/amcharts5/map';
 
 interface CsvData {
   id?: string;
@@ -536,6 +537,7 @@ export class MapComponent implements OnInit, OnDestroy {
   dataClickedEvent() {
     this.circle.events.on("click", (event: any) => {
       this.previousEvent = event.target.dataItem;
+      console.log(' this.previousEvent', this.previousEvent);
       this.openDialog(event.target.dataItem);
     });
 
@@ -725,7 +727,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   updateIndicatorName(): void {
-    //console.log('selectedIndicators',this.selectedIndicators);
     if (this.selectedRcpValue === 'SSP-1(LOW)' && this.selectedIndicators?.length == 1 ) {
       // this.updateBubbleColor();
       this.showHeatLegend = true;
@@ -853,21 +854,44 @@ export class MapComponent implements OnInit, OnDestroy {
       this.updateDefaultColor();
     }
   }
-
+  getDataItemByCountryName(countryName: string): any {
+    if (this.bubbleSeries) {
+      const dataItems = this.bubbleSeries.dataItems;
+      for (const dataItem of dataItems) {
+        const countryNameKey: keyof IMapPointSeriesDataItem = 'name' as keyof IMapPointSeriesDataItem;
+        
+        if ((dataItem?.dataContext as any)?.name === countryName) {
+          return dataItem;
+        }
+      }
+    }
+    return null;
+  }  
 
   selectCountry(country: string): void {
+    this.mapService.setCountry(country); 
     this.selectedCountryValue = country;
+    const dataItem = this.getDataItemByCountryName(country);
+    this.previousEvent = dataItem;
+    this.openDialog(dataItem);
+
+if (dataItem) {
+  // Now you have the dataItem for the specified country
+  console.log(dataItem);
+  // Perform any other operations you need with the dataItem
+} else {
+  console.log("Country not found in the data");
+}
     this.chart?.series.each((series) => {
       if (series instanceof am5map.MapPolygonSeries) {
         series.mapPolygons.each((mapPolygon) => {
           // Assuming the data has a property like `name` that represents the country name
           const mapPolygonName = (mapPolygon.dataItem?.dataContext as { name?: string })?.name;
-          console.log('mapPolygonName i s',mapPolygon);
-          // console.log('mapPolygonName',mapPolygonName);
+        
 
           if (mapPolygonName === country) {
 
-            this.openDialog(mapPolygon);
+         //   this.openDialog(mapPolygon);
           } else {
             // Deselect other map polygons
             if ('isActive' in mapPolygon) {
@@ -879,14 +903,14 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDialog(_dataItem: any): void {
-    this.summaryData = _dataItem;
+  openDialog(dataItem: any): void {
+    this.summaryData = dataItem;
     this.clicked = true;
     this.sendDataToMigrateComponent(this.summaryData)
   }
 
-  sendDataToMigrateComponent(_dataVal: any) {
-    this.mapService.setMapData(_dataVal);
+  sendDataToMigrateComponent(dataVal: any) {
+    this.mapService.setMapData(dataVal);
   }
 
   updateHeatLegendStartText(selectedCategory: string[]): string {

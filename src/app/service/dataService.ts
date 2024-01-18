@@ -14,6 +14,10 @@ export class DataService {
 
   private setIndicatorSubject = new BehaviorSubject<any>(null);
   setIndicator$ = this.setIndicatorSubject.asObservable();
+
+  private setCountrySubject = new BehaviorSubject<any>(null);
+  setCountry$ = this.setCountrySubject.asObservable();
+ // setCountrySubject: any;
   
     setMapData(data: any) {
       this.mapDataSubject.next(data);
@@ -23,5 +27,8 @@ export class DataService {
     }
     setIndicatorData(data: any) {
       this.setIndicatorSubject.next(data);
+    }
+    setCountry(data: any) {
+      this.setCountrySubject.next(data);
     }
   }

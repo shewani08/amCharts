@@ -197,7 +197,6 @@ export class DialogComponent implements OnChanges {
   ngOnInit() {
 
     this.selectedYear='';
-    console.log('init',this.selectedYear);
     this.initializeChart();
     this.mapData$ = this.dataService.mapData$;
     this.subscription = this.mapData$.subscribe((data: any) => {
@@ -311,6 +310,7 @@ export class DialogComponent implements OnChanges {
     const selectedYear = event.value; 
     this.yearService.saveSelectedYear(selectedYear);
     this.dataSource=[];
+
     this.dataSource.push(this.filterDataByCountryAndYear(this.Country,selectedYear,this.rcpData,this.indicatorData));
     this.cdr.detectChanges();
   }

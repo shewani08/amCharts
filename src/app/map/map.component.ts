@@ -575,7 +575,7 @@ export class MapComponent implements OnInit, OnDestroy {
     
     this.heatLegend?.startLabel.setAll({
       fontSize: 12,
-      fill: this.mapheatLegend.get("startColor")
+      fill: this.mapheatLegend?.get("startColor")
     });
     
     this.heatLegend?.endLabel.setAll({

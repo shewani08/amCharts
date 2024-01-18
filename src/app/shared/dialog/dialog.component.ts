@@ -421,7 +421,7 @@ export class DialogComponent implements OnChanges {
       if( year == '2050')
       filteredData = this.waterYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
-    const proportion = (filteredData.No_of_Irregular_Migrants_in_UK/100)*100;
+    const proportion = ((filteredData.No_of_Irregular_Migrants_in_UK/100)*100).toFixed(2);
 
     return filteredData ? 
       {

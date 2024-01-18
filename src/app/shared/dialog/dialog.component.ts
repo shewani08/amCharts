@@ -76,6 +76,15 @@ export class DialogComponent implements OnChanges {
   cropYear2050SSP3Migrant: any;
   selectedRcpValue: any='';
   cropYieldYear2030Migrant: any;
+  indicatorData$: any;
+  indicatorsubscription: any;
+  indicatorData: any;
+  id: any;
+  Continent: any;
+  Country: any;
+  value: any;
+  total_irregular_migrants: any;
+  Proportion: any;
 
 
 
@@ -212,6 +221,15 @@ export class DialogComponent implements OnChanges {
     this.rcpData$ = this.dataService.setRCP$;
     this.rcpSubscription = this.rcpData$.subscribe((data: any) => {
       this.rcpData = data;
+      console.log('rcpData',this.rcpData);
+      this.cdr.detectChanges();
+
+    });
+
+    this.indicatorData$ = this.dataService.setIndicator$;
+    this.indicatorsubscription = this.indicatorData$.subscribe((data: any) => {
+      this.indicatorData = data;
+      console.log('indicatorData',this.indicatorData);
       this.cdr.detectChanges();
 
     });
@@ -267,10 +285,16 @@ export class DialogComponent implements OnChanges {
         }
       });
     if (dataItem) {
+          this.id = dataItem?.dataContext?.id,
+          this.Continent=dataItem?.dataContext?.Continent,
+          this.Country= dataItem?.dataContext.name,
+          this.value= dataItem?.dataContext.value,
+          this.total_irregular_migrants= dataItem?.dataContext.Number_of_immigrants,
+          this.Proportion= dataItem?.dataContext.Proportion
       this.dataSource = [
         {
           id: dataItem?.dataContext?.id,
-          Continent: dataItem?.dataContext.Continent,
+          Continent: dataItem?.dataContext?.Continent,
           Country: dataItem?.dataContext.name,
           value: dataItem?.dataContext.value,
           total_irregular_migrants: dataItem?.dataContext.Number_of_immigrants,
@@ -296,37 +320,39 @@ export class DialogComponent implements OnChanges {
   onYearSelected(event: any): void {
     const selectedYear = event.value; 
     this.yearService.saveSelectedYear(selectedYear);
+    this.filterDataByCountryAndYear(this.dataSource[0].Country,selectedYear,this.rcpData,this.indicatorData);
+    this.cdr.detectChanges();
   }
   filterDataByCountryAndYear(country: any, year: string,rcp:string,indicators:string) {
     let filteredData:any ={};
-    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Water index stress (Water)' ){
+    if(rcp=='SSP-1(LOW)' && indicators =='Water index stress (Water)' ){
       if( year == '2030')
       filteredData = this.waterYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.waterYear2050Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
-    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Drought intensity change (Water)' ){
+    if(rcp=='SSP-1(LOW)' && indicators =='Drought intensity change (Water)' ){
       if( year == '2030')
       filteredData = this.droughtYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.droughtYear2050Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Crop yield change (Land)' ){
+    if(rcp=='SSP-1(LOW)' && indicators =='Crop yield change (Land)' ){
       if( year == '2030')
       filteredData = this.cropYieldYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.cropYear2050Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
  
-    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Heat Index Event exposure (Energy)'){
+    if(rcp=='SSP-1(LOW)' && indicators =='Heat Index Event exposure (Energy)'){
       if( year == '2030')
       filteredData = this.heatYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.heatYear2050Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
     
-    if(this.selectedRcpValue=='SSP-1(LOW)' && indicators =='Water index stress (Water)' ){
+    if(rcp=='SSP-1(LOW)' && indicators =='Water index stress (Water)' ){
       if( year == '2030')
       filteredData = this.waterYear2030Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
@@ -335,76 +361,86 @@ export class DialogComponent implements OnChanges {
     }
   
 
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Water index stress (Water)' ){
+    if(rcp=='SSP-2(MEDIUM)' && indicators =='Water index stress (Water)' ){
       if( year == '2030')
       filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.waterYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
      
     }
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Drought intensity change (Water)'){
+    if(rcp=='SSP-2(MEDIUM)' && indicators =='Drought intensity change (Water)'){
       if( year == '2030')
       filteredData = this.droughtYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.droughtYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Crop yield change (Land)'){
+    if(rcp=='SSP-2(MEDIUM)' && indicators =='Crop yield change (Land)'){
       if( year == '2030')
       filteredData = this.cropYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.cropYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
     
-    if(this.selectedRcpValue=='SSP-2(MEDIUM)' && indicators =='Heat Index Event exposure (Energy)' ){
+    if(rcp=='SSP-2(MEDIUM)' && indicators =='Heat Index Event exposure (Energy)' ){
       if( year == '2030')
       filteredData = this.heatYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.heatYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-2(MEDIUM))' && indicators =='Water index stress (Water)' ){
+    if(rcp=='SSP-2(MEDIUM))' && indicators =='Water index stress (Water)' ){
       if( year == '2030')
       filteredData = this.waterYearSSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.waterYear2050SSP2Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
 
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
+    if(rcp=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
       if( year == '2030')
       filteredData = this.waterYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.waterYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
 
     }
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Drought intensity change (Water)'){
+    if(rcp=='SSP-3(HIGH)' && indicators =='Drought intensity change (Water)'){
       if( year == '2030')
       filteredData = this.droughtYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.droughtYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Crop yield change (Land)'){
+    if(rcp=='SSP-3(HIGH)' && indicators =='Crop yield change (Land)'){
       if( year == '2030')
       filteredData = this.cropYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.cropYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
    
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Heat Index Event exposure (Energy)'){
+    if(rcp=='SSP-3(HIGH)' && indicators =='Heat Index Event exposure (Energy)'){
       if( year == '2030')
       filteredData = this.heatYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.heatYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
     
-    if(this.selectedRcpValue=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
+    if(rcp=='SSP-3(HIGH)' && indicators =='Water index stress (Water)'){
       if( year == '2030')
       filteredData = this.waterYearSSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
       if( year == '2050')
       filteredData = this.waterYear2050SSP3Migrant.find((entry: { Country: any; }) => entry.Country === country);
     }
-  }
+
+    return filteredData ?  this.dataSource = [
+      {
+        id: this.id,
+        Continent: this.Continent,
+        Country: this.Country,
+        value: this.value,
+        total_irregular_migrants: filteredData.Total_Irregular_Migrants,
+        Proportion: this.Proportion}]
+         : null;
+   }
   
   ngOnDestroy() {
     this.subscription.unsubscribe();

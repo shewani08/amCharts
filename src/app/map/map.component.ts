@@ -716,6 +716,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   selectIndicator(value: string): void {
     const index = this.selectedIndicators.indexOf(value);
+    this.mapService.setIndicatorData(value);
     if (index === -1) {
       this.selectedIndicators.push(value);
     } else {

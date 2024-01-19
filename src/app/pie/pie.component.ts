@@ -243,8 +243,11 @@ export class PieComponent implements OnInit {
         "WesternMedi1": "",
         "WesternMedi2": "",
         "id": "UK",
-        "longitude": -0.1262,
-        "latitude": 51.5002
+        geometry: {
+          type: "Point",
+          coordinates: [-0.1262,51.5002]
+        }
+       
       })
       this.fetchData.splice(this.fetchData.length - 2 ,1);
     
@@ -504,6 +507,7 @@ loadData() {
     }));
   
     this.data.push({
+      Central: "", Destination1: "", Destination2: undefined, Destination3: undefined, Final: "", Western: "", WesternAfrica: "", WesternMedi: "" ,
       Country:"United Kingdom",
       id: "United Kingdom",
       title: "United Kingdom",
@@ -553,20 +557,19 @@ this.chartRoute?.set("zoomLevel", 1.3);
 this.citySeries = this.chartRoute.series.push(
 am5map.MapPointSeries.new(this.rootRoute, {})
 );
-console.log('this.data',this.data);
 this.citySeries.data.setAll(this.data);
 this.citySeries.bullets.push(() => {
-let circle = am5.Circle.new(this.rootRoute!, {
-  radius: 5,
-  tooltipText: "{title}",
-  tooltipY: 0,
-  fill: am5.color(0xffba00),
-  stroke: this.rootRoute?.interfaceColors.get("background"),
-  strokeWidth: 2
-});
-return am5.Bullet.new(this.rootRoute!, {
-  sprite: circle
-});
+  let circle = am5.Circle.new(this.rootRoute!, {
+    radius: 4,
+    tooltipText: "{title}",
+    tooltipY: 0,
+    fill: am5.color(0xffba00),
+    stroke: this.rootRoute?.interfaceColors.get("background"),
+    strokeWidth: 2
+  });
+  return am5.Bullet.new(this.rootRoute!, {
+    sprite: circle
+  });
 });
 
 this.polygonRouteSeries.mapPolygons.template.events.on("pointerover", this.onMapPolygonPointerOver.bind(this));
@@ -603,15 +606,16 @@ onMapPolygonPointerOver(ev: any) {
 }
 
 setConnection() {
-   const origins = this.getOrigin();
+  const origins = this.getOrigin();
   const lineSeriesData: any[] = [];
+  let allowedCities = Array.from(new Set(origins.map(item => item['id'])));
+  allowedCities.push('United Kingdom');
+  const pointData: any[] = [];
+  this.citySeries.data.setAll(this.data);
   origins.forEach((originData: any) => {
-  
     const originDataItem = this.citySeries.getDataItemById(originData.id);
     originData.destinations.forEach((destId: any) => {
-
       const destinationDataItem = this.citySeries.getDataItemById(String(destId?destId:'United Kingdom'));
-    
       if (originDataItem && destinationDataItem) {
         const lineData = {
           geometry: {
@@ -623,17 +627,29 @@ setConnection() {
           },
           animationPosition: 0
         };
-        console.log('lineData is',lineData);
         lineSeriesData.push(lineData);
+        if (allowedCities.includes(originDataItem.get("id"))) {
+          const pointItem = {
+            id: originDataItem.get("id"),
+            name:originDataItem.get("id"),
+            title:originDataItem.get("id"),
+            geometry: {
+              type: "Point",
+              coordinates: [originDataItem.get("longitude"), originDataItem.get("latitude")]
+            }
+          };
+          pointData.push(pointItem);
+        }
       }
     });
- 
   });
-
-  var points: any[] = [];
- this.lineSeriesMap.data.setAll(lineSeriesData);
-
-  
+  pointData.push({Country:"United Kingdom",
+  id: "Uk",
+  title: "United Kingdom",
+  geometry: { type: "Point", coordinates: [-0.1262, 51.5002]}});
+  console.log('pointData is',pointData);
+  this.citySeries.data.setAll(pointData);
+  this.lineSeriesMap.data.setAll(lineSeriesData);
 }
 getOrigin() {
   const transitions: { id: any; destinations: any; }[] = [];
@@ -695,25 +711,13 @@ getOrigin() {
   if (location[0].WesternAfrica  ) {
     transitions.push({ id: location[0].WesternAfrica, destinations: [location[0].Final] });
   }
-  // If Destination3 is present, connect it to Central, Western, WesternMedi, and WesternAfrica
-  
-
-// Add the final destinations (if available)
 if (location[0].Final) {
 // transitions.push({ id: lastDestination, destinations: location[0].Final });
 }
-console.log(transitions);
 return transitions;
 
 }
   
-
-
- 
-
-
-
-
   removeDuplicates(array: any[], property: string | number) {
     return array.filter((obj, index, self) =>
       index === self.findIndex((el) => el[property] === obj[property])
@@ -725,7 +729,6 @@ return transitions;
     this.selectedCountryValue = country;
     this.totalMigration = this.sumCountryData(this.selectedCountryValue);
     this.routeData = this.data.filter((c: { Country: any; }) => c.Country === country);
-//change table value
    if(this.selectedCountryValue && this.selectYearValue  && this.selectedRcpValue && this.selectedIndicators[0])
    this.countryYearData = this.filterDataByCountryAndYear(this.selectedCountryValue, this.selectYearValue,this.selectedRcpValue,this.selectedIndicators[0]);
   else 
@@ -749,11 +752,6 @@ return transitions;
      } : null;
  
    }
-  
-
- 
-
-  
 
   private csvToJson<T>(csvData: string): T[] {
     const lines = csvData.split('\n');
@@ -1186,7 +1184,6 @@ return transitions;
  
 }
   setIconsMap() {
-   
    //this.initializeChart();
    this.pointSeries = this.chartRoute?.series.push(
       am5map.MapPointSeries.new(this.rootRoute, {
@@ -1217,7 +1214,6 @@ return transitions;
           
           pointData[`name${j + 1}`] = nameValues[j];
         }
-console.log('pointData',pointData);
       if(pointData.id !== 'UK')
         this.pointSeries?.data.push(pointData);
      // }
@@ -1225,9 +1221,9 @@ console.log('pointData',pointData);
     }
     const colorSet = am5.ColorSet.new(this.rootRoute, { step: 2 });
 
-this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => {
-  const container = am5.Container.new(this.rootRoute, {});
-  let meanValue;
+    this.pointSeries?.bullets.push((root1: am5.Root, series: any, dataItem: any) => {
+      const container = am5.Container.new(this.rootRoute, {});
+      let meanValue;
 
   for (let i = 1; i <= this.selectedIndicators.length-1; i++) {
     // Assuming the mean values are stored in dataItem object

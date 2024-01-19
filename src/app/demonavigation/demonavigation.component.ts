@@ -11,6 +11,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 })
 export class DemonavigationComponent {
   shouldShowDashboard: boolean=true;
+  showUserGuide: boolean =false;
 hideDemo($event: boolean) {
 throw new Error('Method not implemented.');
 }
@@ -30,7 +31,8 @@ throw new Error('Method not implemented.');
 
   // Function to navigate to the "User Guide" page
   openUserGuideInNewTab() {
-    window.open('/user-guide', '_blank');
+    this.showUserGuide = true;
+   // window.open('/user-guide', '_blank');
   }
  
 }

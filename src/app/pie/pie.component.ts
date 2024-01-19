@@ -1268,7 +1268,8 @@ return transitions;
           // centerX: am5.p50,
           // centerY: am5.p50,
           tooltipText: j === 0 ? `{name${i + 1}}-{mean${i + 1}}` : undefined,
-          src: this.pointSeries.data.id !== 'UK' ? src  : ''
+          src:src
+        //  src: this.pointSeries.data.id !== 'UK' ? src  : ''
         });
         container.children.push(circle);
       }

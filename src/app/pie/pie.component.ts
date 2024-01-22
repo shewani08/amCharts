@@ -680,22 +680,34 @@ getOrigin() {
       break; // Break if the current destinations is not available
     }
   }
-  if ( location[0].Destination3 ) {
-    transitions.push({ id: location[0].Destination3, destinations:[ location[0].Central ]});
+  if ( location[0].Destination3) {
+    if(location[0].Central)
+    transitions.push({ id: location[0].Destination3, destinations:[location[0].Central]});
+  if(location[0].Western)
     transitions.push({ id: location[0].Destination3, destinations: [location[0].Western] });
+  if(location[0].WesternMedi)
     transitions.push({ id: location[0].Destination3, destinations: [location[0].WesternMedi] });
+  if(location[0].WesternAfrica)
     transitions.push({ id: location[0].Destination3, destinations: [location[0].WesternAfrica] });
   }
-  if ( location[0].Destination2) {
-    transitions.push({ id: location[0].Destination2, destinations: [location[0].Central ]});
+  if ( location[0].Destination2 &&  !location[0].Destination3) {
+    if(location[0].Central)
+    transitions.push({ id: location[0].Destination2, destinations: [location[0].Central]});
+    if(location[0].Western)
     transitions.push({ id: location[0].Destination2, destinations: [location[0].Western] });
+    if(location[0].WesternMedi)
     transitions.push({ id: location[0].Destination2, destinations: [location[0].WesternMedi] });
+    if(location[0].WesternAfrica)
     transitions.push({ id: location[0].Destination2, destinations: [location[0].WesternAfrica] });
   }
-  if ( location[0].Destination1) {
+  if ( location[0].Destination1 &&   !location[0].Destination2 &&  !location[0].Destination3 ) {
+    if(location[0].Central)
     transitions.push({ id: location[0].Destination1, destinations: [location[0].Central] });
+    if(location[0].Western)
     transitions.push({ id: location[0].Destination1, destinations: [location[0].Western ]});
+    if(location[0].WesternMedi)
     transitions.push({ id: location[0].Destination1, destinations: [location[0].WesternMedi] });
+    if(location[0].WesternAfrica)
     transitions.push({ id: location[0].Destination1, destinations: [location[0].WesternAfrica] });
   }
   // Add the final destinations (if available)
@@ -714,6 +726,7 @@ getOrigin() {
 if (location[0].Final) {
 // transitions.push({ id: lastDestination, destinations: location[0].Final });
 }
+console.log('transitions is',transitions);
 return transitions;
 
 }

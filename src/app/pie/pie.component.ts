@@ -225,6 +225,8 @@ export class PieComponent implements OnInit {
   cropYear2050SSP3Migrant: any;
   countryYearData: any | null;
   noMigrantData: any;
+  animatedBulletSeries: any;
+  animatedLineSeries: any;
  
   constructor(private dataService: CsvService,private routeService:RouteService,private heatwaterService:HeatWaterService,
     private migrantYearService:MigrantYearService, private cd: ChangeDetectorRef,private migrantYear2030Service:MigrantYear2030Service,
@@ -554,6 +556,11 @@ include: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR'
 
 this.chartRoute?.set("zoomLevel", 1.3);
  this.lineSeriesMap = this.chartRoute.series.push(am5map.MapLineSeries.new(this.rootRoute, {}));
+ this.lineSeriesMap.mapLines.template.setAll({
+  stroke: this.rootRoute.interfaceColors.get("alternativeBackground"),
+  strokeOpacity: 1
+});
+
 this.citySeries = this.chartRoute.series.push(
 am5map.MapPointSeries.new(this.rootRoute, {})
 );
@@ -616,6 +623,7 @@ setConnection() {
     const originDataItem = this.citySeries.getDataItemById(originData.id);
     originData.destinations.forEach((destId: any) => {
       const destinationDataItem = this.citySeries.getDataItemById(String(destId?destId:'United Kingdom'));
+   
       if (originDataItem && destinationDataItem) {
         const lineData = {
           geometry: {
@@ -639,6 +647,9 @@ setConnection() {
             }
           };
           pointData.push(pointItem);
+          // this.animatedLineSeries.mapLines.each((line:any) => {
+          //   line.animate({ property: "multiGeoLine", to: pointItem.geometry.coordinates, duration: 1000 });
+          // });
         }
       }
     });
@@ -649,8 +660,12 @@ setConnection() {
   geometry: { type: "Point", coordinates: [-0.1262, 51.5002]}});
   console.log('pointData is',pointData);
   this.citySeries.data.setAll(pointData);
+  
   this.lineSeriesMap.data.setAll(lineSeriesData);
 }
+
+
+
 getOrigin() {
   const transitions: { id: any; destinations: any; }[] = [];
   const location:any =this.routeData;

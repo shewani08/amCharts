@@ -7,10 +7,10 @@
       <!-- <div><h2 class="mat-h1">C397.10 Assesment Tool</h2></div> -->
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Causal Analysis</a>
-      <a mat-list-item href="#">Downloads</a>
+      <a mat-list-item (click)="OpenDashboard()">Causal Analysis</a>
+      <a mat-list-item (click)="OpenDashboard()">Downloads</a>
       <a mat-list-item (click)="openUserGuideInNewTab()">User Guide</a>
-      <a mat-list-item href="#">Data Catalogue</a>
+      <a mat-list-item (click)="OpenDashboard()">Data Catalogue</a>
       <!-- <a mat-list-item href="#">Migration Northern African Routes</a> -->
     </mat-nav-list>
   </mat-sidenav>
@@ -28,7 +28,8 @@
       <span> C-397 Assessment Tool(POC)</span>
     </mat-toolbar>
     <!-- <app-dashboard (hideDemo)="hideDemo($event)" *ngIf="showDashboard"></app-dashboard> -->
-    <app-dashboard></app-dashboard>    
+    <app-dashboard *ngIf="!showUserGuide"></app-dashboard>    
+    <app-user-guide *ngIf="showUserGuide"></app-user-guide>
   </mat-sidenav-content>
 </mat-sidenav-container>
 <!-- <router-outlet></router-outlet> -->

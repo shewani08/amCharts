@@ -58,33 +58,33 @@ isHandset: any;
   graphCard4: any | undefined;
   constructor(private sanitizer: DomSanitizer) {}
   ngOnInit() {
-    // Sanitize the URL
+
     this.safeDashAppUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.dashAppUrl);
-   // this.showDashboard = !window.opener;
+
     
   }
 
-  generateData() {
-    this.chartData = [];
-    for (let i = 0; i < (8 + Math.floor(Math.random() * 10)); i++) {
-      this.chartData.push([
-        `Index ${i}`,
-        Math.floor(Math.random() * 100)
-      ]);
-    }
-    console.log('this.charData is',this.chartData);
-  }
-  getSafeUrl(): SafeResourceUrl {
-    return this.safeDashAppUrl;
-  }
-  showCards(e:boolean){
-    this.showDashboard= e;
-   // this.hideDemo.emit(false);
+  // generateData() {
+  //   this.chartData = [];
+  //   for (let i = 0; i < (8 + Math.floor(Math.random() * 10)); i++) {
+  //     this.chartData.push([
+  //       `Index ${i}`,
+  //       Math.floor(Math.random() * 100)
+  //     ]);
+  //   }
+  //   console.log('this.charData is',this.chartData);
+  // }
+  // getSafeUrl(): SafeResourceUrl {
+  //   return this.safeDashAppUrl;
+  // }
+  // showCards(e:boolean){
+  //   this.showDashboard= e;
+  //  // this.hideDemo.emit(false);
 
-  }
-  returnPage(e:boolean){
-    this.showDashboard= e;
-  }
+  // }
+  // returnPage(e:boolean){
+  //   this.showDashboard= e;
+  // }
 
 }
 

@@ -12,9 +12,9 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 export class DemonavigationComponent {
   shouldShowDashboard: boolean=true;
   showUserGuide: boolean =false;
-hideDemo($event: boolean) {
-throw new Error('Method not implemented.');
-}
+  hideDemo($event: boolean) {
+     throw new Error('Method not implemented.');
+   }
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -24,15 +24,14 @@ throw new Error('Method not implemented.');
     );
   showDashboard: boolean = true;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    // Subscribe to route changes and update shouldShowDashboard accordingly
-   
-  }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
-  // Function to navigate to the "User Guide" page
   openUserGuideInNewTab() {
     this.showUserGuide = true;
-   // window.open('/user-guide', '_blank');
+  }
+  
+  OpenDashboard(){
+    this.showUserGuide = false;
   }
  
 }
